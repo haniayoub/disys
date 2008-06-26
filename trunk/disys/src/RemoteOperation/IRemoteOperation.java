@@ -23,8 +23,11 @@ public interface IRemoteOperation {
 	 */
 	void	DoTask(ITask task,int priority);
 	/**
-	 * Get the First most recent result.
-	 * @return IResult
+	 * Get the most recent ready result, 
+	 * Blocking call if at least one task is being remotely executed.
+	 * 
+	 * @return IResult : the ready result if exists else 
+	 * if no task is being remotely executed return null.
 	 */
 	IResult PopResult();
 	/**
