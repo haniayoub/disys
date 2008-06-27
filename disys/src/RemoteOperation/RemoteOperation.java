@@ -41,4 +41,28 @@ public class RemoteOperation implements IRemoteOperation{
 		
 	}
 
+	@Override
+	public int ExecutingTasksNum() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int ResultsNum() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int TotalTasksNum() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int WaitingTasksNum() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
