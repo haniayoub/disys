@@ -36,4 +36,20 @@ public interface IRemoteOperation {
 	 * @return the result of the execution
 	 */
 	IResult ExecuteTask(ITask task);
+	/**
+	 * number of waiting tasks  
+	 */
+	int WaitingTasksNum();
+	/**
+	 * number of tasks being executed the instance  
+	 */
+	int ExecutingTasksNum();
+	/**
+	 * ExecutingTasksNum + WaitingTasksNum
+	 */
+	int TotalTasksNum();
+	/**
+	 * Ready Results number
+	 */
+	int ResultsNum();
 }
