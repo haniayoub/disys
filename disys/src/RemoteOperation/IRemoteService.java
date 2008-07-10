@@ -3,7 +3,7 @@ package RemoteOperation;
 import Common.IResult;
 import Common.ITask;
 
-public interface IRemoteOperation {
+public interface IRemoteService {
 	/**
 	 * starts the service 
 	 */
@@ -11,7 +11,7 @@ public interface IRemoteOperation {
 	/**
 	 * Wait until all waiting Tasks Are executed , and all results are ready 
 	 */
-	void 	Wait();
+	void 	Wait(boolean acceptNewJobs);
 	/**
 	 *Stop executing all waiting tasks and , and wait until all Results are ready . 
 	 */
@@ -29,7 +29,7 @@ public interface IRemoteOperation {
 	 * @return IResult : the ready result if exists else 
 	 * if no task is being remotely executed return null.
 	 */
-	IResult PopResult();
+	IResult PopResult();//time out
 	/**
 	 * execute task , Blocking call
 	 * @param task the task to execute 
