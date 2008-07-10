@@ -3,7 +3,7 @@ package RemoteOperation;
 import Common.IResult;
 import Common.ITask;
 
-public class RemoteOperation implements IRemoteOperation{
+public class RemoteService implements IRemoteService{
 
 	@Override
 	public void DoTask(ITask task,int priority) {
@@ -35,11 +35,6 @@ public class RemoteOperation implements IRemoteOperation{
 		
 	}
 
-	@Override
-	public void Wait() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public int ExecutingTasksNum() {
@@ -63,6 +58,12 @@ public class RemoteOperation implements IRemoteOperation{
 	public int WaitingTasksNum() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void Wait(boolean acceptNewJobs) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
