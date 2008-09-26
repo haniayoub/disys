@@ -1,4 +1,4 @@
-package RemoteOperation;
+package Client;
 
 import Common.IResult;
 import Common.ITask;
