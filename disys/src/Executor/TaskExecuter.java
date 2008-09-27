@@ -1,7 +1,6 @@
 package Executor;
 
 import java.util.concurrent.BlockingQueue;
-
 import Common.IExecutor;
 import Common.Item;
 import Common.RemoteItem;
@@ -19,7 +18,7 @@ public class TaskExecuter<E extends IExecutor> extends
 	@Override
 	public RemoteItem<? extends Item> doItem(RemoteItem<? extends Item> task)
 	{
-		Item Result=excutor.run(task.getTask());
+		Item Result=excutor.run(task.getItem());
 		return new RemoteItem(Result,task.getRemoteInfo());
 	}
 

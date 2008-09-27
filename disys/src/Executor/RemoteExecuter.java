@@ -37,7 +37,6 @@ public class RemoteExecuter<E extends IExecutor> {
 	 * @param args
 	 */
 	public void Run(String[] args) {
-		 
 		 ws.startWork();
 	}
 
