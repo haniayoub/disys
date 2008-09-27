@@ -4,17 +4,17 @@ import WorkersSystem.WorkER.WorkItem;
 
 public class RemoteItem<T extends Item> implements WorkItem {
 private RemoteInfo remoteInfo;
-private T Task;
+private T Item;
 public RemoteItem( T task,RemoteInfo remoteInfo) {
 	super();
 	this.remoteInfo = remoteInfo;
-	Task = task;
+	Item = task;
 }
 public RemoteInfo getRemoteInfo() {
 	return remoteInfo;
 }
 
-public T getTask() {
-	return Task;
+public T getItem() {
+	return Item;
 }
 }
