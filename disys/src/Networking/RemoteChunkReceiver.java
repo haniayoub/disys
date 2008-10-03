@@ -18,7 +18,7 @@ public class RemoteChunkReceiver extends UnicastRemoteObject implements IRemoteC
 			try {
 				 if (System.getSecurityManager() == null)
 			            System.setSecurityManager ( new RMISecurityManager() );
-				 Naming.bind ("ItemReciever"+id, this);
+				 Naming.bind ("ChunkReciever"+id, this);
 
 			} catch (Exception e) {
 				System.out.println("Failed to Bind : "
