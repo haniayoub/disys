@@ -10,13 +10,13 @@ import Common.IExecutor;
 import Common.Item;
 import Common.RemoteItem;
 
-public class RemoteExecuter<E extends IExecutor> {
-	BlockingQueue<RemoteItem<? extends Item>> tasks = 
+public class ExecuterSystem<E extends IExecutor<? extends Item,? extends Item>> {
+	public BlockingQueue<RemoteItem<? extends Item>> tasks = 
 						new LinkedBlockingQueue<RemoteItem<? extends Item>>();
-	BlockingQueue<RemoteItem<? extends Item>> results= 
+	public BlockingQueue<RemoteItem<? extends Item>> results= 
 						new LinkedBlockingQueue<RemoteItem<? extends Item>>();
 
-	BlockingQueue<Chunk<? extends Item>> recievedChunks = 
+	public BlockingQueue<Chunk<? extends Item>> recievedChunks = 
 		new LinkedBlockingQueue<Chunk<? extends Item>>();
 	
 	TaskExecuter<E> taskExecuter;
@@ -24,7 +24,7 @@ public class RemoteExecuter<E extends IExecutor> {
 	int numerOfExecuters;
 	
 	WorkerSystem ws=new WorkerSystem();
-	public RemoteExecuter(E executer,int numerOfWorkers) {
+	public ExecuterSystem(E executer,int numerOfWorkers) {
 		super();
 		this.taskExecuter = new TaskExecuter<E>(executer,tasks,results);
 		chunkBreaker=new ChunkBreaker(recievedChunks,tasks);
