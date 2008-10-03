@@ -1,8 +1,10 @@
 package Executor;
 
+import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import Networking.RemoteChunkReceiver;
 import WorkersSystem.WorkER.WorkerSystem;
 
 import Common.Chunk;
@@ -18,13 +20,21 @@ public class ExecuterSystem<E extends IExecutor<? extends Item,? extends Item>> 
 	public BlockingQueue<Chunk<? extends Item>> recievedChunks = 
 		new LinkedBlockingQueue<Chunk<? extends Item>>();
 	
-	TaskExecuter<E> taskExecuter;
-	ChunkBreaker chunkBreaker;
-	int numerOfExecuters;
+	private TaskExecuter<E> taskExecuter;
+	private ChunkBreaker chunkBreaker;
+	@SuppressWarnings("unused")
+	private RemoteChunkReceiver chunkReceiver;
+	private int numerOfExecuters;
 	
 	WorkerSystem ws=new WorkerSystem();
 	public ExecuterSystem(E executer,int numerOfWorkers) {
 		super();
+		try {
+			chunkReceiver=new RemoteChunkReceiver(0,recievedChunks);
+		} catch (RemoteException e) {
+			System.out.println("Error intializing Remote Chunk Reciever :"+e.toString());
+			e.printStackTrace();
+		}
 		this.taskExecuter = new TaskExecuter<E>(executer,tasks,results);
 		chunkBreaker=new ChunkBreaker(recievedChunks,tasks);
 		this.numerOfExecuters= numerOfWorkers;
