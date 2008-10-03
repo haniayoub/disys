@@ -15,7 +15,6 @@ public class ExecuterSystem<E extends IExecutor<? extends Item,? extends Item>> 
 						new LinkedBlockingQueue<RemoteItem<? extends Item>>();
 	public BlockingQueue<RemoteItem<? extends Item>> results= 
 						new LinkedBlockingQueue<RemoteItem<? extends Item>>();
-
 	public BlockingQueue<Chunk<? extends Item>> recievedChunks = 
 		new LinkedBlockingQueue<Chunk<? extends Item>>();
 	
