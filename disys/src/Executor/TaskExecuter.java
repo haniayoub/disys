@@ -6,6 +6,7 @@ import Common.Item;
 import Common.RemoteItem;
 import WorkersSystem.WorkER.AWorker;
 
+@SuppressWarnings("unchecked")
 public class TaskExecuter<E extends IExecutor> extends
 		AWorker<RemoteItem<? extends Item>, RemoteItem<? extends Item>> {
 	private E excutor;

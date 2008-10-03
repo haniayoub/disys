@@ -2,6 +2,7 @@ package Common;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Item implements Serializable{
 
 	

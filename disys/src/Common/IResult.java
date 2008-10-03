@@ -1,10 +1,9 @@
 package Common;
 
-import java.io.Serializable;
-
+@SuppressWarnings("serial")
 public class IResult extends Item{
 
-	public IResult(long id) {
+	public IResult(final long id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
