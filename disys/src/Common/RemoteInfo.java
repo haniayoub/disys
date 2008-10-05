@@ -1,5 +1,7 @@
 package Common;
 
-public class RemoteInfo {
+import java.io.Serializable;
+
+public class RemoteInfo implements Serializable{
 
 }

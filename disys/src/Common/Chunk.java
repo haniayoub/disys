@@ -27,5 +27,9 @@ public class Chunk<T extends Item> implements WorkItem,Serializable{
 	}
 	public T[] getItems() {
 		return items;
-	}	 
+	}	
+	public String toString(){
+	return "chunk:"+items.length;
+	}
+	
 }
