@@ -2,13 +2,10 @@ package Networking;
 
 
 import java.rmi.Naming;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
-
-import Common.Chunk;
 import Common.Item;
 
 public class RemoteItemReceiver<ITEM extends Item> extends UnicastRemoteObject implements IRemoteItemReceiver<ITEM> {
