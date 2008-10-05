@@ -25,7 +25,7 @@ public class SimpleCalcClient {
 	    	int port=Integer.parseInt(args[1]);
 	    	chunkReciver = (IRemoteItemReceiver<Chunk<CalcTask>>) 
 	    	
-			Naming.lookup("rmi://" + args[0] +":"+port +"/ChunkReciever0");
+			Naming.lookup("rmi://" + args[0] +":"+port +"/itemReciever0");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
