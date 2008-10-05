@@ -6,5 +6,5 @@ import Common.Chunk;
 import Common.Item;
 
 public interface IRemoteChunkReceiver extends Remote{
-	public void Add(Chunk<? extends Item> chunk) throws RemoteException;
+	public void Add(/*Chunk<? extends Item> chunk*/String s) throws RemoteException;
 }

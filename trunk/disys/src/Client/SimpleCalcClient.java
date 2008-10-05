@@ -10,20 +10,22 @@ import java.util.Random;
 
 import CalcExecuterDemo.*;
 import Common.Chunk;
-import Networking.RemoteChunkReceiver;
+import Networking.IRemoteChunkReceiver;
 
 public class SimpleCalcClient {
 	public static void main(String[] args){
 		 // Assign security manager
-	    if (System.getSecurityManager() == null)
-	    {
-	        System.setSecurityManager   (new RMISecurityManager());
-	    }
-	    RemoteChunkReceiver chunkReciver=null;
+	    //if (System.getSecurityManager() == null)
+	    //{
+	      //  System.setSecurityManager   (new RMISecurityManager());
+	    //}
+		IRemoteChunkReceiver chunkReciver=null;
 	    // Call registry for PowerService
 	    try {
-	    	chunkReciver = (RemoteChunkReceiver) 
-			Naming.lookup("rmi://" + args[0] + "/ChunkReciever0");
+	    	int port=Integer.parseInt(args[1]);
+	    	chunkReciver = (IRemoteChunkReceiver) 
+	    	
+			Naming.lookup("rmi://" + args[0] +":"+port +"/ChunkReciever0");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,7 +39,7 @@ public class SimpleCalcClient {
 		for (int i=0;i<10;i++){
 			Chunk<CalcTask> chunk=CreateRandomChunk();
 			try {
-				chunkReciver.Add(chunk);
+				chunkReciver.Add("chunk");
 				//Thread.sleep(100);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
