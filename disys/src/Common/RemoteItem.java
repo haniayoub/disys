@@ -1,7 +1,5 @@
 package Common;
 
-import java.io.Serializable;
-
 import WorkersSystem.WorkER.WorkItem;
 
 public class RemoteItem<T extends Item> implements WorkItem {

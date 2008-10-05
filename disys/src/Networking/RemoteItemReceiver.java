@@ -11,19 +11,19 @@ import java.util.concurrent.BlockingQueue;
 import Common.Chunk;
 import Common.Item;
 
-public class RemoteChunkReceiver extends UnicastRemoteObject implements IRemoteChunkReceiver {
+public class RemoteItemReceiver<ITEM extends Item> extends UnicastRemoteObject implements IRemoteItemReceiver<ITEM> {
 
-	BlockingQueue<Chunk<? extends Item>> recievedChunks;
+	BlockingQueue<ITEM> recievedItems;
 	private static final long serialVersionUID = -3040410137934057567L;
 	private static final int MAX_PORT = 30000;
 	private static final int INITIAL_PORT = 3000;
-		public RemoteChunkReceiver(long id,BlockingQueue<Chunk<? extends Item>> chunksQueue) throws RemoteException {
+		public RemoteItemReceiver(long id,BlockingQueue<ITEM> itemsQueue) throws RemoteException {
 			super();
 			try {
 				// if (System.getSecurityManager() == null)
 			     //      System.setSecurityManager ( new RMISecurityManager() );
 				 int port=createRegistry();
-				 Naming.bind ("//:"+port+"/ChunkReciever"+id, this);
+				 Naming.bind ("//:"+port+"/itemReciever"+id, this);
 
 			} catch (Exception e) {
 				
@@ -36,12 +36,12 @@ public class RemoteChunkReceiver extends UnicastRemoteObject implements IRemoteC
 				e.printStackTrace();
 				System.exit(1);
 			}
-			recievedChunks=chunksQueue;
+			recievedItems=itemsQueue;
 		}
 	@Override
-	public void Add(/*Chunk<? extends Item> chunk*/ String s) throws RemoteException {
-		//recievedChunks.add(chunk);
-		System.out.println("chnk added size"+s);
+	public void Add(ITEM item) throws RemoteException {
+		recievedItems.add(item);
+		System.out.println("item added "+item.toString());
 	}
 	private int createRegistry() throws RemoteException {
 		RemoteException failureException = null;

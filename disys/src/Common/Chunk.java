@@ -1,18 +1,16 @@
 package Common;
 
-import java.io.Serializable;
-
 import WorkersSystem.WorkER.WorkItem;
 
 @SuppressWarnings("serial")
-public class Chunk<T extends Item> implements WorkItem,Serializable{
+public class Chunk<T extends Item> extends Item implements WorkItem{
 
 	private final RemoteInfo clientRemoteInfo;
 	private final RemoteInfo executerRemoteInfo;
 	private final T[] items;
 	
-	public Chunk(final RemoteInfo clientInfo,final RemoteInfo executerInfo, final T[] items) {
-		super();
+	public Chunk(long id,final RemoteInfo clientInfo,final RemoteInfo executerInfo, final T[] items) {
+		super(id);
 		this.clientRemoteInfo = clientInfo;
 		this.executerRemoteInfo=executerInfo;
 		this.items = items;
@@ -29,7 +27,9 @@ public class Chunk<T extends Item> implements WorkItem,Serializable{
 		return items;
 	}	
 	public String toString(){
-	return "chunk:"+items.length;
+	String $="chunk:"+getId()+"ItemsSize="+items.length;
+		for (Item i:items)$+=i.toString();
+	return $;
 	}
 	
 }
