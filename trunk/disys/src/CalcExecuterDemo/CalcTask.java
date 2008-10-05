@@ -10,4 +10,8 @@ public class CalcTask extends Item{
 	}
 	public int x;
 	public int y;
+	
+	public String toString(){
+	return "CalcTask: id:"+this.getId()+" x="+x+" y="+y;
+	}
 }

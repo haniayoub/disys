@@ -7,19 +7,19 @@ import Common.Item;
 import Common.RemoteItem;
 import WorkersSystem.WorkER.AWorker;
 
-public class ChunkBreaker extends AWorker<Chunk<? extends Item>,RemoteItem<? extends Item>> {
+public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteItem<ITEM>> {
 
-	public ChunkBreaker(BlockingQueue<Chunk<? extends Item>> wi, BlockingQueue<RemoteItem<? extends Item>> rq) {
+	public ChunkBreaker(BlockingQueue<Chunk<ITEM>> wi, BlockingQueue<RemoteItem<ITEM>> rq) {
 		super(wi, rq);
 		// TODO Auto-generated constructor stub
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public RemoteItem<? extends Item> doItem(Chunk<? extends Item> task) {
-		Item[] items=task.getItems();
+	public RemoteItem<ITEM> doItem(Chunk<ITEM> chunk) {
+		Item[] items=chunk.getItems();
 		for(Item item:items){
-			RemoteItem ri=new  RemoteItem(item,task.getClientRemoteInfo());
+			RemoteItem ri=new  RemoteItem(item,chunk.getClientRemoteInfo());
 			this.Results.add(ri);
 		}
 		return null;
