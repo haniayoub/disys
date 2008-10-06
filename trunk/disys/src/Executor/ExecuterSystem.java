@@ -30,6 +30,7 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 	public ExecuterSystem(E executer,int numerOfWorkers) {
 		super();
 		try {
+			
 			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(0,recievedChunks);
 		} catch (RemoteException e) {
 			System.out.println("Error intializing Remote Chunk Reciever :"+e.toString());

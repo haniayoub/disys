@@ -1,9 +1,7 @@
 package Common;
 
-import WorkersSystem.WorkER.WorkItem;
-
 @SuppressWarnings("serial")
-public class Chunk<T extends Item> extends Item implements WorkItem{
+public class Chunk<T extends Item> extends Item{
 
 	private final RemoteInfo clientRemoteInfo;
 	private final RemoteInfo executerRemoteInfo;

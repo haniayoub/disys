@@ -1,14 +1,13 @@
 package Common;
 
-import WorkersSystem.WorkER.WorkItem;
-
-public class RemoteItem<T extends Item> implements WorkItem {
+@SuppressWarnings("serial")
+public class RemoteItem<T extends Item> extends Item {
 private RemoteInfo remoteInfo;
 private T Item;
-public RemoteItem( T task,RemoteInfo remoteInfo) {
-	super();
+public RemoteItem( T item,RemoteInfo remoteInfo) {
+	super(item.getId());
 	this.remoteInfo = remoteInfo;
-	Item = task;
+	Item = item;
 }
 public RemoteInfo getRemoteInfo() {
 	return remoteInfo;

@@ -2,6 +2,8 @@ package WorkersSystem.WorkER;
 
 import java.util.LinkedList;
 
+import Common.Item;
+
 public class WorkerSystem {
 
 	LinkedList<WorkerCollection> Workers;
@@ -10,7 +12,7 @@ public class WorkerSystem {
 		Workers=new LinkedList<WorkerCollection>();
 	}
 	
-	public synchronized void add(AWorker<? extends WorkItem,? extends WorkItem> w,int numOfWorkers) {
+	public synchronized void add(AWorker<? extends Item,? extends Item> w,int numOfWorkers) {
 		WorkerCollection wc=new WorkerCollection(w,numOfWorkers);
 		Workers.add(wc);
 		if(started) wc.startWorking();
