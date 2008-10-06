@@ -3,7 +3,7 @@ package CalcExecuterDemo;
 import Common.Item;
 
 @SuppressWarnings("serial")
-class CalcResult extends Item{
+public class CalcResult extends Item{
 	public CalcResult(final long id) {
 		super(id);
 		// TODO Auto-generated constructor stub

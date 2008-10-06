@@ -9,9 +9,6 @@ public abstract class AWorker<T extends Item,R extends Item> implements Runnable
 	public BlockingQueue<T> WorkItems;
 	public BlockingQueue<R> Results;
 	private boolean stop=false;
-	public AWorker(){
-		
-	}
 	public AWorker(BlockingQueue<T> wi,BlockingQueue<R> rq){
 	WorkItems=wi;
 	Results=rq;
