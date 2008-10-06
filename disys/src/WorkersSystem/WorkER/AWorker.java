@@ -1,8 +1,10 @@
 package WorkersSystem.WorkER;
 import java.util.concurrent.BlockingQueue;
 
+import Common.Item;
 
-public abstract class AWorker<T extends WorkItem,R extends WorkItem> implements Runnable , Cloneable{
+
+public abstract class AWorker<T extends Item,R extends Item> implements Runnable , Cloneable{
 
 	public BlockingQueue<T> WorkItems;
 	public BlockingQueue<R> Results;

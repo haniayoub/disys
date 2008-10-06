@@ -3,19 +3,21 @@ package WorkersSystem.WorkER;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 
+import Common.Item;
+
 
 
 public class WorkerCollection {
 	WorkerFactory workerFactory;
-	LinkedList<AWorker<? extends WorkItem,? extends WorkItem>> WorkersList;
+	LinkedList<AWorker<? extends Item,? extends Item>> WorkersList;
 	LinkedList<Thread> Threads;
 	@SuppressWarnings("unchecked")
-	public WorkerCollection(AWorker<? extends WorkItem,? extends WorkItem> w,int numOfWorkers){
+	public WorkerCollection(AWorker<? extends Item,? extends Item> w,int numOfWorkers){
 	workerFactory=new WorkerFactory(w);
-	WorkersList=new LinkedList<AWorker<? extends WorkItem,? extends WorkItem>>();
+	WorkersList=new LinkedList<AWorker<? extends Item,? extends Item>>();
 	Threads=new LinkedList<Thread>();
 	for(int i=0;i<numOfWorkers;i++){
-		AWorker<? extends WorkItem, ? extends WorkItem> worker;
+		AWorker<? extends Item, ? extends Item> worker;
 		try {
 			worker = workerFactory.newWorker();
 		} catch (CloneNotSupportedException e) {
@@ -32,7 +34,7 @@ public class WorkerCollection {
 	
 	
 	public void stopWorking(){
-		for(AWorker<? extends WorkItem,? extends WorkItem> worker:WorkersList) {
+		for(AWorker<? extends Item,? extends Item> worker:WorkersList) {
 			worker.halt();
 		}
 		for(Thread workerThread:Threads)
@@ -45,11 +47,11 @@ public class WorkerCollection {
 		System.out.println("all workers stoped working");
 	}
 	
-	public BlockingQueue<? extends WorkItem> TaskQueue(){
+	public BlockingQueue<? extends Item> TaskQueue(){
 		return workerFactory.MotherWorker.WorkItems;
 	}
 	
-	public BlockingQueue<? extends WorkItem> ResultQueue(){
+	public BlockingQueue<? extends Item> ResultQueue(){
 		return workerFactory.MotherWorker.Results;
 	}
 

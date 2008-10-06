@@ -15,7 +15,7 @@ public class Main {
 		LinkedBlockingQueue<TestTask> tasks=new LinkedBlockingQueue<TestTask>();
 		LinkedBlockingQueue<TestResult> results=new LinkedBlockingQueue<TestResult>();
 		for (int i=0;i<1000;i++){
-		TestTask t=new TestTask();
+		TestTask t=new TestTask(i);
 		t.x=i;
 		t.y=i;
 		tasks.add(t);

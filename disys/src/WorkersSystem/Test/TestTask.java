@@ -1,8 +1,14 @@
 package WorkersSystem.Test;
 
-import WorkersSystem.WorkER.WorkItem;
+import Common.Item;
 
-public class TestTask implements WorkItem{
+
+@SuppressWarnings("serial")
+public class TestTask extends Item{
+	public TestTask(final long id) {
+		super(id);
+		// TODO Auto-generated constructor stub
+	}
 	public int x;
 	public int y;
 }

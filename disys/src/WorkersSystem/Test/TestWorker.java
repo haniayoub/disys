@@ -9,7 +9,7 @@ public class TestWorker extends AWorker<TestTask,TestResult> {
 	}
 	@Override
 	public TestResult doItem(TestTask task) {
-		TestResult r=new TestResult();
+		TestResult r=new TestResult(task.getId());
 		System.out.println("$$$$ "+ task.y+"+"+task.x);
 		r.result=task.y+task.x;
 		return r;

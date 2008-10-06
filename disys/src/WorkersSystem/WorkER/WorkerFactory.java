@@ -1,13 +1,15 @@
 package WorkersSystem.WorkER;
 
+import Common.Item;
+
 
 
 public class WorkerFactory {
-	AWorker<? extends WorkItem,? extends WorkItem> MotherWorker;
-	public WorkerFactory(AWorker<? extends WorkItem,? extends WorkItem> w){
+	AWorker<? extends Item,? extends Item> MotherWorker;
+	public WorkerFactory(AWorker<? extends Item,? extends Item> w){
 		MotherWorker=w;
 	}
-	public AWorker<? extends WorkItem,? extends WorkItem> newWorker() throws CloneNotSupportedException {
+	public AWorker<? extends Item,? extends Item> newWorker() throws CloneNotSupportedException {
 		return MotherWorker.clone();
 	}
 }
