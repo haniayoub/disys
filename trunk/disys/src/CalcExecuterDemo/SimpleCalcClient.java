@@ -1,4 +1,4 @@
-package Client;
+package CalcExecuterDemo;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
