@@ -26,12 +26,8 @@ public class Chunk<T extends Item> extends Item{
 	}	
 	public String toString(){
 	String $="chunk:"+getId()+"ItemsSize="+items.length;
-	if(items!=null)
-		for (Item i:items){
-			if (i==null)$+="Somthing wrong Null item "; 
-			else $+=i.toString();
-		}
-	else $+="Somthing is wrong Chunk has no items!";
+	for (Item i:items)
+			 $+=i.toString();
 	return $;
 	}
 	
