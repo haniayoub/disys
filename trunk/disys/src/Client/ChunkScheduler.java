@@ -14,13 +14,13 @@ import SystemManager.ISystemManager;
 import WorkersSystem.WorkER.AWorker;
 
 public class ChunkScheduler<TASK extends Item> extends AWorker<Chunk<TASK>,Chunk<TASK>>  {
-	private ISystemManager<Chunk<? extends Item>> sysManager;
+	private ISystemManager<TASK> sysManager;
 
 	@SuppressWarnings("unchecked")
 	public ChunkScheduler(RemoteInfo systemManagerRemoteInfo,BlockingQueue<Chunk<TASK>> taskChunks, BlockingQueue<Chunk<TASK>> taskChunks2) {
 		super(taskChunks, taskChunks2);
 		try {
-			sysManager = (ISystemManager<Chunk<? extends Item>>) 
+			sysManager = (ISystemManager<TASK>) 
 				    Naming.lookup(systemManagerRemoteInfo.GetRmiAddress());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block

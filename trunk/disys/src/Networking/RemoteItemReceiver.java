@@ -8,17 +8,21 @@ import java.util.concurrent.BlockingQueue;
 import Common.Item;
 
 public class RemoteItemReceiver<ITEM extends Item> extends UnicastRemoteObject implements IRemoteItemReceiver<ITEM> {
+	static final String GlobalId="itemReciever";
 
 	BlockingQueue<ITEM> recievedItems;
+	private String localId;
+	private int port;
 	private static final long serialVersionUID = -3040410137934057567L;
 	
 		public RemoteItemReceiver(long id,BlockingQueue<ITEM> itemsQueue) throws RemoteException {
 			super();
+			localId=GlobalId+id;
 			try {
 				// if (System.getSecurityManager() == null)
 			     //      System.setSecurityManager ( new RMISecurityManager() );
-				 int port=Common.createRegistry();
-				 Naming.bind ("//:"+port+"/itemReciever"+id, this);
+				 port=Common.createRegistry();
+				 Naming.bind ("//:"+port+"/"+localId, this);
 
 			} catch (Exception e) {
 				
@@ -32,6 +36,12 @@ public class RemoteItemReceiver<ITEM extends Item> extends UnicastRemoteObject i
 				System.exit(1);
 			}
 			recievedItems=itemsQueue;
+		}
+	   public String getLocalId() {
+			return localId;
+		}
+	   public int getPort() {
+			return port;
 		}
 	@Override
 	public void Add(ITEM item) throws RemoteException {

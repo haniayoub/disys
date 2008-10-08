@@ -23,9 +23,9 @@ public class ClientSystem<TASK extends Item,RESULT extends Item> {
 	ChunkScheduler<TASK> chunkScheduler;
 
 	
-	public ClientSystem(String SysManagerAddress,int port) {
+	public ClientSystem(String SysManagerAddress,int sysManagerport) {
 		super();
-		RemoteSysManagerInfo=new RemoteInfo(SysManagerAddress,port,"systemManager0");
+		RemoteSysManagerInfo=new RemoteInfo(SysManagerAddress,sysManagerport,"systemManager0");
 		chunkScheduler=new ChunkScheduler<TASK>(RemoteSysManagerInfo,taskChunks,taskChunks);
 		ws.add(chunkCreatorWorker,1);
 		//ws.add(itemPrinterWorker, 1);
