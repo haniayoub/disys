@@ -24,6 +24,9 @@ public class Chunk<T extends Item> extends Item{
 	public T[] getItems() {
 		return items;
 	}	
+	public int numberOfItems() {
+		return items.length;
+	}
 	public String toString(){
 	String $="chunk:"+getId()+"ItemsSize="+items.length;
 	for (Item i:items)
