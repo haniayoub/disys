@@ -21,7 +21,7 @@ public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 	@Override
 	public Chunk<ITEM> doItem(ITEM task) {
 		chunkItems.add(task);
-		if(this.WorkItems.isEmpty()){
+		if(this.WorkItems.isEmpty()&&chunkItems.size()<MAX_CHUNK_SIZE){
 		// give a second chance to other Threads to write.
 		Thread.yield();
 		if(!this.WorkItems.isEmpty()) return null;
