@@ -21,6 +21,11 @@ public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 	@Override
 	public Chunk<ITEM> doItem(ITEM task) {
 		chunkItems.add(task);
+		if(this.WorkItems.isEmpty()){
+		// give a second chance to other Threads to write.
+		Thread.yield();
+		if(!this.WorkItems.isEmpty()) return null;
+		}
 		if(this.WorkItems.isEmpty()||chunkItems.size()==MAX_CHUNK_SIZE){
 			Chunk<ITEM> chunk=		(Chunk<ITEM>) CreateChunk();
 			return chunk;
@@ -34,6 +39,7 @@ public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 		for(int i=0;i<size ;i++){
 		items[i]=chunkItems.poll();
 		}
+		System.out.println("Chunk Created :"+size);
 		return new Chunk<Item>(0,null,null,items);
 	}
 

@@ -3,17 +3,20 @@ package Common;
 @SuppressWarnings("serial")
 public class RemoteItem<T extends Item> extends Item {
 private RemoteInfo remoteInfo;
-private T Item;
+private T item;
 public RemoteItem( T item,RemoteInfo remoteInfo) {
 	super(item.getId());
 	this.remoteInfo = remoteInfo;
-	Item = item;
+	this.item = item;
 }
 public RemoteInfo getRemoteInfo() {
 	return remoteInfo;
 }
 
 public T getItem() {
-	return Item;
+	return item;
+}
+public String toString(){
+	return item.toString();
 }
 }

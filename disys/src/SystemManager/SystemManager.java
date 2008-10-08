@@ -29,12 +29,12 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 			e.printStackTrace();
 			System.exit(1);
 		}
-		executerList.add(new RemoteInfo("LocalHost",3000,"itemReciever0"));
+		executerList.add(new RemoteInfo("LocalHost",3001,"itemReciever0"));
 	}
 
 	@Override
 	public RemoteInfo Schedule(int numberOfTask) throws RemoteException {
-		// TODO Auto-generated method stub
+		System.out.println("ASk for Schedule Tasks num "+numberOfTask+" executer:"+executerList.peek().GetRmiAddress());
 		return executerList.peek();
 	}
 	
@@ -47,6 +47,7 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 		new SystemManager<CalcTask>(0);
 		System.out.print("SystemManager is online");
 		System.console().readLine();
+		System.out.print("SystemManager Done!");
 	}
 
 	
