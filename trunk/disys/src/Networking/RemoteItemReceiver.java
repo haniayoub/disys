@@ -15,9 +15,9 @@ public class RemoteItemReceiver<ITEM extends Item> extends UnicastRemoteObject i
 	private int port;
 	private static final long serialVersionUID = -3040410137934057567L;
 	
-		public RemoteItemReceiver(long id,BlockingQueue<ITEM> itemsQueue) throws RemoteException {
+		public RemoteItemReceiver(BlockingQueue<ITEM> itemsQueue) throws RemoteException {
 			super();
-			localId=GlobalId+id;
+			localId=GlobalId;
 			try {
 				// if (System.getSecurityManager() == null)
 			     //      System.setSecurityManager ( new RMISecurityManager() );

@@ -3,6 +3,8 @@ package Client;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import SystemManager.SystemManager;
+import UI.SystemPanel;
 import WorkersSystem.WorkER.WorkerSystem;
 import Common.Chunk;
 import Common.Item;
@@ -25,7 +27,7 @@ public class ClientSystem<TASK extends Item,RESULT extends Item> {
 	
 	public ClientSystem(String SysManagerAddress,int sysManagerport) {
 		super();
-		RemoteSysManagerInfo=new RemoteInfo(SysManagerAddress,sysManagerport,"systemManager0");
+		RemoteSysManagerInfo=new RemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
 		chunkScheduler=new ChunkScheduler<TASK>(RemoteSysManagerInfo,taskChunks,taskChunks);
 		ws.add(chunkCreatorWorker,1);
 		//ws.add(itemPrinterWorker, 1);

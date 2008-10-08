@@ -13,17 +13,18 @@ import Common.RemoteInfo;
 
 @SuppressWarnings("serial")
 public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implements ISystemManager<ITEM> {
+	public static final String GlobalID="SystemManager";
 	
 	private LinkedList<RemoteInfo> executerList=new LinkedList<RemoteInfo>();
-
+   
 	private int next=0;
-	public SystemManager(int id) throws RemoteException {
+	public SystemManager() throws RemoteException {
 		super();
 		try {
 			 // if (System.getSecurityManager() == null)
 		     //      System.setSecurityManager ( new RMISecurityManager() );
 			 int port=Networking.Common.createRegistry();
-			 Naming.bind ("//:"+port+"/systemManager"+id, this);
+			 Naming.bind ("//:"+port+"/"+GlobalID, this);
 		} catch (Exception e) {
 			
 			System.out.println("Failed to Bind : "
@@ -73,8 +74,8 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 	 */
 	public static void main(String[] args) throws RemoteException {
 
-		new SystemManager<CalcTask>(0);
-		System.out.print("SystemManager is online");
+		new SystemManager<CalcTask>();
+		System.out.println("SystemManager is online");
 		System.console().readLine();
 		System.out.print("SystemManager Done!");
 	}
