@@ -1,16 +1,14 @@
 package UI;
 
 import java.awt.Dimension;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-
-import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListModel;
+import javax.swing.border.BevelBorder;
 
 
 /**
@@ -25,6 +23,7 @@ import javax.swing.ListModel;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+@SuppressWarnings("serial")
 public class ExecutersPanel extends javax.swing.JPanel {
 
 	{
@@ -46,7 +45,6 @@ public class ExecutersPanel extends javax.swing.JPanel {
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
-	*/
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(new ExecutersPanel());
@@ -54,6 +52,7 @@ public class ExecutersPanel extends javax.swing.JPanel {
 		frame.pack();
 		frame.setVisible(true);
 	}
+	*/
 	
 	public ExecutersPanel() {
 		super();

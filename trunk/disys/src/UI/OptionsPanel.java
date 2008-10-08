@@ -1,9 +1,5 @@
 package UI;
 
-import java.awt.Dimension;
-
-import javax.swing.WindowConstants;
-import javax.swing.JFrame;
 
 
 /**
@@ -18,12 +14,13 @@ import javax.swing.JFrame;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+@SuppressWarnings("serial")
 public class OptionsPanel extends javax.swing.JPanel {
 
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
-	*/
+	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(new OptionsPanel());
@@ -31,7 +28,8 @@ public class OptionsPanel extends javax.swing.JPanel {
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+		*/
+
 	public OptionsPanel() {
 		super();
 		initGUI();

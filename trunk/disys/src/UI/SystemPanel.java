@@ -1,10 +1,6 @@
 package UI;
 
-import java.awt.Dimension;
 import javax.swing.JButton;
-
-import javax.swing.WindowConstants;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /**
@@ -19,6 +15,7 @@ import javax.swing.JLabel;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+@SuppressWarnings("serial")
 public class SystemPanel extends javax.swing.JPanel {
 	private JLabel Label1;
 	private JLabel jLabel2;
@@ -36,7 +33,7 @@ public class SystemPanel extends javax.swing.JPanel {
 	/**
 	* Auto-generated main method to display this 
 	* JPanel inside a new JFrame.
-	*/
+	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(new SystemPanel());
@@ -44,6 +41,7 @@ public class SystemPanel extends javax.swing.JPanel {
 		frame.pack();
 		frame.setVisible(true);
 	}
+	*/
 	
 	public SystemPanel() {
 		super();
