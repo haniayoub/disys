@@ -4,7 +4,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import SystemManager.SystemManager;
-import UI.SystemPanel;
 import WorkersSystem.WorkER.WorkerSystem;
 import Common.Chunk;
 import Common.Item;
@@ -21,7 +20,6 @@ public class ClientSystem<TASK extends Item,RESULT extends Item> {
 		new LinkedBlockingQueue<Chunk<TASK>>();
 	WorkerSystem ws=new WorkerSystem();
 	ChunkCreator<TASK> chunkCreatorWorker=new ChunkCreator<TASK>(tasks,taskChunks,1000); 
-	//ItemPrinter<Chunk<TASK>> itemPrinterWorker=new ItemPrinter<Chunk<TASK>>(taskChunks,null);
 	ChunkScheduler<TASK> chunkScheduler;
 
 	
@@ -30,8 +28,12 @@ public class ClientSystem<TASK extends Item,RESULT extends Item> {
 		RemoteSysManagerInfo=new RemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
 		chunkScheduler=new ChunkScheduler<TASK>(RemoteSysManagerInfo,taskChunks,taskChunks);
 		ws.add(chunkCreatorWorker,1);
-		//ws.add(itemPrinterWorker, 1);
 		ws.add(chunkScheduler,1);
-		ws.startWork();
+	}
+	public void Start(){
+		ws.startWork();	
+	}
+	public void Stop(){
+		ws.stopWork();	
 	}
 	}
