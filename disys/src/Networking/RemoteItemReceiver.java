@@ -26,9 +26,6 @@ public class RemoteItemReceiver<ITEM extends Item> extends UnicastRemoteObject i
 
 			} catch (Exception e) {
 				
-				//Naming.rebind("ChunkReciever"+id, this);
-				
-			
 				System.out.println("Failed to Bind : "
 						+ e.getMessage());
 				System.out.println("Exiting.");

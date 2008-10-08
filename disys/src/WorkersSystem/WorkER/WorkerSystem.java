@@ -27,11 +27,4 @@ public class WorkerSystem {
 		for(WorkerCollection wc:Workers) wc.stopWorking();
 		started=false;
 	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-	}
-
 }
