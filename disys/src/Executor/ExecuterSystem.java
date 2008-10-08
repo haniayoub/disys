@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import Networking.RemoteItemReceiver;
 import SystemManager.ISystemManager;
+import SystemManager.SystemManager;
 import WorkersSystem.WorkER.WorkerSystem;
 
 import Common.Chunk;
@@ -40,11 +41,10 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 	@SuppressWarnings("unchecked")
 	public ExecuterSystem(E executer,int numerOfWorkers,String SysManagerAddress,int sysManagerport) {
 		super();
-		int id=0;
-		systemManagerRemoteInfo=new RemoteInfo(SysManagerAddress,sysManagerport,"systemManager0");
+		systemManagerRemoteInfo=new RemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
 		try {
 			
-			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(id,recievedChunks);
+			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks);
 		} catch (RemoteException e) {
 			System.out.println("Error intializing Remote Chunk Reciever :"+e.toString());
 			e.printStackTrace();
