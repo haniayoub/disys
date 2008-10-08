@@ -2,7 +2,6 @@ package UI;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -19,7 +18,8 @@ import javax.swing.SwingUtilities;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class SystemManager extends javax.swing.JDialog {
+@SuppressWarnings("serial")
+public class SystemManagerUI extends javax.swing.JDialog {
 	private JTabbedPane TabbedPanel;
 
 	{
@@ -38,13 +38,13 @@ public class SystemManager extends javax.swing.JDialog {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				JFrame frame = new JFrame();
-				SystemManager inst = new SystemManager(frame);
+				SystemManagerUI inst = new SystemManagerUI(frame);
 				inst.setVisible(true);
 			}
 		});
 	}
 	
-	public SystemManager(JFrame frame) {
+	public SystemManagerUI(JFrame frame) {
 		super(frame);
 		initGUI();
 	}
