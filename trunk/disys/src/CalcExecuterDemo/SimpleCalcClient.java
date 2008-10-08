@@ -21,11 +21,13 @@ public class SimpleCalcClient {
 	static Random generator = new Random( 19580427 );
 	public static void main(String[] args) throws InterruptedException {
 	ClientSystem<CalcTask, CalcResult> cs=new ClientSystem<CalcTask, CalcResult>("LocalHost",3000);
+	cs.Start();
 	for(int i=0;i<5392;i++) cs.tasks.add(CreateRandomTask());
 	Thread.sleep(1000);
 	for(int i=0;i<1420;i++) cs.tasks.add(CreateRandomTask());
 	
 	Thread.sleep(10000);
+	cs.Stop();
 	System.out.println("Client Done!");
 	}
 	private static CalcTask CreateRandomTask(){
@@ -35,7 +37,7 @@ public class SimpleCalcClient {
 			ct.y=generator.nextInt(1000);
 		return ct;
 		}
-
+	
 	/*@SuppressWarnings("unchecked")
 	public static void main(String[] args){
 		 // Assign security manager
