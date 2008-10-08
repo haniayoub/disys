@@ -2,6 +2,8 @@ package SystemManager;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.server.RemoteServer;
+import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 
@@ -14,6 +16,7 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 	
 	private LinkedList<RemoteInfo> executerList=new LinkedList<RemoteInfo>();
 
+	private int next=0;
 	public SystemManager(int id) throws RemoteException {
 		super();
 		try {
@@ -29,15 +32,41 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 			e.printStackTrace();
 			System.exit(1);
 		}
-		executerList.add(new RemoteInfo("LocalHost",3001,"itemReciever0"));
+	//	executerList.add(new RemoteInfo("LocalHost",3001,"itemReciever0"));
 	}
 
 	@Override
 	public RemoteInfo Schedule(int numberOfTask) throws RemoteException {
-		System.out.println("ASk for Schedule Tasks num "+numberOfTask+" executer:"+executerList.peek().GetRmiAddress());
-		return executerList.peek();
+		if(executerList.isEmpty())return null;
+		try {
+			
+			System.out.println(RemoteServer.getClientHost()+" Whant to do "+numberOfTask+" Tasks");
+		} catch (ServerNotActiveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(next>executerList.size()-1)next=0; //scheduling is round robin basis
+		RemoteInfo remoteInfo=executerList.get(next++);
+		System.out.println("Scheduling executer:"+remoteInfo.GetRmiAddress());
+		return remoteInfo;
 	}
-	
+
+	@Override
+	public void addExecuter(String id, int port) throws RemoteException {
+		String address;
+		try {
+			address = RemoteServer.getClientHost();
+		} catch (ServerNotActiveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Cant add the executer address couldn't be resolved!");
+			return ;
+		}
+		RemoteInfo remoteInfo=new RemoteInfo(address,port,id); 
+		executerList.add(remoteInfo);
+		System.out.println("new Executer added:"+remoteInfo.GetRmiAddress());
+	}
+
 	/**
 	 * @param args
 	 * @throws RemoteException 
@@ -49,6 +78,7 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 		System.console().readLine();
 		System.out.print("SystemManager Done!");
 	}
+
 
 	
 

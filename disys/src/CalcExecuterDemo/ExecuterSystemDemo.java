@@ -8,7 +8,7 @@ public class ExecuterSystemDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws InterruptedException {
-	ExecuterSystem<CalcTask,CalcResult,Calculator> es=new ExecuterSystem<CalcTask,CalcResult,Calculator>(new Calculator(), 5); 
+	ExecuterSystem<CalcTask,CalcResult,Calculator> es=new ExecuterSystem<CalcTask,CalcResult,Calculator>(new Calculator(), 5,"localhost",3000); 
 	System.out.println("Executer Started !");
 	es.Run(args);
 	//Thread.sleep(100000);
