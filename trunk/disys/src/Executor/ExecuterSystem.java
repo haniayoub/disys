@@ -10,6 +10,7 @@ import WorkersSystem.WorkER.WorkerSystem;
 import Common.Chunk;
 import Common.IExecutor;
 import Common.Item;
+import Common.ItemPrinter;
 import Common.RemoteItem;
 
 public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
@@ -22,6 +23,7 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 	
 	private TaskExecuter<TASK,RESULT,E> taskExecuter;
 	private ChunkBreaker<TASK> chunkBreaker;
+	private ItemPrinter<RemoteItem<RESULT>> resultPrinter=new ItemPrinter<RemoteItem<RESULT>>(results,null);
 	@SuppressWarnings("unused")
 	private RemoteItemReceiver<Chunk<TASK>> chunkReceiver;
 	private int numerOfExecuters;
@@ -41,6 +43,7 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 		this.numerOfExecuters= numerOfWorkers;
 		ws.add(taskExecuter,numerOfExecuters);
 		ws.add(chunkBreaker,1);
+		ws.add(resultPrinter,1);
 	}
 
 	/**
@@ -48,6 +51,10 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 	 */
 	public void Run(String[] args) {
 		 ws.startWork();
+	}
+	
+	public void Exit() {
+		 ws.stopWork();
 	}
 
 }

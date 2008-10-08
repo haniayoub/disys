@@ -1,16 +1,42 @@
 package CalcExecuterDemo;
 
+
+import java.util.Random;
+
+import Client.ClientSystem;
+/*
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
-import java.util.Random;
 import Common.Chunk;
 import Networking.IRemoteItemReceiver;
-
+*/
 public class SimpleCalcClient {
-	@SuppressWarnings("unchecked")
+	/**
+	 * @param args
+	 * @throws InterruptedException 
+	 */
+	static Random generator = new Random( 19580427 );
+	public static void main(String[] args) throws InterruptedException {
+	ClientSystem<CalcTask, CalcResult> cs=new ClientSystem<CalcTask, CalcResult>("LocalHost",3000);
+	for(int i=0;i<5392;i++) cs.tasks.add(CreateRandomTask());
+	Thread.sleep(1000);
+	for(int i=0;i<1420;i++) cs.tasks.add(CreateRandomTask());
+	
+	Thread.sleep(10000);
+	System.out.println("Client Done!");
+	}
+	private static CalcTask CreateRandomTask(){
+		
+		final CalcTask ct=new CalcTask(generator.nextInt(1000));
+			ct.x=generator.nextInt(1000);
+			ct.y=generator.nextInt(1000);
+		return ct;
+		}
+
+	/*@SuppressWarnings("unchecked")
 	public static void main(String[] args){
 		 // Assign security manager
 	    //if (System.getSecurityManager() == null)
@@ -64,7 +90,7 @@ public class SimpleCalcClient {
 	}
 	final Chunk<CalcTask> chunk=new Chunk<CalcTask>(10,null,null,array);
 	return chunk;
-	}
+	}*/
 	
 	
 }

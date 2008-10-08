@@ -14,7 +14,7 @@ public abstract class AWorker<T extends Item,R extends Item> implements Runnable
 	Results=rq;
 	}
 	public void RunWorker(){
-		System.out.println("Running new Worker : "+WorkItems.size());
+		//System.out.println("Running new Worker : "+WorkItems.size());
 		while(!stop){
 			R res;
 			T task;

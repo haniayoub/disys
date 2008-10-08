@@ -1,6 +1,5 @@
 package CalcExecuterDemo;
 
-import Common.RemoteItem;
 import Executor.ExecuterSystem;
 
 public class ExecuterSystemDemo {
@@ -12,11 +11,10 @@ public class ExecuterSystemDemo {
 	ExecuterSystem<CalcTask,CalcResult,Calculator> es=new ExecuterSystem<CalcTask,CalcResult,Calculator>(new Calculator(), 5); 
 	System.out.println("Executer Started !");
 	es.Run(args);
-	Thread.sleep(10000);
-	for (RemoteItem<CalcResult> ri:es.results){
-	System.out.println(ri.getItem().toString());
-	}
-	}
+	//Thread.sleep(100000);
+	System.console().readLine();
+	es.Exit();
+	System.out.println("executer Done");
 	
-
+	}
 }
