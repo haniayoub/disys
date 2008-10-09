@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 
 import Common.Chunk;
+import Common.ClientRemoteInfo;
 import Common.Item;
 import WorkersSystem.WorkER.AWorker;
 
@@ -11,10 +12,12 @@ import WorkersSystem.WorkER.AWorker;
 public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 
 	private int MAX_CHUNK_SIZE;
+	ClientRemoteInfo myRemoteInfo;
 	LinkedList<Item> chunkItems=new LinkedList<Item>();
-	public ChunkCreator(BlockingQueue<ITEM> wi, BlockingQueue<Chunk<ITEM>> rq,int max_chunk_size) {
+	public ChunkCreator(BlockingQueue<ITEM> wi, BlockingQueue<Chunk<ITEM>> rq,ClientRemoteInfo myRemoteInfo,int max_chunk_size) {
 		super(wi, rq);
 		MAX_CHUNK_SIZE = max_chunk_size;
+		this.myRemoteInfo=myRemoteInfo;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -40,7 +43,7 @@ public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 		items[i]=chunkItems.poll();
 		}
 		System.out.println("Chunk Created :"+size);
-		return new Chunk<Item>(0,null,null,items);
+		return new Chunk<Item>(0,myRemoteInfo,null,items);
 	}
 
 }

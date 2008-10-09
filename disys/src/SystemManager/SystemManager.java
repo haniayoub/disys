@@ -8,16 +8,21 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 
 import CalcExecuterDemo.CalcTask;
+import Common.ClientRemoteInfo;
 import Common.Item;
-import Common.RemoteInfo;
+import Common.RMIRemoteInfo;
 
 @SuppressWarnings("serial")
 public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implements ISystemManager<ITEM> {
 	public static final String GlobalID="SystemManager";
+
+	private static final int MAX_ID =10000;
 	
-	private LinkedList<RemoteInfo> executerList=new LinkedList<RemoteInfo>();
+	private LinkedList<RMIRemoteInfo> executerList=new LinkedList<RMIRemoteInfo>();
    
-	private int next=0;
+	private int nextExecuter=0;
+	private int nextId=0;
+	
 	public SystemManager() throws RemoteException {
 		super();
 		try {
@@ -37,7 +42,7 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 	}
 
 	@Override
-	public RemoteInfo Schedule(int numberOfTask) throws RemoteException {
+	public RMIRemoteInfo Schedule(int numberOfTask) throws RemoteException {
 		if(executerList.isEmpty())return null;
 		try {
 			
@@ -46,8 +51,8 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(next>executerList.size()-1)next=0; //scheduling is round robin basis
-		RemoteInfo remoteInfo=executerList.get(next++);
+		if(nextExecuter>executerList.size()-1)nextExecuter=0; //scheduling is round robin basis
+		RMIRemoteInfo remoteInfo=executerList.get(nextExecuter++);
 		System.out.println("Scheduling executer:"+remoteInfo.GetRmiAddress());
 		return remoteInfo;
 	}
@@ -63,9 +68,27 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 			System.out.println("Cant add the executer address couldn't be resolved!");
 			return ;
 		}
-		RemoteInfo remoteInfo=new RemoteInfo(address,port,id); 
+		RMIRemoteInfo remoteInfo=new RMIRemoteInfo(address,port,id); 
 		executerList.add(remoteInfo);
 		System.out.println("new Executer added:"+remoteInfo.GetRmiAddress());
+	}
+	@Override
+	public ClientRemoteInfo AssignClientRemoteInfo() throws RemoteException {
+		String address;
+		try {
+			address = RemoteServer.getClientHost();
+		} catch (ServerNotActiveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Cant add the executer address couldn't be resolved!");
+			return null;
+		}
+		ClientRemoteInfo remoteInfo=new ClientRemoteInfo(address,GetNextId()); 
+		return remoteInfo;
+	}
+	private long GetNextId() {
+		if(nextId>MAX_ID)nextId=0;
+		return nextId++;
 	}
 
 	/**
@@ -79,6 +102,8 @@ public class SystemManager<ITEM extends Item> extends UnicastRemoteObject implem
 		System.console().readLine();
 		System.out.print("SystemManager Done!");
 	}
+
+	
 
 
 	
