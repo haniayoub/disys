@@ -3,18 +3,18 @@ package Common;
 @SuppressWarnings("serial")
 public class Chunk<T extends Item> extends Item{
 
-	private final RemoteInfo clientRemoteInfo;
+	private final ClientRemoteInfo clientRemoteInfo;
 	private final RemoteInfo executerRemoteInfo;
 	private final T[] items;
 	
-	public Chunk(long id,final RemoteInfo clientInfo,final RemoteInfo executerInfo, final T[] items) {
+	public Chunk(long id,final ClientRemoteInfo clientInfo,final RemoteInfo executerInfo, final T[] items) {
 		super(id);
 		this.clientRemoteInfo = clientInfo;
 		this.executerRemoteInfo=executerInfo;
 		this.items = items;
 	}
 
-	public RemoteInfo getClientRemoteInfo() {
+	public ClientRemoteInfo getClientRemoteInfo() {
 		return clientRemoteInfo;
 	}
 

@@ -7,17 +7,16 @@ import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import Networking.RemoteItemReceiver;
-import SystemManager.ISystemManager;
-import SystemManager.SystemManager;
-import WorkersSystem.WorkER.WorkerSystem;
-
 import Common.Chunk;
 import Common.IExecutor;
 import Common.Item;
 import Common.ItemPrinter;
-import Common.RemoteInfo;
+import Common.RMIRemoteInfo;
 import Common.RemoteItem;
+import Networking.RemoteItemReceiver;
+import SystemManager.ISystemManager;
+import SystemManager.SystemManager;
+import WorkersSystem.WorkER.WorkerSystem;
 
 public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
 	public BlockingQueue<RemoteItem<TASK>> tasks = 
@@ -37,11 +36,11 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 	private int numerOfExecuters;
 	
 	WorkerSystem ws=new WorkerSystem();
-	RemoteInfo systemManagerRemoteInfo;
+	RMIRemoteInfo systemManagerRemoteInfo;
 	@SuppressWarnings("unchecked")
 	public ExecuterSystem(E executer,int numerOfWorkers,String SysManagerAddress,int sysManagerport) {
 		super();
-		systemManagerRemoteInfo=new RemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
+		systemManagerRemoteInfo=new RMIRemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
 		try {
 			
 			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks);
@@ -50,6 +49,7 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 			e.printStackTrace();
 		}
 		
+		//////////////////////////Fire Wall problematic !!!!
 		try {
 			sysManager = (ISystemManager<TASK>) 
 				    Naming.lookup(systemManagerRemoteInfo.GetRmiAddress());
@@ -63,6 +63,7 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		if(sysManager!=null){
 		try {
 			sysManager.addExecuter(chunkReceiver.getLocalId(), chunkReceiver.getPort());
@@ -72,6 +73,8 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 			System.out.println("Couldn't add Executer to System Manager");
 		}
 		}
+		///////////////////////////////////////////////
+		
 		this.taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,tasks,results);
 		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks);
 		this.numerOfExecuters= numerOfWorkers;
