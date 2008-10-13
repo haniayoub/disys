@@ -2,7 +2,7 @@ package CalcExecuterDemo;
 
 import Executor.ExecuterSystem;
 
-public class ExecuterSystemDemo {
+public class ExecuterSystemCalcDemo {
 
 	/**
 	 * @param args
@@ -11,10 +11,9 @@ public class ExecuterSystemDemo {
 	ExecuterSystem<CalcTask,CalcResult,Calculator> es=new ExecuterSystem<CalcTask,CalcResult,Calculator>(new Calculator(), 5,"localhost",3000); 
 	System.out.println("Executer Started !");
 	es.Run(args);
-	//Thread.sleep(100000);
 	System.console().readLine();
+	//Thread.sleep(10000);
 	es.Exit();
 	System.out.println("executer Done");
-	
 	}
 }

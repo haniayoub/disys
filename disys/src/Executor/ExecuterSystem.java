@@ -1,97 +1,107 @@
 package Executor;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import Common.Chunk;
 import Common.IExecutor;
 import Common.Item;
-import Common.ItemPrinter;
+import Common.Loger;
 import Common.RMIRemoteInfo;
+import Common.RemoteInfo;
 import Common.RemoteItem;
+import Networking.NetworkCommon;
+import Networking.RMIItemCollector;
 import Networking.RemoteItemReceiver;
 import SystemManager.ISystemManager;
 import SystemManager.SystemManager;
 import WorkersSystem.WorkER.WorkerSystem;
 
+/**
+ * Executer System : this is the full package of the Executer it includes all
+ * the worker threads in order to make a fully working Remote executer
+ * @author saeed
+ *
+ * @param <TASK> TASKs Type to receive and execute
+ * @param <RESULT> Results Type to return 
+ * @param <E> Executer Type
+ */
 public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
-	public BlockingQueue<RemoteItem<TASK>> tasks = 
-						new LinkedBlockingQueue<RemoteItem<TASK>>();
-	public BlockingQueue<RemoteItem<RESULT>> results= 
-						new LinkedBlockingQueue<RemoteItem<RESULT>>();
-	public BlockingQueue<Chunk<TASK>> recievedChunks = 
+	//the chunks received from clients 
+	private BlockingQueue<Chunk<TASK>> recievedChunks = 
 		new LinkedBlockingQueue<Chunk<TASK>>();
+	//tasks to perform
+	private BlockingQueue<RemoteItem<TASK>> tasks = 
+						new LinkedBlockingQueue<RemoteItem<TASK>>();
+	//results Queue
+	private BlockingQueue<RemoteItem<RESULT>> results= 
+						new LinkedBlockingQueue<RemoteItem<RESULT>>();
+	//Result organized in a Map of clients
+	private ConcurrentHashMap<RemoteInfo,ConcurrentLinkedQueue<RESULT>> clientResults=
+						new ConcurrentHashMap<RemoteInfo, ConcurrentLinkedQueue<RESULT>>();
+	//
+	//Workers of the executer System
+	//
 	
-	private TaskExecuter<TASK,RESULT,E> taskExecuter;
-	private ChunkBreaker<TASK> chunkBreaker;
-	private ItemPrinter<RemoteItem<RESULT>> resultPrinter=new ItemPrinter<RemoteItem<RESULT>>(results,null);
-	
-	private ISystemManager<TASK> sysManager;
-	@SuppressWarnings("unused")
 	private RemoteItemReceiver<Chunk<TASK>> chunkReceiver;
-	private int numerOfExecuters;
+	private ChunkBreaker<TASK> chunkBreaker;
+	private TaskExecuter<TASK,RESULT,E> taskExecuter;
+	private RemoteItemOrganizer<RESULT> resultOrganizer;
+    private RMIItemCollector<RESULT> itemCollector; 
+	//system manager reference
+    private ISystemManager<TASK> sysManager;
+    private RMIRemoteInfo systemManagerRemoteInfo;
+    //number of task executers
+    private int numerOfExecuters;
+    //
+	private WorkerSystem ws=new WorkerSystem();
 	
-	WorkerSystem ws=new WorkerSystem();
-	RMIRemoteInfo systemManagerRemoteInfo;
 	@SuppressWarnings("unchecked")
 	public ExecuterSystem(E executer,int numerOfWorkers,String SysManagerAddress,int sysManagerport) {
 		super();
 		systemManagerRemoteInfo=new RMIRemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
 		try {
-			
 			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks);
-		} catch (RemoteException e) {
-			System.out.println("Error intializing Remote Chunk Reciever :"+e.toString());
-			e.printStackTrace();
+		} catch (Exception e) {
+			Loger.TerminateSystem("Error intializing Remote Chunk Reciever", e);
 		}
 		
-		//////////////////////////Fire Wall problematic !!!!
 		try {
-			sysManager = (ISystemManager<TASK>) 
-				    Naming.lookup(systemManagerRemoteInfo.GetRmiAddress());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			itemCollector=new RMIItemCollector<RESULT>(clientResults);
+		} catch (Exception e) {
+			Loger.TerminateSystem("Error intializing Remote Chunk Reciever ", e);
 		}
-		
+		//////////////////////////Fire Wall problematic !!!!
+		sysManager=NetworkCommon.loadRMIRemoteObject(systemManagerRemoteInfo);
 		if(sysManager!=null){
 		try {
-			sysManager.addExecuter(chunkReceiver.getLocalId(), chunkReceiver.getPort());
+			sysManager.addExecuter(chunkReceiver.getPort(),itemCollector.getPort());
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Couldn't add Executer to System Manager");
+			Loger.TraceWarning("Couldn't add Executer to System Manager", e);
 		}
 		}
 		///////////////////////////////////////////////
 		
-		this.taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,tasks,results);
 		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks);
-		this.numerOfExecuters= numerOfWorkers;
-		ws.add(taskExecuter,numerOfExecuters);
+		taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,tasks,results);
+		resultOrganizer=new RemoteItemOrganizer<RESULT>(results,clientResults);
+		numerOfExecuters= numerOfWorkers;
+		
 		ws.add(chunkBreaker,1);
-		ws.add(resultPrinter,1);
+		ws.add(taskExecuter,numerOfExecuters);
+		ws.add(resultOrganizer,1);
 	}
 
-	/**
-	 * @param args
-	 */
 	public void Run(String[] args) {
 		 ws.startWork();
 	}
 	
 	public void Exit() {
 		 ws.stopWork();
+		 chunkReceiver.Dispose();
+		 itemCollector.Dispose();
 	}
-
 }

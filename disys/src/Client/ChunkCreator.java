@@ -6,14 +6,19 @@ import java.util.concurrent.BlockingQueue;
 import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.Item;
+import Common.Loger;
 import WorkersSystem.WorkER.AWorker;
 
-
+/**
+ * Read Tasks and arrange them into chunks
+ * @author saeed
+ *
+ * @param <ITEM>
+ */
 public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
-
 	private int MAX_CHUNK_SIZE;
-	ClientRemoteInfo myRemoteInfo;
-	LinkedList<Item> chunkItems=new LinkedList<Item>();
+	private ClientRemoteInfo myRemoteInfo;
+	private LinkedList<Item> chunkItems=new LinkedList<Item>();
 	public ChunkCreator(BlockingQueue<ITEM> wi, BlockingQueue<Chunk<ITEM>> rq,ClientRemoteInfo myRemoteInfo,int max_chunk_size) {
 		super(wi, rq);
 		MAX_CHUNK_SIZE = max_chunk_size;
@@ -30,7 +35,7 @@ public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 		if(!this.WorkItems.isEmpty()) return null;
 		}
 		if(this.WorkItems.isEmpty()||chunkItems.size()==MAX_CHUNK_SIZE){
-			Chunk<ITEM> chunk=		(Chunk<ITEM>) CreateChunk();
+			Chunk<ITEM> chunk=(Chunk<ITEM>) CreateChunk();
 			return chunk;
 		}
 		return null;
@@ -42,7 +47,7 @@ public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 		for(int i=0;i<size ;i++){
 		items[i]=chunkItems.poll();
 		}
-		System.out.println("Chunk Created :"+size);
+		Loger.TraceInformation("Chunk [Size:"+size+"] Created !");
 		return new Chunk<Item>(0,myRemoteInfo,null,items);
 	}
 

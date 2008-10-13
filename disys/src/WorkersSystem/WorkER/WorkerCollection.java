@@ -5,39 +5,45 @@ import java.util.concurrent.BlockingQueue;
 
 import Common.Item;
 
-
-
+//Handle a Collection of AWorkers 
 public class WorkerCollection {
-	WorkerFactory workerFactory;
-	LinkedList<AWorker<? extends Item,? extends Item>> WorkersList;
-	LinkedList<Thread> Threads;
+	//worker factory to create a worker when we need 
+	private WorkerFactory workerFactory;
+	//list of workers & threads
+	private LinkedList<AWorker<? extends Item, ? extends Item>> workersList;
+	private LinkedList<Thread> workersThreads;
+
 	@SuppressWarnings("unchecked")
-	public WorkerCollection(AWorker<? extends Item,? extends Item> w,int numOfWorkers){
-	workerFactory=new WorkerFactory(w);
-	WorkersList=new LinkedList<AWorker<? extends Item,? extends Item>>();
-	Threads=new LinkedList<Thread>();
-	for(int i=0;i<numOfWorkers;i++){
-		AWorker<? extends Item, ? extends Item> worker;
-		try {
-			worker = workerFactory.newWorker();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-			return;
+	public WorkerCollection(AWorker<? extends Item, ? extends Item> w,
+			int numOfWorkers) {
+		workerFactory = new WorkerFactory(w);
+		workersList = new LinkedList<AWorker<? extends Item, ? extends Item>>();
+		workersThreads = new LinkedList<Thread>();
+		for (int i = 0; i < numOfWorkers; i++) {
+			AWorker<? extends Item, ? extends Item> worker;
+			try {
+				worker = workerFactory.newWorker();
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+				return;
+			}
+			workersList.add(worker);
+			workersThreads.add(new Thread(worker));
 		}
-		WorkersList.add(worker);
-		Threads.add(new Thread(worker));
 	}
+
+	//start the threads
+	public void startWorking() {
+		for (Thread workerThread : workersThreads)
+			workerThread.start();
 	}
-	public void startWorking(){
-		for(Thread workerThread:Threads) workerThread.start();
-	}
-	
-	
-	public void stopWorking(){
-		for(AWorker<? extends Item,? extends Item> worker:WorkersList) {
+
+	//stop each thread and wait for it 
+	public void stopWorking() {
+		for (AWorker<? extends Item, ? extends Item> worker : workersList) {
 			worker.halt();
 		}
-		for(Thread workerThread:Threads)
+		for (Thread workerThread : workersThreads)
 			try {
 				workerThread.interrupt();
 				workerThread.join();
@@ -46,12 +52,12 @@ public class WorkerCollection {
 			}
 		System.out.println("all workers stoped working");
 	}
-	
-	public BlockingQueue<? extends Item> TaskQueue(){
+
+	public BlockingQueue<? extends Item> TaskQueue() {
 		return workerFactory.MotherWorker.WorkItems;
 	}
-	
-	public BlockingQueue<? extends Item> ResultQueue(){
+
+	public BlockingQueue<? extends Item> ResultQueue() {
 		return workerFactory.MotherWorker.Results;
 	}
 
