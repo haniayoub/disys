@@ -38,19 +38,19 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> {
 	
 	private ChunkCreator<TASK> chunkCreatorWorker;
 	private ChunkScheduler<TASK, RESULT> chunkScheduler;
-	private ResultCollector<RESULT> resultCollector;
+	private ResultCollector<TASK,RESULT> resultCollector;
 	private ItemPrinter<RESULT> resultPrinter = new ItemPrinter<RESULT>(results, null);
 
 	private ISystemManager<TASK> sysManager;
 
-	public ClientSystem(String SysManagerAddress, int sysManagerport) {
+	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize) {
 		super();
 		RemoteSysManagerInfo = new RMIRemoteInfo(SysManagerAddress,
 				sysManagerport, SystemManager.GlobalID);
 		ConnectToSystemManager(RemoteSysManagerInfo);
 		chunkCreatorWorker = new ChunkCreator<TASK>(tasks, taskChunks,
-				myRemoteInfo, 1000);
-		resultCollector = new ResultCollector<RESULT>(myRemoteInfo.Id(), 1000,
+				myRemoteInfo, chunkSize);
+		resultCollector = new ResultCollector<TASK,RESULT>(myRemoteInfo.Id(),1000,
 				results);
 		chunkScheduler = new ChunkScheduler<TASK, RESULT>(sysManager,
 				resultCollector, taskChunks, taskChunks);
