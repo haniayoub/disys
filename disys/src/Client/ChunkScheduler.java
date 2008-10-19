@@ -21,9 +21,9 @@ import WorkersSystem.WorkER.AWorker;
 public class ChunkScheduler<TASK extends Item,RESULT extends Item> extends AWorker<Chunk<TASK>,Chunk<TASK>>  {
 	private ISystemManager<TASK> sysManager;
 	//result collector to update
-	private ResultCollector<RESULT> resultCollector;
+	private ResultCollector<TASK,RESULT> resultCollector;
 	@SuppressWarnings("unchecked")
-	public ChunkScheduler(ISystemManager<TASK> sysManager,ResultCollector<RESULT> resultCollector,BlockingQueue<Chunk<TASK>> taskChunks, BlockingQueue<Chunk<TASK>> taskChunks2) {
+	public ChunkScheduler(ISystemManager<TASK> sysManager,ResultCollector<TASK,RESULT> resultCollector,BlockingQueue<Chunk<TASK>> taskChunks, BlockingQueue<Chunk<TASK>> taskChunks2) {
 		super(taskChunks, taskChunks2);
 		this.sysManager=sysManager;
 		this.resultCollector=resultCollector;
@@ -63,7 +63,7 @@ public class ChunkScheduler<TASK extends Item,RESULT extends Item> extends AWork
 			return task;
 		}
 		Common.Loger.TraceInformation("Chunk [size:"+task.numberOfItems()+"] Sent to Remote Receiver:"+itemRecieverInfo.GetRmiAddress());
-		resultCollector.WaitForResults(executerAddress.getResultCollectorInfo(),task.numberOfItems());
+		resultCollector.WaitForResults(executerAddress.getResultCollectorInfo(),task);
 	    return null;
 	}
 

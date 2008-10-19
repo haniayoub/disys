@@ -12,13 +12,19 @@ public class ClientSystemCalcDemo {
 	 */
 	static Random generator = new Random( 19580427 );
 	public static void main(String[] args) throws InterruptedException {
-	ClientSystem<CalcTask, CalcResult> cs=new ClientSystem<CalcTask, CalcResult>("LocalHost",3000);
+	if(args.length<2){
+		System.out.println("parameters: [System Manager Address] [System Manager Port]");
+		Thread.sleep(2000);
+		return ;
+	}
+	
+	ClientSystem<CalcTask, CalcResult> cs=new ClientSystem<CalcTask, CalcResult>(args[0],Integer.parseInt(args[1]),100);
 	cs.Start();
-	for(int i=0;i<3;i++) cs.tasks.add(CreateRandomTask());
+	for(int i=0;i<220;i++) cs.tasks.add(CreateRandomTask());
 	Thread.sleep(1000);
-	for(int i=0;i<2;i++) cs.tasks.add(CreateRandomTask());
+	for(int i=0;i<90;i++) cs.tasks.add(CreateRandomTask());
 	Thread.sleep(2000);
-	for(int i=0;i<4;i++) cs.tasks.add(CreateRandomTask());
+	for(int i=0;i<110;i++) cs.tasks.add(CreateRandomTask());
 	
 	//Thread.sleep(15000);
 	System.console().readLine();

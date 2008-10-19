@@ -1,6 +1,7 @@
 package Client;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,12 +20,16 @@ import Networking.NetworkCommon;
  *
  * @param <RESULT>
  */
-public class ResultCollector<RESULT extends Item> {
+public class ResultCollector<TASK extends Item,RESULT extends Item> {
 
 	private BlockingQueue<RESULT> resultsQueue;	
 	private ConcurrentHashMap<RMIRemoteInfo,Integer> executers=new ConcurrentHashMap<RMIRemoteInfo, Integer>();
 	private ConcurrentHashMap<RMIRemoteInfo,IItemCollector<RESULT>> executersRemoteCollectors=
 		new ConcurrentHashMap<RMIRemoteInfo,IItemCollector<RESULT>>();
+
+	//private ConcurrentHashMap<RMIRemoteInfo,LinkedList<TASK>> executersTasks=new ConcurrentHashMap<RMIRemoteInfo,LinkedList<TASK>>();
+
+	
 	private Thread collectorThread;
 	private Worker myWorker;
 	
@@ -105,7 +110,7 @@ public class ResultCollector<RESULT extends Item> {
 		Loger.TraceInformation("result Collector worker stoped working");
 	}
 	@SuppressWarnings("unchecked")
-	public void WaitForResults(RMIRemoteInfo ri,int numberOfResults){
+	public void WaitForResults(RMIRemoteInfo ri,Chunk<TASK> chunk){
 	if(!executersRemoteCollectors.contains(ri)){
 		
 		IItemCollector<RESULT> resultChunkCollector=NetworkCommon.loadRMIRemoteObject(ri);
@@ -117,7 +122,13 @@ public class ResultCollector<RESULT extends Item> {
 	}
 	
 	if(!executers.containsKey(ri)) executers.put(ri,0);
-	executers.put(ri,numberOfResults+executers.get(ri));
-	Loger.TraceInformation("Waiting For "+numberOfResults+" results from "+ri.GetRmiAddress());
+	executers.put(ri,chunk.numberOfItems()+executers.get(ri));
+	Loger.TraceInformation("Waiting For "+chunk.numberOfItems()+" results from "+ri.GetRmiAddress());
+	
+	/// Task Recovery support
+	/*
+	if(!executersTasks.contains(ri))executersTasks.put(ri,new LinkedList<TASK>());
+	for(TASK t:chunk.getItems()) executersTasks.get(ri).add(t);
+	*/
 	}
 }
