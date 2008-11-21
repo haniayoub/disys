@@ -86,7 +86,8 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 		///////////////////////////////////////////////
 		
 		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks);
-		taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,tasks,results);
+		String myID=chunkReceiver.getRmiID();
+		taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,myID,tasks,results);
 		resultOrganizer=new RemoteItemOrganizer<RESULT>(results,clientResults);
 		numerOfExecuters= numerOfWorkers;
 		

@@ -1,5 +1,9 @@
 package Common;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.StringWriter;
+
 
 public class Loger {
 	//static StringBuilder Log=new StringBuilder();
@@ -9,10 +13,12 @@ public class Loger {
 	public static void TraceWarning(String message,Exception e){
 		
 		//Log.
+		
 		TraceException(e);
 		String msg="Warning:"+message;
 		System.out.println(msg);
-	//	Log.append(`)
+		
+		//	Log.append(`)
 	}
 	public static void TraceError(String message,Exception e){
 		TraceException(e);
