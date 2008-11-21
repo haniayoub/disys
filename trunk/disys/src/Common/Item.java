@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Item implements Serializable{
 
 	private Exception e; 
+	private String log; 
 	private final long id;
 
 	public Item(final long id) {
@@ -26,6 +27,12 @@ public class Item implements Serializable{
 	}
 	public void setException(Exception e) {
 		this.e=e;
+	}
+	public String getLog() {
+		return log;
+	}
+	public void setLog(String log) {
+		this.log=log;
 	}
 	
 }
