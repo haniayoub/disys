@@ -18,7 +18,12 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 
 	private String rmiID;
 	private int port;
-
+	/**
+	 * you have to register the port first
+	 * @param rmiID
+	 * @param port
+	 * @throws Exception
+	 */
 	public RMIObjectBase(String rmiID, int port) throws Exception {
 		super();
 		this.rmiID = rmiID;

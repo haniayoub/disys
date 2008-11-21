@@ -37,5 +37,5 @@ public class ClientSystemCalcDemo {
 			ct.x=generator.nextInt(1000);
 			ct.y=generator.nextInt(1000);
 		return ct;
-		}
+	}
 }

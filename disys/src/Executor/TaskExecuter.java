@@ -29,7 +29,13 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 	@SuppressWarnings("unchecked")
 	@Override
 	public RemoteItem<RESULT> doItem(RemoteItem<TASK> task) {
-		Item Result = excutor.run(task.getItem());
+		Item Result;
+		try{
+		Result = excutor.run(task.getItem());
+		}catch(Exception e){
+		Result=new Item(task.getId());
+		Result.setException(e);
+		}
 		return new RemoteItem(Result, task.getRemoteInfo());
 	}
 
