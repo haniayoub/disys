@@ -48,7 +48,7 @@ public class ChunkScheduler<TASK extends Item,RESULT extends Item> extends AWork
 			return task;
 		}
 		RMIRemoteInfo itemRecieverInfo=executerAddress.getItemRecieverInfo();
-		IRemoteItemReceiver<Chunk<? extends Item>> RemoteExecuter=
+		IRemoteItemReceiver<Chunk<TASK>> RemoteExecuter=
 			NetworkCommon.loadRMIRemoteObject(itemRecieverInfo);
 		if(RemoteExecuter==null){
 			Common.Loger.TraceWarning("Failed to schdule a Chunk :Connection Failed", null);

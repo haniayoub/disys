@@ -10,16 +10,22 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Item implements Serializable{
 
-	
+	private Exception e; 
 	private final long id;
 
 	public Item(final long id) {
 		super();
 		this.id = id;
+		this.e=null;
 	}
-
 	public long getId() {
 		return id;
+	}
+	public Exception getException() {
+		return e;
+	}
+	public void setException(Exception e) {
+		this.e=e;
 	}
 	
 }

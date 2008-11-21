@@ -1,7 +1,6 @@
 package Client;
 
 import java.rmi.RemoteException;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -91,7 +90,9 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 	public ResultCollector(long myId,int period,
 			BlockingQueue<RESULT> resultsQueue) {
 		super();
+		
 		myWorker=new Worker(myId,period);
+		
 		collectorThread = new Thread(myWorker);
 		this.resultsQueue=resultsQueue;
 	}

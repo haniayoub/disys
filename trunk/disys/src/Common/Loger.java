@@ -1,13 +1,18 @@
 package Common;
 
-public class Loger {
 
+public class Loger {
+	//static StringBuilder Log=new StringBuilder();
 	public static void TraceInformation(String message){
 			System.out.println(message);
 		}
 	public static void TraceWarning(String message,Exception e){
+		
+		//Log.
 		TraceException(e);
-		System.out.println("Warning:"+message);
+		String msg="Warning:"+message;
+		System.out.println(msg);
+	//	Log.append(`)
 	}
 	public static void TraceError(String message,Exception e){
 		TraceException(e);
