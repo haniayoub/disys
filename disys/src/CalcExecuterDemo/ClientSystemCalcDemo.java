@@ -43,6 +43,7 @@ public class ClientSystemCalcDemo {
 			System.out.println(e.getMessage());
 		}
 	rc.Stop();
+	Thread.sleep(10000000);
 	System.out.println("Client Done!");
 	}
 	private static CalcTask CreateRandomTask(){
