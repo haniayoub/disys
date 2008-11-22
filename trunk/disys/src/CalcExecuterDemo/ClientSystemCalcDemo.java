@@ -1,6 +1,7 @@
 package CalcExecuterDemo;
 
 
+import java.io.IOException;
 import java.util.Random;
 
 import Client.ClientSystem;
@@ -12,7 +13,7 @@ public class ClientSystemCalcDemo {
 	 * @throws InterruptedException 
 	 */
 	static Random generator = new Random( 19580427 );
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 	if(args.length<2){
 		System.out.println("parameters: [System Manager Address] [System Manager Port]");
 		Thread.sleep(2000);
@@ -43,7 +44,7 @@ public class ClientSystemCalcDemo {
 			System.out.println(e.getMessage());
 		}
 	rc.Stop();
-	Thread.sleep(10000000);
+	System.in.read();
 	System.out.println("Client Done!");
 	}
 	private static CalcTask CreateRandomTask(){

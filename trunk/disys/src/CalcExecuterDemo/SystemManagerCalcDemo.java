@@ -1,16 +1,16 @@
 package CalcExecuterDemo;
 
-import java.rmi.RemoteException;
+import java.io.IOException;
 
 import SystemManager.SystemManager;
 
 public class SystemManagerCalcDemo {
 	/**
 	 * @param args
-	 * @throws RemoteException
 	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws RemoteException, InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 
 		try {
 			new SystemManager<CalcTask,CalcResult>();
@@ -20,7 +20,7 @@ public class SystemManagerCalcDemo {
 		}
 		Common.Loger.TraceInformation("SystemManager is online");
 		//System.console().readLine();
-		Thread.sleep(10000000);
+		System.in.read();
 		Common.Loger.TraceInformation("SystemManager Done!");
 	}
 }
