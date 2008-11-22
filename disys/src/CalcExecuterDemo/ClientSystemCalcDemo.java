@@ -3,6 +3,7 @@ package CalcExecuterDemo;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import Client.ClientSystem;
 import Client.RemoteClient;
@@ -38,13 +39,13 @@ public class ClientSystemCalcDemo {
 	
 	for(int i=0;i<6;i++)
 		try {
-			System.out.println(rc.GetResult());
+			System.out.println(rc.GetResult(100, TimeUnit.SECONDS));
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-	rc.Stop();
 	System.in.read();
+	rc.Stop();
 	System.out.println("Client Done!");
 	}
 	private static CalcTask CreateRandomTask(){

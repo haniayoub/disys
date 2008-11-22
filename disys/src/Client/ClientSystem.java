@@ -101,6 +101,6 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> {
 	}
 	
 	public boolean isStable(){
-	return resultCollector.isIdle();
+	return (resultCollector.isIdle() && tasks.isEmpty());
 	}
 }
