@@ -24,7 +24,7 @@ private ClientSystem<TASK, RESULT> clientSystem;
 	public RESULT GetResult() throws Exception{
 		if(clientSystem.isStable()) return null;
 		RESULT r=clientSystem.results.poll();
-		if(r.getLog()!=null)System.out.print(r.getLog());
+		if(r.getLog()!=null) System.out.print(r.getLog());
 		if(r.getException()!=null) throw r.getException();
 		return r;
 	}

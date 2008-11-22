@@ -64,7 +64,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> {
 
 		ws.add(chunkCreatorWorker, 1);
 		ws.add(chunkScheduler, 1);
-		ws.add(resultPrinter, 1);
+		//ws.add(resultPrinter, 1);
 	}
 
 	@SuppressWarnings("unchecked")
