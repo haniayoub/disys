@@ -17,7 +17,7 @@ public class ExecuterSystemCalcDemo {
 		System.out.println("Executer Started !");
 		es.Run(args);
 		//System.console().readLine();
-		//Thread.sleep(10000);
+		Thread.sleep(10000000);
 		es.Exit();
 		System.out.println("executer Done");
 	}
