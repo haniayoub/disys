@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import Client.ClientSystem;
 import Client.RemoteClient;
 
 public class ClientSystemCalcDemo {
@@ -48,6 +47,7 @@ public class ClientSystemCalcDemo {
 	rc.Stop();
 	System.out.println("Client Done!");
 	}
+	@SuppressWarnings("unused")
 	private static CalcTask CreateRandomTask(){
 		
 		final CalcTask ct=new CalcTask(generator.nextInt(1000));
