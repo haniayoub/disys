@@ -9,7 +9,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.Item;
-import Common.ItemPrinter;
 import Common.RMIRemoteInfo;
 import Networking.NetworkCommon;
 import SystemManager.ISystemManager;
@@ -46,7 +45,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> {
 	private ChunkCreator<TASK> chunkCreatorWorker;
 	private ChunkScheduler<TASK, RESULT> chunkScheduler;
 	private ResultCollector<TASK,RESULT> resultCollector;
-	private ItemPrinter<RESULT> resultPrinter = new ItemPrinter<RESULT>(results, null);
+	//private ItemPrinter<RESULT> resultPrinter = new ItemPrinter<RESULT>(results, null);
 
 	private ISystemManager<TASK> sysManager;
 
