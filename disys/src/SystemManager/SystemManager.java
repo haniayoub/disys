@@ -2,7 +2,6 @@ package SystemManager;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
@@ -22,25 +21,20 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	//executers In this System Manager
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap=
 		new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
-	private ConcurrentLinkedQueue<ExecuterRemoteInfo> executerInfoList = 
-		new ConcurrentLinkedQueue<ExecuterRemoteInfo>();
 	//the next id to assign to Client
 	private int nextId = 0;
-	
-	//Round robin basis 
-	//private int nextExecuter = 0;  /*Hani - RR isn't used*/
 	
 	//Component to check if Executers Still alive
 	private HeartBeatChecker<TASK, RESULT> checker;
 	
 	public SystemManager() throws Exception {
 		super(GlobalID);
-		checker=new HeartBeatChecker<TASK, RESULT>(executersMap,executerInfoList,200);
+		checker=new HeartBeatChecker<TASK, RESULT>(executersMap,200);
 		checker.start();
 	}
 	@Override
 	public ExecuterRemoteInfo Schedule(int numberOfTask) throws RemoteException {
-		if (executerInfoList.isEmpty()) return null;
+		if (executersMap.keySet().isEmpty()) return null;
 		Common.Loger.TraceInformation(this.GetClientHost() + " Whant to Execute "
 					+ numberOfTask + " Tasks");
 		
@@ -69,7 +63,6 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			return;
 		}
 		executersMap.put(remoteInfo,new ExecuterBox<TASK, RESULT>(ir,rc,false));
-		executerInfoList.add(remoteInfo);
 		Common.Loger.TraceInformation("added:"+ remoteInfo.toString());
 	}
 
@@ -90,13 +83,11 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		return nextId++;
 	}
 	
-	//BUGBUG : modify this function to schedule task in the right way
-	//BUGBUG :if all the executers are blocked the function will stuck in a recursive
 	private ExecuterRemoteInfo ScheduleExecuter(int numberOfTasks){
 		ExecuterRemoteInfo remoteInfo = null;
 		int minNumOfTasks = Integer.MAX_VALUE;
 		
-		for (ExecuterRemoteInfo ri : executerInfoList) 
+		for (ExecuterRemoteInfo ri : executersMap.keySet()) 
 		{
 			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
 			if(eb.Blocked)
