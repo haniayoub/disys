@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Common.ExecuterRemoteInfo;
 import Common.Item;
+import Executor.ExecuterRemoteData;
 
 public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 	// executers In this System Manager
@@ -25,9 +26,12 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 				LinkedList<ExecuterRemoteInfo> blackList = new LinkedList<ExecuterRemoteInfo>();
 				for (ExecuterRemoteInfo ri : executerInfoList) {
 					try {
-						executersMap.get(ri).getItemReciever().Alive();
-						executersMap.get(ri).getResultCollector().Alive();
-
+						//executersMap.get(ri).getItemReciever().Alive();
+						//executersMap.get(ri).getResultCollector().Alive();
+						ExecuterRemoteData erd = (ExecuterRemoteData)executersMap.get(ri).getItemReciever().getExecuterData();
+						if(erd == null)
+							Common.Loger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+						executersMap.get(ri).setNumOfTasks(erd.numOfTasks);
 					} catch (RemoteException e) {
 						Common.Loger.TraceWarning("executer is not Alive:"
 								+ ri.toString(), null);

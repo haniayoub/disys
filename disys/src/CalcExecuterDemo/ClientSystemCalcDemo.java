@@ -20,14 +20,14 @@ public class ClientSystemCalcDemo {
 	
 	ClientSystem<CalcTask, CalcResult> cs=new ClientSystem<CalcTask, CalcResult>(args[0],Integer.parseInt(args[1]),100);
 	cs.Start();
-	for(int i=0;i<220;i++) cs.tasks.add(CreateRandomTask());
+	for(int i=0;i<220;i++) cs.tasks.offer(CreateRandomTask());
 	Thread.sleep(1000);
-	for(int i=0;i<90;i++) cs.tasks.add(CreateRandomTask());
+	for(int i=0;i<90;i++) cs.tasks.offer(CreateRandomTask());
 	Thread.sleep(2000);
-	for(int i=0;i<110;i++) cs.tasks.add(CreateRandomTask());
+	for(int i=0;i<110;i++) cs.tasks.offer(CreateRandomTask());
 	
 	//Thread.sleep(15000);
-	System.console().readLine();
+	//System.console().readLine();
 	cs.Stop();
 	System.out.println("Client Done!");
 	}
@@ -38,4 +38,5 @@ public class ClientSystemCalcDemo {
 			ct.y=generator.nextInt(1000);
 		return ct;
 	}
+	
 }

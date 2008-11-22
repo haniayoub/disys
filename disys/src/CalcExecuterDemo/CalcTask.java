@@ -8,6 +8,10 @@ public class CalcTask extends Item{
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
+	public CalcTask(final long id, int prio) {
+		super(id, prio);
+		// TODO Auto-generated constructor stub
+	}
 	public int x;
 	public int y;
 	

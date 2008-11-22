@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
 
 import Common.Item;
+import Executor.ExecuterRemoteData;
 
 /**
  * ITEM receiver is RMI object which waits for clients to send to it items and
@@ -28,6 +29,13 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	@Override
 	public void Add(ITEM item) throws RemoteException {
 		recievedItems.add(item);
+	}
+
+	@Override
+	public RemoteData getExecuterData() throws RemoteException {
+		ExecuterRemoteData erd = new ExecuterRemoteData();
+		erd.numOfTasks = recievedItems.size();
+		return erd;
 	}
 
 }
