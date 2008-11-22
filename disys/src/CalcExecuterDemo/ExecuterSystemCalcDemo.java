@@ -1,13 +1,16 @@
 package CalcExecuterDemo;
 
+import java.io.IOException;
+
 import Executor.ExecuterSystem;
 
 public class ExecuterSystemCalcDemo {
 
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 		if(args.length<2){
 			System.out.println("parameters: [System Manager Address] [System Manager Port]");
 			Thread.sleep(2000);
@@ -17,7 +20,7 @@ public class ExecuterSystemCalcDemo {
 		System.out.println("Executer Started !");
 		es.Run(args);
 		//System.console().readLine();
-		Thread.sleep(10000000);
+		System.in.read();
 		es.Exit();
 		System.out.println("executer Done");
 	}
