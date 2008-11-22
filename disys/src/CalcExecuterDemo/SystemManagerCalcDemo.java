@@ -18,9 +18,9 @@ public class SystemManagerCalcDemo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Common.Loger.TraceInformation("SystemManager is online");
+		Common.Logger.TraceInformation("SystemManager is online");
 		//System.console().readLine();
 		System.in.read();
-		Common.Loger.TraceInformation("SystemManager Done!");
+		Common.Logger.TraceInformation("SystemManager Done!");
 	}
 }

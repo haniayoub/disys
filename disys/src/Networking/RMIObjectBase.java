@@ -31,7 +31,7 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 		try {
 			Naming.bind("//:" + port + "/" + rmiID, this);
 		} catch (Exception e) {
-			Common.Loger.TraceError("Failed To Bind :" + "//:" + port + "/"
+			Common.Logger.TraceError("Failed To Bind :" + "//:" + port + "/"
 					+ rmiID, e);
 			throw e;
 		}
@@ -45,7 +45,7 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 		try {
 			return RemoteServer.getClientHost();
 		} catch (ServerNotActiveException e) {
-			Common.Loger.TraceWarning("Server is not activated!", e);
+			Common.Logger.TraceWarning("Server is not activated!", e);
 			return null;
 		}
 	}

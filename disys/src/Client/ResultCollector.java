@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import Common.Chunk;
 import Common.Item;
-import Common.Loger;
+import Common.Logger;
 import Common.RMIRemoteInfo;
 import Networking.IItemCollector;
 import Networking.NetworkCommon;
@@ -49,7 +49,7 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 				try {
 					if(executers.get(ri).intValue()<=0) {
 						if(executers.get(ri).intValue()<0)
-							Common.Loger.TraceWarning("received results More than expected from:"+ri.GetRmiAddress(), null);
+							Common.Logger.TraceWarning("received results More than expected from:"+ri.GetRmiAddress(), null);
 						executers.remove(ri);
 						executersRemoteCollectors.remove(ri);
 						continue;
@@ -57,16 +57,16 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 					resultChunk=executersRemoteCollectors.get(ri).Collect(myID);
 				} catch (RemoteException e) {
 					
-					Common.Loger.TraceError("error while collecting results chunk from:"+ri.GetRmiAddress(), e);
+					Common.Logger.TraceError("error while collecting results chunk from:"+ri.GetRmiAddress(), e);
 					continue;
 				}
 				if (resultChunk == null) {
-					Common.Loger.TraceInformation("no results available from:"+ri.GetRmiAddress());
+					Common.Logger.TraceInformation("no results available from:"+ri.GetRmiAddress());
 					continue;
 				}
 				for (RESULT r : resultChunk.getItems())
 					resultsQueue.add(r);
-				Common.Loger.TraceInformation("new "+resultChunk.numberOfItems()+" results from:"+ri.GetRmiAddress());
+				Common.Logger.TraceInformation("new "+resultChunk.numberOfItems()+" results from:"+ri.GetRmiAddress());
 				executers.put(ri,executers.get(ri)-resultChunk.numberOfItems());
 				}
 				sleep(period);
@@ -97,7 +97,7 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 		this.resultsQueue=resultsQueue;
 	}
 	public void start(){
-		Loger.TraceInformation("Result Collector Started!");
+		Logger.TraceInformation("Result Collector Started!");
 		collectorThread.start();
 	}
 	public void Stop(){
@@ -108,7 +108,7 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Loger.TraceInformation("result Collector worker stoped working");
+		Logger.TraceInformation("result Collector worker stoped working");
 	}
 	public boolean isIdle(){
 		return executersRemoteCollectors.isEmpty();
@@ -119,7 +119,7 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 		
 		IItemCollector<RESULT> resultChunkCollector=NetworkCommon.loadRMIRemoteObject(ri);
 		if(resultChunkCollector==null){
-			Loger.TraceError("Couldn't  Connect to Executer:"+ ri.GetRmiAddress(), null);
+			Logger.TraceError("Couldn't  Connect to Executer:"+ ri.GetRmiAddress(), null);
 			return;
 		}
 			executersRemoteCollectors.put(ri, resultChunkCollector);
@@ -127,7 +127,7 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 	
 	if(!executers.containsKey(ri)) executers.put(ri,0);
 	executers.put(ri,chunk.numberOfItems()+executers.get(ri));
-	Loger.TraceInformation("Waiting For "+chunk.numberOfItems()+" results from "+ri.GetRmiAddress());
+	Logger.TraceInformation("Waiting For "+chunk.numberOfItems()+" results from "+ri.GetRmiAddress());
 	
 	/// Task Recovery support
 	/*

@@ -6,7 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.Item;
-import Common.Loger;
+import Common.Logger;
 import WorkersSystem.WorkER.AWorker;
 
 /**
@@ -47,7 +47,7 @@ public class ChunkCreator<ITEM extends Item> extends AWorker<ITEM,Chunk<ITEM>> {
 		for(int i=0;i<size ;i++){
 		items[i]=chunkItems.poll();
 		}
-		Loger.TraceInformation("Chunk [Size:"+size+"] Created !");
+		Logger.TraceInformation("Chunk [Size:"+size+"] Created !");
 		return new Chunk<Item>(0,myRemoteInfo,null,items);
 	}
 

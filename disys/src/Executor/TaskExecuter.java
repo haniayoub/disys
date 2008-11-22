@@ -38,11 +38,13 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 		System.setOut(new PrintStream(out));
 		try{
 		Result = excutor.run(task.getItem());
+		if(!out.toString().isEmpty()){
 		StringBuilder sb=new StringBuilder();
 		sb.append("___________ Executer:["+myIP+"] Task:["+task.getId()+"]__________\n");
 		sb.append(out.toString());
 		sb.append("_____________________________________________________\n");
 		Result.setLog(sb.toString());
+		}
 		}catch(Exception e){
 		Result=new Item(task.getId());
 		Result.setException(e);

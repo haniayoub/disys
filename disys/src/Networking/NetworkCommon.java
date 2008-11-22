@@ -5,7 +5,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import Common.Loger;
+import Common.Logger;
 import Common.RMIRemoteInfo;
 
 /**
@@ -28,7 +28,7 @@ public class NetworkCommon {
 		try {
 			return (T)Naming.lookup(ri.GetRmiAddress());
 		} catch (Exception e) {
-			Common.Loger.TraceError("Couldn't Load RMI Remote Object :"+ri.GetRmiAddress(), e);
+			Common.Logger.TraceError("Couldn't Load RMI Remote Object :"+ri.GetRmiAddress(), e);
 		}
 		return null;
 	}
@@ -48,7 +48,7 @@ public class NetworkCommon {
 				failureException = e;
 			}
 		}
-		Loger.TraceError("Failed to create registry", failureException);
+		Logger.TraceError("Failed to create registry", failureException);
 		throw failureException;
 	}
 }
