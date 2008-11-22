@@ -10,8 +10,15 @@ private ClientSystem<TASK, RESULT> clientSystem;
 	clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize);
 	}
 	
+	public void Start(){
+		clientSystem.Start();
+	}
+	public void Stop(){
+		clientSystem.Stop();
+	}
+	
 	public void AddTask(TASK task){
-		clientSystem.tasks.add(task);
+		clientSystem.tasks.offer(task);
 	}
 	
 	public RESULT GetResult() throws Exception{

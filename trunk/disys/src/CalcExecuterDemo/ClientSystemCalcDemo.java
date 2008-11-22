@@ -4,6 +4,7 @@ package CalcExecuterDemo;
 import java.util.Random;
 
 import Client.ClientSystem;
+import Client.RemoteClient;
 
 public class ClientSystemCalcDemo {
 	/**
@@ -17,18 +18,31 @@ public class ClientSystemCalcDemo {
 		Thread.sleep(2000);
 		return ;
 	}
+	RemoteClient<CalcTask, CalcResult> rc=new RemoteClient<CalcTask, CalcResult>(args[0],Integer.parseInt(args[1]),3);
+	rc.Start();
 	
-	ClientSystem<CalcTask, CalcResult> cs=new ClientSystem<CalcTask, CalcResult>(args[0],Integer.parseInt(args[1]),100);
-	cs.Start();
-	for(int i=0;i<220;i++) cs.tasks.offer(CreateRandomTask());
-	Thread.sleep(1000);
-	for(int i=0;i<90;i++) cs.tasks.offer(CreateRandomTask());
-	Thread.sleep(2000);
-	for(int i=0;i<110;i++) cs.tasks.offer(CreateRandomTask());
+	CalcTask ct1=new CalcTask(1,12);
+	CalcTask ct2=new CalcTask(2,11);
+	CalcTask ct3=new CalcTask(3,6);
+	CalcTask ct4=new CalcTask(4,3);
+	CalcTask ct5=new CalcTask(5,2);
+	CalcTask ct6=new CalcTask(6,10);
 	
-	//Thread.sleep(15000);
-	//System.console().readLine();
-	cs.Stop();
+	rc.AddTask(ct1);
+	rc.AddTask(ct2);
+	rc.AddTask(ct3);
+	rc.AddTask(ct4);
+	rc.AddTask(ct5);
+	rc.AddTask(ct6);
+	
+	for(int i=0;i<6;i++)
+		try {
+			System.out.println(rc.GetResult());
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+	rc.Stop();
 	System.out.println("Client Done!");
 	}
 	private static CalcTask CreateRandomTask(){

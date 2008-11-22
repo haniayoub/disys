@@ -1,1 +1,1 @@
-java -jar Client.jar localhost 3000
+java -jar Client.jar 132.69.138.119 3000
