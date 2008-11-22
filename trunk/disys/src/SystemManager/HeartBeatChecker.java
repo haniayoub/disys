@@ -31,18 +31,18 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					try {
 						ExecuterRemoteData erd = (ExecuterRemoteData)executersMap.get(ri).getItemReciever().getExecuterData();
 						if(erd == null)
-							Common.Loger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+							Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
 						executersMap.get(ri).setNumOfTasks(erd.numOfTasks);
 						executersMap.get(ri).setLog(erd.log);
 					} catch (RemoteException e) {
-						Common.Loger.TraceWarning("executer is not Alive:"
+						Common.Logger.TraceWarning("executer is not Alive:"
 								+ ri.toString() + " - Moved to Black List", null);
 						toDelete.add(ri);
 						blackList.put(ri, executersMap.get(ri));
 					}
 				}
 				for (ExecuterRemoteInfo ri : toDelete) {
-					Common.Loger.TraceInformation("Removing Executer :"
+					Common.Logger.TraceInformation("Removing Executer :"
 							+ ri.toString());
 					executersMap.remove(ri);
 				}
@@ -54,12 +54,12 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 						try {
 							ExecuterRemoteData erd = (ExecuterRemoteData)blackList.get(ri).getItemReciever().getExecuterData();
 							if(erd == null)
-								Common.Loger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+								Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
 							//executer responded, add it back to running executers list
 							executersMap.put(ri, blackList.get(ri));
 							blackList.remove(ri);
 						} catch (RemoteException e) {
-							Common.Loger.TraceWarning("executer is not Alive:"
+							Common.Logger.TraceWarning("executer is not Alive:"
 									+ ri.toString() + " - Removed from Black List (forever)", null);
 							blackList.remove(ri);
 						}
@@ -92,7 +92,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 	}
 
 	public void start() {
-		Common.Loger.TraceInformation("heartBeat Checker Started!");
+		Common.Logger.TraceInformation("heartBeat Checker Started!");
 		workerThread.start();
 	}
 
@@ -104,6 +104,6 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Common.Loger.TraceInformation("heartBeat Checker stoped working");
+		Common.Logger.TraceInformation("heartBeat Checker stoped working");
 	}
 }

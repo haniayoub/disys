@@ -1,6 +1,6 @@
 package Common;
-public class Loger {
-	final static int MaxLogLines=100;
+public class Logger {
+	final static int MaxLogLines=200;
 	
 	public static LogTracer logTracer=new LogTracer(MaxLogLines);
 	
@@ -12,7 +12,7 @@ public class Loger {
 		TraceException(e);
 		String msg="Warning:"+message;
 		System.out.println(msg);
-		if(e!=null)logTracer.addLine(e.getMessage());
+		if(e!=null)logTracer.addLine(e.getMessage()+"\n");
 		logTracer.addLine(msg);
 	}
 	public static void TraceError(String message,Exception e){

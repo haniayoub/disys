@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.Item;
-import Common.Loger;
+import Common.Logger;
 import Common.RemoteInfo;
 /***
  * RMI ITEM Collector , RMI Object implements Collect method which returns the 
@@ -37,7 +37,7 @@ public class RMIItemCollector<ITEM extends Item> extends RMIObjectBase
 	public Chunk<ITEM> Collect(long id) throws RemoteException {
 		String ip=this.GetClientHost();
 		if(ip==null){
-		Loger.TraceError("The Clinet Ip is null aborting Collect Items", null);
+		Logger.TraceError("The Clinet Ip is null aborting Collect Items", null);
 		return null;
 		}
 		ClientRemoteInfo address = new ClientRemoteInfo(ip, id);

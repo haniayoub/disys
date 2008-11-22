@@ -36,11 +36,11 @@ public class ChunkScheduler<TASK extends Item,RESULT extends Item> extends AWork
 		executerAddress=sysManager.Schedule(task.numberOfItems());
 			
 		} catch (RemoteException e) {
-			Common.Loger.TraceWarning("Failed to schdule a Chunk", e);
+			Common.Logger.TraceWarning("Failed to schdule a Chunk", e);
 			return task;
 		}
 		if(executerAddress==null){
-			Common.Loger.TraceWarning("Failed to schdule a Chunk : No executers Found", null);
+			Common.Logger.TraceWarning("Failed to schdule a Chunk : No executers Found", null);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -51,7 +51,7 @@ public class ChunkScheduler<TASK extends Item,RESULT extends Item> extends AWork
 		IRemoteItemReceiver<Chunk<TASK>> RemoteExecuter=
 			NetworkCommon.loadRMIRemoteObject(itemRecieverInfo);
 		if(RemoteExecuter==null){
-			Common.Loger.TraceWarning("Failed to schdule a Chunk :Connection Failed", null);
+			Common.Logger.TraceWarning("Failed to schdule a Chunk :Connection Failed", null);
 			return task;
 		}
 		
@@ -59,10 +59,10 @@ public class ChunkScheduler<TASK extends Item,RESULT extends Item> extends AWork
 			RemoteExecuter.Add(task);
 		
 		} catch (RemoteException e) {
-			Common.Loger.TraceWarning("Couldn't add Chunk to Remote Receiver:"+itemRecieverInfo.GetRmiAddress(), null);
+			Common.Logger.TraceWarning("Couldn't add Chunk to Remote Receiver:"+itemRecieverInfo.GetRmiAddress(), null);
 			return task;
 		}
-		Common.Loger.TraceInformation("Chunk [size:"+task.numberOfItems()+"] Sent to Remote Receiver:"+itemRecieverInfo.GetRmiAddress());
+		Common.Logger.TraceInformation("Chunk [size:"+task.numberOfItems()+"] Sent to Remote Receiver:"+itemRecieverInfo.GetRmiAddress());
 		resultCollector.WaitForResults(executerAddress.getResultCollectorInfo(),task);
 	    return null;
 	}

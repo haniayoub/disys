@@ -72,22 +72,22 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> {
 	
 		sysManager=NetworkCommon.loadRMIRemoteObject(systemManagerRemoteInfo);
 		if(sysManager==null){
-		Common.Loger.TerminateSystem("Failed to connecet to Remote System Mnager:"+
+		Common.Logger.TerminateSystem("Failed to connecet to Remote System Mnager:"+
 							systemManagerRemoteInfo.GetRmiAddress(), null);
 		}
-		Common.Loger.TraceInformation("conneceted to Remote System Mnager:"
+		Common.Logger.TraceInformation("conneceted to Remote System Mnager:"
 				+ systemManagerRemoteInfo.GetRmiAddress());
 		
 		try {
 			myRemoteInfo = sysManager.AssignClientRemoteInfo();
 		} catch (RemoteException e) {
-			Common.Loger.TerminateSystem("Remote System Mnager Failed to assign Remote ID to Client.",null);
+			Common.Logger.TerminateSystem("Remote System Mnager Failed to assign Remote ID to Client.",null);
 		}
 		
 		if (myRemoteInfo == null) 
-			Common.Loger.TerminateSystem("Remote System Failed Mnager to assign Remote ID to Client:null Client ID",null);		
+			Common.Logger.TerminateSystem("Remote System Failed Mnager to assign Remote ID to Client:null Client ID",null);		
 		
-		Common.Loger.TraceInformation("My Remote Info is :" + myRemoteInfo.toString());
+		Common.Logger.TraceInformation("My Remote Info is :" + myRemoteInfo.toString());
 	}
 
 	public void Start() {

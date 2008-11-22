@@ -35,11 +35,11 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	@Override
 	public ExecuterRemoteInfo Schedule(int numberOfTask) throws RemoteException {
 		if (executersMap.keySet().isEmpty()) return null;
-		Common.Loger.TraceInformation(this.GetClientHost() + " Whant to Execute "
+		Common.Logger.TraceInformation(this.GetClientHost() + " Whant to Execute "
 					+ numberOfTask + " Tasks");
 		
 		ExecuterRemoteInfo remoteInfo=ScheduleExecuter(numberOfTask);
-		Common.Loger.TraceInformation("Scheduling executer:" + remoteInfo.toString());
+		Common.Logger.TraceInformation("Scheduling executer:" + remoteInfo.toString());
 		return remoteInfo;
 	}
 
@@ -48,7 +48,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			throws RemoteException {
 		String address = this.GetClientHost();
 		if(address==null){
-		Common.Loger.TraceError("Can't add executer , address couldn't be resolved!",null);
+		Common.Logger.TraceError("Can't add executer , address couldn't be resolved!",null);
 		return;
 		}
 		ExecuterRemoteInfo remoteInfo = 
@@ -59,18 +59,18 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		IItemCollector<RESULT> rc=
 			NetworkCommon.loadRMIRemoteObject(remoteInfo.getResultCollectorInfo());
 		if(ir==null||rc==null){
-			Common.Loger.TraceError("Can't add executer, Couldn't Connect to RMI Objects",null);
+			Common.Logger.TraceError("Can't add executer, Couldn't Connect to RMI Objects",null);
 			return;
 		}
 		executersMap.put(remoteInfo,new ExecuterBox<TASK, RESULT>(ir,rc,false));
-		Common.Loger.TraceInformation("added:"+ remoteInfo.toString());
+		Common.Logger.TraceInformation("added:"+ remoteInfo.toString());
 	}
 
 	@Override
 	public ClientRemoteInfo AssignClientRemoteInfo() throws RemoteException {
 		String address = this.GetClientHost();
 		if(address==null){
-		Common.Loger.TraceError("Can't Create Client RemoteInfo , address couldn't be resolved!",null);
+		Common.Logger.TraceError("Can't Create Client RemoteInfo , address couldn't be resolved!",null);
 		return null;
 		}
 		ClientRemoteInfo remoteInfo = new ClientRemoteInfo(address, GetNextId());

@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import Common.Chunk;
 import Common.IExecutor;
 import Common.Item;
-import Common.Loger;
+import Common.Logger;
 import Common.RMIRemoteInfo;
 import Common.RemoteInfo;
 import Common.RemoteItem;
@@ -29,7 +29,8 @@ import WorkersSystem.WorkER.WorkerSystem;
  * @param <RESULT> Results Type to return 
  * @param <E> Executer Type
  */
-public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
+public 
+class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
 	//the chunks received from clients 
 	private BlockingQueue<Chunk<TASK>> recievedChunks = 
 		new LinkedBlockingQueue<Chunk<TASK>>();
@@ -66,13 +67,13 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 		try {
 			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks);
 		} catch (Exception e) {
-			Loger.TerminateSystem("Error intializing Remote Chunk Reciever", e);
+			Logger.TerminateSystem("Error intializing Remote Chunk Reciever", e);
 		}
 		
 		try {
 			itemCollector=new RMIItemCollector<RESULT>(clientResults);
 		} catch (Exception e) {
-			Loger.TerminateSystem("Error intializing Remote Chunk Reciever ", e);
+			Logger.TerminateSystem("Error intializing Remote Chunk Reciever ", e);
 		}
 		//////////////////////////Fire Wall problematic !!!!
 		sysManager=NetworkCommon.loadRMIRemoteObject(systemManagerRemoteInfo);
@@ -80,7 +81,7 @@ public class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExe
 		try {
 			sysManager.addExecuter(chunkReceiver.getPort(),itemCollector.getPort());
 		} catch (RemoteException e) {
-			Loger.TraceWarning("Couldn't add Executer to System Manager", e);
+			Logger.TraceWarning("Couldn't add Executer to System Manager", e);
 		}
 		}
 		///////////////////////////////////////////////
