@@ -1,1 +1,1 @@
-java -jar Executer.jar 132.69.138.119 3000
+java -jar Executer.jar localhost 3000
