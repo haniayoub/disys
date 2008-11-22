@@ -18,7 +18,7 @@ public class SystemManagerCalcDemo {
 			e.printStackTrace();
 		}
 		Common.Loger.TraceInformation("SystemManager is online");
-		System.console().readLine();
+		//System.console().readLine();
 		Common.Loger.TraceInformation("SystemManager Done!");
 	}
 }

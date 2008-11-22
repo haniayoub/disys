@@ -1,10 +1,5 @@
 package Common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.StringWriter;
-
-
 public class Loger {
 	//static StringBuilder Log=new StringBuilder();
 	public static void TraceInformation(String message){

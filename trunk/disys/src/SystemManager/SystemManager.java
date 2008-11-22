@@ -11,6 +11,7 @@ import Networking.IItemCollector;
 import Networking.IRemoteItemReceiver;
 import Networking.NetworkCommon;
 import Networking.RMIObjectBase;
+
 @SuppressWarnings("serial")
 public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObjectBase
 		implements ISystemManager<TASK> {
@@ -25,8 +26,10 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		new ConcurrentLinkedQueue<ExecuterRemoteInfo>();
 	//the next id to assign to Client
 	private int nextId = 0;
+	
 	//Round robin basis 
-	private int nextExecuter = 0;
+	//private int nextExecuter = 0;  /*Hani - RR isn't used*/
+	
 	//Component to check if Executers Still alive
 	private HeartBeatChecker<TASK, RESULT> checker;
 	
@@ -90,11 +93,19 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	//BUGBUG : modify this function to schedule task in the right way
 	//BUGBUG :if all the executers are blocked the function will stuck in a recursive
 	private ExecuterRemoteInfo ScheduleExecuter(int numberOfTasks){
-		if (nextExecuter > executerInfoList.size() - 1)
-			nextExecuter = 0; // scheduling is round robin basis
-		ExecuterRemoteInfo remoteInfo = (ExecuterRemoteInfo) (executerInfoList.toArray()[nextExecuter++]);
-		if(executersMap.get(remoteInfo).Blocked){
-			return ScheduleExecuter(numberOfTasks);
+		ExecuterRemoteInfo remoteInfo = null;
+		int minNumOfTasks = Integer.MAX_VALUE;
+		
+		for (ExecuterRemoteInfo ri : executerInfoList) 
+		{
+			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
+			if(eb.Blocked)
+				continue;
+			if(eb.getNumOfTasks() < minNumOfTasks)
+			{
+				remoteInfo = ri;
+				minNumOfTasks = eb.getNumOfTasks(); 
+			}
 		}
 		return remoteInfo;
 	}

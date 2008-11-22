@@ -16,7 +16,7 @@ public class ExecuterSystemCalcDemo {
 		ExecuterSystem<CalcTask,CalcResult,Calculator> es=new ExecuterSystem<CalcTask,CalcResult,Calculator>(new Calculator(), 5,args[0],Integer.parseInt(args[1])); 
 		System.out.println("Executer Started !");
 		es.Run(args);
-		System.console().readLine();
+		//System.console().readLine();
 		//Thread.sleep(10000);
 		es.Exit();
 		System.out.println("executer Done");

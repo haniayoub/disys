@@ -1,8 +1,10 @@
 package Client;
 
 import java.rmi.RemoteException;
+import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import Common.Chunk;
 import Common.ClientRemoteInfo;
@@ -27,7 +29,12 @@ import WorkersSystem.WorkER.WorkerSystem;
  */
 public class ClientSystem<TASK extends Item, RESULT extends Item> {
 	
-	public BlockingQueue<TASK> tasks = new LinkedBlockingQueue<TASK>();
+	public PriorityBlockingQueue<TASK> tasks = new PriorityBlockingQueue<TASK>(100, 
+			new Comparator<TASK>() {
+          		public int compare(TASK t1, TASK t2) {
+          			return t1.getPriority() < t2.getPriority() ? -1 : 1; 
+          		}
+        	});
 	private BlockingQueue<RESULT> results = new LinkedBlockingQueue<RESULT>();
 	private BlockingQueue<Chunk<TASK>> taskChunks = new LinkedBlockingQueue<Chunk<TASK>>();
 	

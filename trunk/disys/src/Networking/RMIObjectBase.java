@@ -72,6 +72,7 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 
 	@Override
 	public void Alive() throws RemoteException {
+		
 	}
 
 }
