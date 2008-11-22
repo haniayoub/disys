@@ -1,1 +1,1 @@
-java -jar Executer.jar
+java -jar Executer.jar localhost 3000
