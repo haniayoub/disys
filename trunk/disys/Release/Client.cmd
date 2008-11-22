@@ -1,1 +1,1 @@
-java -jar Client.jar
+java -jar Client.jar localhost 3000
