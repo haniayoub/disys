@@ -35,7 +35,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> {
           			return t1.getPriority() < t2.getPriority() ? -1 : 1; 
           		}
         	});
-	private BlockingQueue<RESULT> results = new LinkedBlockingQueue<RESULT>();
+	public  BlockingQueue<RESULT> results = new LinkedBlockingQueue<RESULT>();
 	private BlockingQueue<Chunk<TASK>> taskChunks = new LinkedBlockingQueue<Chunk<TASK>>();
 	
 	private ClientRemoteInfo myRemoteInfo;
@@ -98,5 +98,9 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> {
 	public void Stop() {
 		ws.stopWork();
 		resultCollector.Stop();
+	}
+	
+	public boolean isStable(){
+	return resultCollector.isIdle();
 	}
 }

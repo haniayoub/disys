@@ -35,6 +35,7 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	public RemoteData getExecuterData() throws RemoteException {
 		ExecuterRemoteData erd = new ExecuterRemoteData();
 		erd.numOfTasks = recievedItems.size();
+		erd.log=Common.Loger.logTracer.toString();
 		return erd;
 	}
 

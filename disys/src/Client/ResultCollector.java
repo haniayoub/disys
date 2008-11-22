@@ -110,6 +110,9 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 		}
 		Loger.TraceInformation("result Collector worker stoped working");
 	}
+	public boolean isIdle(){
+		return executersRemoteCollectors.isEmpty();
+	}
 	@SuppressWarnings("unchecked")
 	public void WaitForResults(RMIRemoteInfo ri,Chunk<TASK> chunk){
 	if(!executersRemoteCollectors.contains(ri)){
