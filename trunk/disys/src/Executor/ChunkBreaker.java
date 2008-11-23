@@ -23,6 +23,7 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 	@Override
 	public RemoteItem<ITEM> doItem(Chunk<ITEM> chunk) {
 		Item[] items=chunk.getItems();
+		Common.Logger.TraceInformation("New Chunk size["+items.length+"] recived from ["+chunk.getClientRemoteInfo()+"]");
 		for(Item item:items){
 			RemoteItem ri=new  RemoteItem(item,chunk.getClientRemoteInfo());
 			this.Results.add(ri);

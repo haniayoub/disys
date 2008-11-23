@@ -34,20 +34,28 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 	@Override
 	public RemoteItem<RESULT> doItem(RemoteItem<TASK> task) {
 		Item Result;
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(out));
+	    Common.Logger.TraceInformation("executing Task id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream std=System.out;
 		try{
-		Result = excutor.run(task.getItem());
-		if(!out.toString().isEmpty()){
-		StringBuilder sb=new StringBuilder();
-		sb.append("___________ Executer:["+myIP+"] Task:["+task.getId()+"]__________\n");
-		sb.append(out.toString());
-		sb.append("_____________________________________________________\n");
-		Result.setLog(sb.toString());
-		}
+			System.setOut(new PrintStream(out));	
+			Result = excutor.run(task.getItem());
+			if(!out.toString().isEmpty()){
+				StringBuilder sb=new StringBuilder();
+				sb.append("___________ Executer:["+myIP+"] Task:["+task.getId()+"]__________\n");
+				sb.append(out.toString());
+				sb.append("_____________________________________________________\n");
+				Result.setLog(sb.toString());
+			}
+			System.setOut(std);
 		}catch(Exception e){
-		Result=new Item(task.getId());
-		Result.setException(e);
+			System.setOut(std);
+			Common.Logger.TraceInformation("Exception While : executing Task id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");	
+			//Common.Logger.TraceInformation(e.getMessage());
+			Common.Logger.TraceInformation(e.toString()+" , see Stack Trace at Client");
+			Common.Logger.TraceInformation("attaching exception to Result id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");
+			Result=new Item(task.getId());
+			Result.setException(e);
 		}
 		return new RemoteItem(Result, task.getRemoteInfo());
 	}
