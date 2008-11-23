@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class Logger {
-	final static int MaxLogLines=200;
+	final static int MaxLogLines=500;
 	
 	public static LogTracer logTracer=new LogTracer(MaxLogLines);
 	
