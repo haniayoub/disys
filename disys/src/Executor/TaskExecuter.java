@@ -22,6 +22,7 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 		extends AWorker<RemoteItem<TASK>, RemoteItem<RESULT>> {
 	private E excutor;
 	private String myIP;
+	private static PrintStream std=System.out;
 
 	public TaskExecuter(E executor,String Ip, BlockingQueue<RemoteItem<TASK>> tasks,
 			BlockingQueue<RemoteItem<RESULT>> results) {
@@ -36,7 +37,6 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 		Item Result;
 	    Common.Logger.TraceInformation("executing Task id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");
 	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PrintStream std=System.out;
 		try{
 			System.setOut(new PrintStream(out));	
 			Result = excutor.run(task.getItem());
