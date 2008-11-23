@@ -51,7 +51,6 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 		}catch(Exception e){
 			System.setOut(std);
 			Common.Logger.TraceInformation("Exception While : executing Task id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");	
-			//Common.Logger.TraceInformation(e.getMessage());
 			Common.Logger.TraceInformation(e.toString()+" , see Stack Trace at Client");
 			Common.Logger.TraceInformation("attaching exception to Result id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");
 			Result=new Item(task.getId());
