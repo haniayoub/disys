@@ -35,7 +35,7 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 	@Override
 	public RemoteItem<RESULT> doItem(RemoteItem<TASK> task) {
 		Item Result;
-	    Common.Logger.TraceInformation("executing Task id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");
+	    Common.Logger.TraceInformation("executing Task id["+task.getId()+"] for ["+task.getRemoteInfo()+"]");
 	    ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try{
 			System.setOut(new PrintStream(out));	
@@ -50,9 +50,9 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 			System.setOut(std);
 		}catch(Exception e){
 			System.setOut(std);
-			Common.Logger.TraceInformation("Exception While : executing Task id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");	
+			Common.Logger.TraceInformation("Exception While : executing Task id["+task.getId()+"] for ["+task.getRemoteInfo()+"]");	
 			Common.Logger.TraceInformation(e.toString()+" , see Stack Trace at Client");
-			Common.Logger.TraceInformation("attaching exception to Result id["+task.getId()+"] for client ["+task.getRemoteInfo()+"]");
+			Common.Logger.TraceInformation("attaching exception to Result id["+task.getId()+"] for ["+task.getRemoteInfo()+"]");
 			Result=new Item(task.getId());
 			Result.setException(e);
 		}
