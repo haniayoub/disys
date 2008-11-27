@@ -29,12 +29,14 @@ public class ClientSystemCalcDemo {
 	CalcTask ct5=new CalcTask(5,2);
 	CalcTask ct6=new CalcTask(6,10);
 	
+	for(int i=1;i<100;i++){
 	rc.AddTask(ct1);
 	rc.AddTask(ct2);
 	rc.AddTask(ct3);
 	rc.AddTask(ct4);
 	rc.AddTask(ct5);
 	rc.AddTask(ct6);
+	}
 	
 	for(int i=0;i<6;i++)
 		try {
