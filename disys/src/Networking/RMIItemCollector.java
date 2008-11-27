@@ -23,7 +23,6 @@ public class RMIItemCollector<ITEM extends Item> extends RMIObjectBase
 	public static final String GlobalId = "itemCollector";
 
 	private ConcurrentHashMap<RemoteInfo, ConcurrentLinkedQueue<ITEM>> clientResults;
-
 	public RMIItemCollector(
 			ConcurrentHashMap<RemoteInfo, ConcurrentLinkedQueue<ITEM>> clientResults)
 			throws Exception {

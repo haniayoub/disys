@@ -21,7 +21,7 @@ import Networking.NetworkCommon;
  */
 public class ResultCollector<TASK extends Item,RESULT extends Item> {
 
-	private BlockingQueue<RESULT> resultsQueue;	
+	private ClientSystem<TASK, RESULT> system;	
 	private ConcurrentHashMap<RMIRemoteInfo,Integer> executers=new ConcurrentHashMap<RMIRemoteInfo, Integer>();
 	private ConcurrentHashMap<RMIRemoteInfo,IItemCollector<RESULT>> executersRemoteCollectors=
 		new ConcurrentHashMap<RMIRemoteInfo,IItemCollector<RESULT>>();
@@ -65,7 +65,7 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 					continue;
 				}
 				for (RESULT r : resultChunk.getItems())
-					resultsQueue.add(r);
+					system.AddResult(r);
 				Common.Logger.TraceInformation("new "+resultChunk.numberOfItems()+" results from:"+ri.GetRmiAddress());
 				executers.put(ri,executers.get(ri)-resultChunk.numberOfItems());
 				}
@@ -84,17 +84,13 @@ public class ResultCollector<TASK extends Item,RESULT extends Item> {
 			done=true;
 		}
 	}
-	
-
 	@SuppressWarnings("unchecked")
 	public ResultCollector(long myId,int period,
-			BlockingQueue<RESULT> resultsQueue) {
+			ClientSystem<TASK, RESULT> system) {
 		super();
-		
+		this.system=system;
 		myWorker=new Worker(myId,period);
-		
 		collectorThread = new Thread(myWorker);
-		this.resultsQueue=resultsQueue;
 	}
 	public void start(){
 		Logger.TraceInformation("Result Collector Started!");
