@@ -20,7 +20,6 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	public static final String GlobalId = "itemReciever";
 
 	private BlockingQueue<ITEM> recievedItems;
-
 	public RemoteItemReceiver(BlockingQueue<ITEM> itemsQueue) throws Exception {
 		super(GlobalId);
 		recievedItems = itemsQueue;
@@ -29,7 +28,7 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	@Override
 	public void Add(ITEM item) throws RemoteException {
 		recievedItems.add(item);
-	}
+		}
 
 	@Override
 	public RemoteData getExecuterData() throws RemoteException {

@@ -40,7 +40,7 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 		try{
 			System.setOut(new PrintStream(out));	
 			Result = excutor.run(task.getItem());
-			if(!out.toString().isEmpty()){
+			if(out.toString().length()!=0){
 				StringBuilder sb=new StringBuilder();
 				sb.append("___________ Executer:["+myIP+"] Task:["+task.getId()+"]__________\n");
 				sb.append(out.toString());

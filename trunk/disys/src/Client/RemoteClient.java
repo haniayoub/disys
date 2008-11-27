@@ -2,6 +2,7 @@ package Client;
 
 import java.util.concurrent.TimeUnit;
 
+import Common.Exceptions;
 import Common.Item;
 
 public class RemoteClient<TASK extends Item, RESULT extends Item> {
@@ -25,7 +26,7 @@ private ClientSystem<TASK, RESULT> clientSystem;
 	}
 	
 	public void AddTask(TASK task){
-		clientSystem.tasks.offer(task);
+		clientSystem.AddTask(task);
 		taskNum++;
 	}
 	
@@ -34,7 +35,7 @@ private ClientSystem<TASK, RESULT> clientSystem;
 			System.out.println("GetResult:No Tasks in execution / No Results available");
 			return null;
 		}
-		RESULT r=clientSystem.results.take();
+		RESULT r=clientSystem.Take();
 		taskNum--;
 		if(r.getLog()!=null) System.out.print(r.getLog());
 		if(r.getException()!=null) throw r.getException();
@@ -47,7 +48,7 @@ private ClientSystem<TASK, RESULT> clientSystem;
 			return null;
 		}
 		try {
-			RESULT r= clientSystem.results.poll(timeOut,timeUnit );
+			RESULT r= clientSystem.Poll(timeOut,timeUnit );
 			if(r==null) return null;
 			taskNum--;
 			if(r.getLog()!=null)System.out.print(r.getLog());
@@ -63,5 +64,12 @@ private ClientSystem<TASK, RESULT> clientSystem;
 	
 	public int GetTaskNum(){
 		return taskNum;
+	}
+	
+	
+	public void Exit() throws Exception{
+		if(taskNum!=0) throw new Exceptions.ClientException("The user didn't read all the Results of the tasks");
+			
+		clientSystem.Stop();
 	}
 }
