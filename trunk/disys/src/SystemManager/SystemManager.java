@@ -3,6 +3,7 @@ package SystemManager;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
 import Common.Item;
@@ -133,7 +134,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		{
 			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
 			try{
-				eb.getItemReciever().Add((TASK)ceTask);
+				Chunk<Item> c = new Chunk<Item>(-1, null, null, new Item[]{ceTask});
+				eb.getItemReciever().Add((TASK)c);
 			}
 			catch(Exception e)
 			{
