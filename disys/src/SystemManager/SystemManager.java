@@ -3,6 +3,8 @@ package SystemManager;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import sun.jdbc.odbc.ee.CommonDataSource;
+
 import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
 import Common.Item;
@@ -83,6 +85,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			RMIRemoteInfo riRMI =new RMIRemoteInfo(this.GetClientHost(), port, ID);
 			IClientRemoteObject cro = NetworkCommon.loadRMIRemoteObject(riRMI);
 			clientsMap.put(remoteInfo, new ClientBox(cro));
+			Common.Logger.TraceInformation("Client " + riRMI.toString() + " has been added to the system");
 		}
 		return remoteInfo;
 	}
