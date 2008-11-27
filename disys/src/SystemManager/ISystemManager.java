@@ -13,5 +13,5 @@ public interface ISystemManager<ITEM extends Item> extends Remote {
 	public void addExecuter(int itemReciverPort, int resultCollectorPort)
 			throws RemoteException;
 
-	public ClientRemoteInfo AssignClientRemoteInfo() throws RemoteException;
+	public ClientRemoteInfo AssignClientRemoteInfo(int port,String ID) throws RemoteException;
 }

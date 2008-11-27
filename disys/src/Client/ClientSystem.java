@@ -14,6 +14,7 @@ import Common.RMIRemoteInfo;
 import Common.SynchronizedCounter;
 import Networking.IClientRemoteObject;
 import Networking.NetworkCommon;
+import Networking.RMIObjectBase;
 import SystemManager.ISystemManager;
 import SystemManager.SystemManager;
 import WorkersSystem.WorkER.WorkerSystem;
@@ -29,7 +30,8 @@ import WorkersSystem.WorkER.WorkerSystem;
  * @param <RESULT>
  *            Results Type to recieve
  */
-public class ClientSystem<TASK extends Item, RESULT extends Item> implements IClientRemoteObject{
+@SuppressWarnings("serial")
+public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObjectBase implements IClientRemoteObject{
 	
 	private PriorityBlockingQueue<TASK> tasks = new PriorityBlockingQueue<TASK>(100, 
 			new Comparator<TASK>() {
@@ -50,11 +52,11 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> implements ICl
 	private ResultCollector<TASK,RESULT> resultCollector;
 	private SynchronizedCounter sCounter;
 	//private ItemPrinter<RESULT> resultPrinter = new ItemPrinter<RESULT>(results, null);
-
+	
 	private ISystemManager<TASK> sysManager;
-
-	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize) {
-		super();
+	public static final String GlobalID = "Client";
+	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize) throws Exception {
+		super(GlobalID);
 		sCounter=new SynchronizedCounter(0);
 		RemoteSysManagerInfo = new RMIRemoteInfo(SysManagerAddress,
 				sysManagerport, SystemManager.GlobalID);
@@ -82,7 +84,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> implements ICl
 				+ systemManagerRemoteInfo.GetRmiAddress());
 		
 		try {
-			myRemoteInfo = sysManager.AssignClientRemoteInfo();
+			myRemoteInfo = sysManager.AssignClientRemoteInfo(this.getPort(),GlobalID);
 		} catch (RemoteException e) {
 			Common.Logger.TerminateSystem("Remote System Mnager Failed to assign Remote ID to Client.",null);
 		}
