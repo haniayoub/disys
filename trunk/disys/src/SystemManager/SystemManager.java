@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
 import Common.Item;
+import Common.RMIRemoteInfo;
+import Networking.IClientRemoteObject;
 import Networking.IItemCollector;
 import Networking.IRemoteItemReceiver;
 import Networking.NetworkCommon;
@@ -21,6 +23,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	//executers In this System Manager
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap=
 		new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
+	private ConcurrentHashMap<ClientRemoteInfo, ClientBox> clientsMap=
+		new ConcurrentHashMap<ClientRemoteInfo, ClientBox>();
 	//the next id to assign to Client
 	private int nextId = 0;
 	
@@ -67,13 +71,19 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	}
 
 	@Override
-	public ClientRemoteInfo AssignClientRemoteInfo() throws RemoteException {
+	public ClientRemoteInfo AssignClientRemoteInfo(int port, String ID) throws RemoteException {
 		String address = this.GetClientHost();
 		if(address==null){
 		Common.Logger.TraceError("Can't Create Client RemoteInfo , address couldn't be resolved!",null);
 		return null;
 		}
 		ClientRemoteInfo remoteInfo = new ClientRemoteInfo(address, GetNextId());
+		if(!clientsMap.containsKey(remoteInfo))
+		{
+			RMIRemoteInfo riRMI =new RMIRemoteInfo(this.GetClientHost(), port, ID);
+			IClientRemoteObject cro = NetworkCommon.loadRMIRemoteObject(riRMI);
+			clientsMap.put(remoteInfo, new ClientBox(cro));
+		}
 		return remoteInfo;
 	}
 
@@ -99,5 +109,36 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			}
 		}
 		return remoteInfo;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String CleanExit() throws RemoteException{
+		for (ClientRemoteInfo ri  : clientsMap.keySet())
+		{
+			ClientBox cb = clientsMap.get(ri);
+			try{
+				if(!cb.isIdle())
+					return "Some clients still have undone tasks...";
+			}
+			catch(Exception e)
+			{
+				Common.Logger.TraceWarning("Client " + ri.toString() + " has been removed from the system", e);
+				clientsMap.remove(ri);
+			}
+		}
+		String s = ""; 
+		CleanExitTask ceTask = new CleanExitTask();
+		for (ExecuterRemoteInfo ri  : executersMap.keySet())
+		{
+			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
+			try{
+				eb.getItemReciever().Add((TASK)ceTask);
+			}
+			catch(Exception e)
+			{
+				s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response";
+			}
+		}
+		return "Clean Exit done. " + s;
 	}
 }

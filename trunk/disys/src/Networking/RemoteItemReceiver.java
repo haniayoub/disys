@@ -37,5 +37,4 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 		erd.log=Common.Logger.logTracer.toString();
 		return erd;
 	}
-
 }

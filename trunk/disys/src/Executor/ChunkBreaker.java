@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import Common.Chunk;
 import Common.Item;
 import Common.RemoteItem;
+import SystemManager.CleanExitTask;
 import WorkersSystem.WorkER.AWorker;
 
 /**
@@ -25,6 +26,12 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 		Item[] items=chunk.getItems();
 		Common.Logger.TraceInformation("New Chunk size["+items.length+"] recived from ["+chunk.getClientRemoteInfo()+"]");
 		for(Item item:items){
+			if(item instanceof CleanExitTask)
+			{
+				//TODO: free all buffers
+				System.out.print("Executer has been killed, exiting...");
+				System.exit(0);
+			}
 			RemoteItem ri=new  RemoteItem(item,chunk.getClientRemoteInfo());
 			this.Results.add(ri);
 		}
