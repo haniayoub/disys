@@ -14,4 +14,5 @@ public interface ISystemManager<ITEM extends Item> extends Remote {
 			throws RemoteException;
 
 	public ClientRemoteInfo AssignClientRemoteInfo(int port,String ID) throws RemoteException;
+	public String CleanExit() throws RemoteException;
 }
