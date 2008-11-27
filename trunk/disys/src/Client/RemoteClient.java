@@ -10,7 +10,11 @@ private ClientSystem<TASK, RESULT> clientSystem;
 	private int taskNum;
 	
 	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize) {
-	clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize);
+	try {
+		clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize);
+	} catch (Exception e) {
+		Common.Logger.TraceWarning("Client is not connected through RMI : this could interrupt system Clean Exit", e);
+	}
 	taskNum=0;
 	}
 	
