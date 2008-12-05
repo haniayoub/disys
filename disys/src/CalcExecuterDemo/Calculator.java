@@ -15,5 +15,8 @@ public class Calculator implements IExecutor<CalcTask,CalcResult>{
 		}
 		return cr;
 	}
+	public String toString(){
+		return "Calculator 1";
+	}
 
 }
