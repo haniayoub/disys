@@ -38,7 +38,7 @@ public class ClientSystemCalcDemo {
 	rc.AddTask(ct6);
 	}
 	
-	for(int i=0;i<6;i++)
+	for(int i=0;i<100;i++)
 		try {
 			System.out.println(rc.GetResult(100, TimeUnit.SECONDS));
 		} catch (Exception e) {
