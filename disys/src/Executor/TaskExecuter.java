@@ -21,6 +21,7 @@ import WorkersSystem.WorkER.AWorker;
 public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExecutor>
 		extends AWorker<RemoteItem<TASK>, RemoteItem<RESULT>> {
 	private E excutor;
+	private Object executerLock=new Object();
 	private String myIP;
 	private static PrintStream std=System.out;
 
@@ -30,19 +31,32 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 		this.excutor = executor;
 		myIP=Ip;
 	}
-
+	
+	public void UpdateExecuter(E executer){
+		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating Executer ["+this.excutor.getClass().getName()+"] "+this.myIP+ " To :"+executer.getClass().getName());
+	    synchronized(executerLock){
+	    Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating To :"+executer.getClass().getName()+" has Started ...");
+		this.excutor=executer;
+		executerLock.notifyAll();
+		}
+		
+		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Update Succeeded : "+this.excutor.getClass().getName());
+	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public RemoteItem<RESULT> doItem(RemoteItem<TASK> task) {
 		Item Result;
-	    Common.Logger.TraceInformation("executing Task id["+task.getId()+"] for ["+task.getRemoteInfo()+"]");
+	    Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]:executing Task id["+task.getId()+"] for ["+task.getRemoteInfo()+"]");
 	    ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try{
 			System.setOut(new PrintStream(out));	
+			//synchronized(executerLock){
 			Result = excutor.run(task.getItem());
+			//}
 			if(out.toString().length()!=0){
 				StringBuilder sb=new StringBuilder();
-				sb.append("___________ Executer:["+myIP+"] Task:["+task.getId()+"]__________\n");
+				sb.append("Wroker Thread ["+this.getId()+"]");
+				sb.append("___________ Executer:["+myIP+"] Wroker Thread ["+this.getId()+"] Task:["+task.getId()+"]__________\n");
 				sb.append(out.toString());
 				sb.append("_____________________________________________________\n");
 				Result.setLog(sb.toString());

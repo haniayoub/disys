@@ -15,10 +15,7 @@ public class WorkerSystem {
 
 	public synchronized void add(AWorker<? extends Item, ? extends Item> w,
 			int numOfWorkers) {
-		WorkerCollection wc = new WorkerCollection(w, numOfWorkers);
-		Workers.add(wc);
-		if (started)
-			wc.startWorking();
+		add(new WorkerCollection(w, numOfWorkers));
 	}
 
 	public synchronized void startWork() {
@@ -31,5 +28,11 @@ public class WorkerSystem {
 		for (WorkerCollection wc : Workers)
 			wc.stopWorking();
 		started = false;
+	}
+
+	public void add(WorkerCollection workerCollection) {
+		Workers.add(workerCollection);
+		if (started)
+			workerCollection.startWorking();
 	}
 }

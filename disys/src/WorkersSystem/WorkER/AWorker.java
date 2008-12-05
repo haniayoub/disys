@@ -11,11 +11,23 @@ public abstract class AWorker<T extends Item, R extends Item> implements
 	//the Queue to put results into
 	public BlockingQueue<R> Results;
 	private boolean stop = false;
-
+	private boolean workingOnItem = false;
+	private int id=0;
 	public AWorker(BlockingQueue<T> wi, BlockingQueue<R> rq) {
 		WorkItems = wi;
 		Results = rq;
 	}
+	
+  
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 
 	//poll items from WorkItemsQueue and put result in results Queue if any
 	public void RunWorker() {
@@ -30,7 +42,9 @@ public abstract class AWorker<T extends Item, R extends Item> implements
 			if (task == null)
 				continue;
 
+			workingOnItem=true;
 			res = doItem(task);
+			workingOnItem=false;
 			if (res == null || Results == null)
 				continue;
 			while (true) {
@@ -58,6 +72,9 @@ public abstract class AWorker<T extends Item, R extends Item> implements
 		return (AWorker<T, R>) super.clone();
 	}
 
+	public boolean isWorkingOnItem(){
+	return workingOnItem;
+	}
 	public abstract R doItem(T task);
 
 }

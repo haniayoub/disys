@@ -18,6 +18,7 @@ import Networking.RMIItemCollector;
 import Networking.RemoteItemReceiver;
 import SystemManager.ISystemManager;
 import SystemManager.SystemManager;
+import WorkersSystem.WorkER.WorkerCollection;
 import WorkersSystem.WorkER.WorkerSystem;
 
 /**
@@ -58,9 +59,8 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
     private RMIRemoteInfo systemManagerRemoteInfo;
     //number of task executers
     private int numerOfExecuters;
-    //
 	private WorkerSystem ws=new WorkerSystem();
-	
+	private WorkerCollection ExecutersCollection;
 	@SuppressWarnings("unchecked")
 	public ExecuterSystem(E executer,int numerOfWorkers,String SysManagerAddress,int sysManagerport) {
 		super();
@@ -92,9 +92,10 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,myID,tasks,results);
 		resultOrganizer=new RemoteItemOrganizer<RESULT>(results,clientResults);
 		numerOfExecuters= numerOfWorkers;
+		ExecutersCollection=new WorkerCollection(taskExecuter,numerOfExecuters);
 		
 		ws.add(chunkBreaker,1);
-		ws.add(taskExecuter,numerOfExecuters);
+		ws.add(ExecutersCollection);
 		ws.add(resultOrganizer,1);
 	}
 

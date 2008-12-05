@@ -23,6 +23,7 @@ public class WorkerCollection {
 			AWorker<? extends Item, ? extends Item> worker;
 			try {
 				worker = workerFactory.newWorker();
+				worker.setId(i);
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 				return;
@@ -60,5 +61,7 @@ public class WorkerCollection {
 	public BlockingQueue<? extends Item> ResultQueue() {
 		return workerFactory.MotherWorker.Results;
 	}
-
+	public  LinkedList<AWorker<? extends Item, ? extends Item>> getWorkerList(){
+	return workersList;
+	}
 }
