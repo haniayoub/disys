@@ -11,8 +11,10 @@ import Executor.ExecuterRemoteData;
 public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 	// executers In this System Manager
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap;
-	//private ConcurrentLinkedQueue<ExecuterRemoteInfo> executerInfoList;
-
+	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> blackList ;
+	
+	@SuppressWarnings({ "unused", "unchecked" })
+	private SystemManager sysm;
 	private Thread workerThread;
 	private Worker myWorker;
 	private int period = 100;
@@ -20,52 +22,99 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 
 	public class Worker implements Runnable {
 		private boolean done = false;
-		private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> blackList =
-			new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
+		private LinkedList<ExecuterRemoteInfo> toUpdate=new  LinkedList<ExecuterRemoteInfo>();
 		private int blackListCounter = 0;
 		//check the heart beat of each executer 
 		public void run() {
 			while (!done) {
-				LinkedList<ExecuterRemoteInfo> toDelete = new LinkedList<ExecuterRemoteInfo>();
-				for (ExecuterRemoteInfo ri : executersMap.keySet()) {
-					try {
-						ExecuterRemoteData erd = (ExecuterRemoteData)executersMap.get(ri).getItemReciever().getExecuterData();
-						if(erd == null)
-							Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
-						executersMap.get(ri).setNumOfTasks(erd.numOfTasks);
-						executersMap.get(ri).setLog(erd.log);
-					} catch (RemoteException e) {
-						Common.Logger.TraceWarning("executer is not Alive:"
-								+ ri.toString() + " - Moved to Black List", null);
-						toDelete.add(ri);
-						blackList.put(ri, executersMap.get(ri));
-					}
-				}
-				for (ExecuterRemoteInfo ri : toDelete) {
-					Common.Logger.TraceInformation("Removing Executer :"
-							+ ri.toString());
-					executersMap.remove(ri);
-				}
+				HeartBeatExecuters();
+				CheckToUpdateList();
 				blackListCounter++;
-				if(blackListCounter%10 == 0)
+				if(blackListCounter%10 == 0){
 					blackListCounter = 0;
-					for (ExecuterRemoteInfo ri : blackList.keySet())
-					{
-						try {
-							ExecuterRemoteData erd = (ExecuterRemoteData)blackList.get(ri).getItemReciever().getExecuterData();
-							if(erd == null)
-								Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
-							//executer responded, add it back to running executers list
-							executersMap.put(ri, blackList.get(ri));
-							blackList.remove(ri);
-						} catch (RemoteException e) {
-							continue;
-						}
-					}
+					CheckBLackList();
+				}
 				sleep(period);
 			}
 		}
-
+		private void HeartBeatExecuters(){
+			LinkedList<ExecuterRemoteInfo> toDelete = new LinkedList<ExecuterRemoteInfo>();
+			for (ExecuterRemoteInfo ri : executersMap.keySet()) {
+				try {
+					ExecuterRemoteData erd = (ExecuterRemoteData)executersMap.get(ri).getItemReciever().getExecuterData();
+					if(erd == null)
+						Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+					executersMap.get(ri).setNumOfTasks(erd.numOfTasks);
+					executersMap.get(ri).setLog(erd.log);
+				} catch (RemoteException e) {
+					Common.Logger.TraceWarning("executer is not Alive:"
+							+ ri.toString() + " - Moved to Black List", null);
+					toDelete.add(ri);
+					blackList.put(ri, executersMap.get(ri));
+				}
+			}
+			for (ExecuterRemoteInfo ri : toDelete) {
+				Common.Logger.TraceInformation("Removing Executer :"
+						+ ri.toString());
+				executersMap.remove(ri);
+			}
+		}
+		private void CheckBLackList(){
+		    for (ExecuterRemoteInfo ri : blackList.keySet())
+			{
+				try {
+					ExecuterRemoteData erd = (ExecuterRemoteData)blackList.get(ri).getItemReciever().getExecuterData();
+					if(erd == null)
+						{
+						Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+						continue;
+						}
+					if(erd.Version < sysm.GetLastVersion()) {
+						Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersion(),null);
+						sysm.updateExecuter(ri);
+						toUpdate.add(ri);
+						continue;
+					}
+					Common.Logger.TraceInformation("Executer "+ ri.toString()+" is Online and up to Date version:"+erd.Version +" Removing from black List");
+					executersMap.put(ri, blackList.get(ri));
+					blackList.remove(ri);
+				} catch (RemoteException e) {
+					continue;
+				}
+			}
+		}
+		private void CheckToUpdateList(){
+			LinkedList<ExecuterRemoteInfo> toDelete = new LinkedList<ExecuterRemoteInfo>();
+			for (ExecuterRemoteInfo ri : toUpdate)
+			{
+				ExecuterRemoteData erd=null;
+				try {
+					erd = (ExecuterRemoteData)blackList.get(ri).getItemReciever().getExecuterData();
+				} catch (RemoteException e) {
+					toDelete.add(ri);
+					continue;
+				}
+				if(erd == null)
+					{
+					Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+					toDelete.add(ri);
+					continue;
+					}
+				if(erd.Version < sysm.GetLastVersion()) {
+					Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version,null);
+					continue;
+				}
+				Common.Logger.TraceInformation("Executer "+ ri.toString()+" is up to Date version:"+erd.Version +" Removing from black List");
+				executersMap.put(ri, blackList.get(ri));
+				blackList.remove(ri);
+				toDelete.add(ri);
+			}
+			for (ExecuterRemoteInfo ri : toDelete) {
+				Common.Logger.TraceInformation("Removing Executer :"
+						+ ri.toString());
+				toUpdate.remove(ri);
+			}
+		}
 		private void sleep(final int period) {
 			try {
 				Thread.sleep(period);
@@ -79,11 +128,16 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public HeartBeatChecker(
+			SystemManager systemM,
 			ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap,
+			ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> blackList ,
 			int period) {
 		super();
+		this.sysm=systemM;
 		this.executersMap = executersMap;
+		this.blackList=blackList;
 		myWorker = new Worker();
 		workerThread = new Thread(myWorker);
 		this.period = period;

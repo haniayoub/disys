@@ -17,8 +17,9 @@ import Executor.ExecuterRemoteData;
 @SuppressWarnings("serial")
 public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 		implements IRemoteItemReceiver<ITEM> {
+	public int Version=0; 
 	public static final String GlobalId = "itemReciever";
-
+	
 	private BlockingQueue<ITEM> recievedItems;
 	public RemoteItemReceiver(BlockingQueue<ITEM> itemsQueue) throws Exception {
 		super(GlobalId);
@@ -34,6 +35,7 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	public RemoteData getExecuterData() throws RemoteException {
 		ExecuterRemoteData erd = new ExecuterRemoteData();
 		erd.numOfTasks = recievedItems.size();
+		erd.Version = this.Version; 
 		erd.log=Common.Logger.logTracer.toString();
 		return erd;
 	}

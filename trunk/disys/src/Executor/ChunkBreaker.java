@@ -45,6 +45,7 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 				Common.Logger.TraceInformation("Update Command [Task] recieved , update to :"+((AutoUpdateTask)item).className);
 				try{
 					es.updateExecuters((AutoUpdateTask)item);
+					es.GetItemReciver().Version=((AutoUpdateTask)item).version;
 				}
 				catch(Exception e){
 					Common.Logger.TraceWarning("Executer System Could not update executers", e);
