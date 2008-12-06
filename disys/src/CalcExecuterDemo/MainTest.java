@@ -1,7 +1,7 @@
 package CalcExecuterDemo;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import AutoUpdate.JarClassLoader;
 import Common.IExecutor;
@@ -16,7 +16,10 @@ public class MainTest {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws IOException {
 		String filePath = "D:\\study\\projects\\Distrebuted\\WorkSpace\\disys\\Release\\NewJar.jar";
-		JarClassLoader jcl=new JarClassLoader(new URL("jar:"+filePath+"!/"),filePath);
+		//String jarPath="jar:file://"+filePath+"!/";
+		//URL url=new File(filePath).toURI().toURL();
+		//System.out.println(url.toString());
+		JarClassLoader jcl=new JarClassLoader(new File(filePath));
 		for(String s:jcl.getSubClassesof(IExecutor.class,false)) {
 			System.out.println(s);
 			IExecutor ex=null;
