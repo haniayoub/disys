@@ -46,6 +46,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		File f=new File(UpdateDir);
 		f.mkdir();
 		UpdateVer=getLastVersion(f);
+		Common.Logger.TraceInformation("System Last Version "+UpdateVer);
 	}
 	
 	private int getLastVersion(File dir){
