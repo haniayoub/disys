@@ -2,6 +2,7 @@ package Executor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
@@ -129,5 +130,24 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 			Common.Logger.TraceInformation("New Class " + item.className + "will be dynamically loaded...");
 			((TaskExecuter)e).UpdateExecuter((IExecutor)jcl.loadClass(item.className).newInstance());
 		}
+	}
+	
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws InterruptedException, IOException {
+		if(args.length<2){
+			System.out.println("parameters: [System Manager Address] [System Manager Port]");
+			Thread.sleep(2000);
+			return ;
+		}
+		ExecuterSystem es=new ExecuterSystem(null, 3,args[0],Integer.parseInt(args[1])); 
+		System.out.println("Executer Started !");
+		es.Run(args);
+		System.in.read();
+		es.Exit();
+		System.out.println("executer Done");
 	}
 }
