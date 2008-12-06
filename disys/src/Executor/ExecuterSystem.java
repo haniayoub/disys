@@ -9,6 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import AutoUpdate.JarClassLoader;
 import Common.Chunk;
 import Common.IExecutor;
@@ -39,6 +40,9 @@ import WorkersSystem.WorkER.WorkerSystem;
  */
 public 
 class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
+	
+	public static final String UpdateDir = "ExecuterUpdateJars";
+	public static final String UpdateExtension = "ujar";
 	
 	//the chunks received from clients 
 	private BlockingQueue<Chunk<TASK>> recievedChunks = 
@@ -71,6 +75,8 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	@SuppressWarnings("unchecked")
 	public ExecuterSystem(E executer,int numerOfWorkers,String SysManagerAddress,int sysManagerport) {
 		super();
+		File f=new File(UpdateDir);
+		f.mkdir();
 		systemManagerRemoteInfo=new RMIRemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
 		try {
 			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks);
@@ -118,20 +124,26 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 
 	@SuppressWarnings("unchecked")
 	public void updateExecuters(AutoUpdateTask item) throws MalformedURLException, InstantiationException, IllegalAccessException, ClassNotFoundException, FileNotFoundException {
+
+		String fileName =getLastVerFile(item.version);
+		Common.Logger.TraceInformation("Saving new Update Jar File to:"+fileName);
+		JarFileReader.WriteFile(fileName, item.jf);
+		
+		File f = new File(fileName);
+		JarClassLoader jcl = new JarClassLoader(f);
+		Common.Logger.TraceInformation("New Class " + item.className + " will be dynamically loaded...");
+		
 		for(AWorker e : ExecutersCollection.getWorkerList())
 		{
-			Common.Logger.TraceInformation("Updating Executer...");
-			
-			String fileName = item.className + "_version" + item.version.toString();
-			JarFileReader.WriteFile(fileName, item.jf);
-			File f = new File(fileName);
-			JarClassLoader jcl = new JarClassLoader(f);
-			
-			Common.Logger.TraceInformation("New Class " + item.className + "will be dynamically loaded...");
-			((TaskExecuter)e).UpdateExecuter((IExecutor)jcl.loadClass(item.className).newInstance());
+			Common.Logger.TraceInformation("Updating Executer :"+e.getId());
+			IExecutor newExecuter=(IExecutor)jcl.loadClass(item.className).newInstance();
+			((TaskExecuter)e).UpdateExecuter(newExecuter);
 		}
 	}
 	
+	private String getLastVerFile(int UpdateVer){
+		return UpdateDir+"\\"+UpdateVer+"."+UpdateExtension;
+	}
 	/**
 	 * @param args
 	 * @throws IOException 

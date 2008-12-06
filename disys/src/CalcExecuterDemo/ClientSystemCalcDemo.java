@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import Client.RemoteClient;
-import Common.JarFileReader;
 
 public class ClientSystemCalcDemo {
 	/**
@@ -20,10 +19,7 @@ public class ClientSystemCalcDemo {
 		Thread.sleep(2000);
 		return ;
 	}
-	RemoteClient<CalcTask, CalcResult> rc=new RemoteClient<CalcTask, CalcResult>(args[0],Integer.parseInt(args[1]),3);
-	
-	byte[] arr = JarFileReader.ReadFileBytes("Release\\NewJar.jar");
-	rc.clientSystem.sysManager.Update(arr, "CalcExecuterDemo.Calculator2");
+	RemoteClient<CalcTask, CalcResult> rc=new RemoteClient<CalcTask, CalcResult>(args[0],Integer.parseInt(args[1]),3,"release\\newjar.jar",Calculator2.class.getName());
 	rc.Start();
 	
 	CalcTask ct1=new CalcTask(1,12);

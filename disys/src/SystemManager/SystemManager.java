@@ -187,13 +187,15 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public String Update(byte[] jar,String className) throws RemoteException
 	{
 		UpdateVer++;
+		Common.Logger.TraceInformation("System is updating to version "+UpdateVer+" new Executer ["+className+"]");
 		try {
-			JarFileReader.WriteFile(this.getLastVerFile(),jar);
+			String newVerFile=this.getLastVerFile();
+			Common.Logger.TraceInformation("Saving New Update Jar to :"+newVerFile);
+			JarFileReader.WriteFile(newVerFile,jar);
 		} catch (FileNotFoundException e1) {
 			UpdateVer--;
 			e1.printStackTrace();
-			return "failed to update";
-			//s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response";
+			return "failed to update File not Found ";
 		}
 		
 		String s="";
@@ -203,18 +205,23 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		} catch (FileNotFoundException e) {
 			throw(new RemoteException(e.toString()));
 		}
+		Common.Logger.TraceInformation("Sendig Update Task to Executers");
+		Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{auTask});
 		for (ExecuterRemoteInfo ri  : executersMap.keySet())
 		{
 			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
 			try{
-				Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{auTask});
 				eb.getItemReciever().Add((TASK)c);
 			}
 			catch(Exception e)
 			{
-				s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response";
+				Common.Logger.TraceInformation( "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response"+"\n");
+				s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response"+"\n";
+				//TODO: put executer in black list
 			}
 		}
+		Common.Logger.TraceInformation("Update operation has been sent to executers");
+		s+="Update operation has been sent to executers";
 		return s;
 	}
 	
