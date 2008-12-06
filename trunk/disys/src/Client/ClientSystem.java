@@ -1,5 +1,6 @@
 package Client;
 
+import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.Item;
+import Common.JarFileReader;
 import Common.RMIRemoteInfo;
 import Common.SynchronizedCounter;
 import Networking.IClientRemoteObject;
@@ -53,7 +55,11 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	private SynchronizedCounter sCounter;
 	//private ItemPrinter<RESULT> resultPrinter = new ItemPrinter<RESULT>(results, null);
 	
-	public ISystemManager<TASK> sysManager;  //TODO: Change to be private...
+	private ISystemManager<TASK> sysManager;  //TODO: Change to be private...
+	
+	private String updateJarPath;
+	private String executerClassName;
+	
 	public static final String GlobalID = "Client";
 	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize) throws Exception {
 		super(GlobalID);
@@ -70,6 +76,26 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		ws.add(chunkCreatorWorker, 1);
 		ws.add(chunkScheduler, 1);
 	}
+	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize,String updateJarPath,String executerClassName) throws Exception {
+		super(GlobalID);
+		this.updateJarPath=updateJarPath;
+		this.executerClassName=executerClassName;
+		sCounter=new SynchronizedCounter(0);
+		RemoteSysManagerInfo = new RMIRemoteInfo(SysManagerAddress,
+				sysManagerport, SystemManager.GlobalID);
+		ConnectToSystemManager(RemoteSysManagerInfo);
+		chunkCreatorWorker = new ChunkCreator<TASK>(tasks, taskChunks,
+				myRemoteInfo, chunkSize);
+		resultCollector = new ResultCollector<TASK,RESULT>(myRemoteInfo.Id(),1000,this);
+		chunkScheduler = new ChunkScheduler<TASK, RESULT>(sysManager,
+				resultCollector, taskChunks, taskChunks);
+
+		ws.add(chunkCreatorWorker, 1);
+		ws.add(chunkScheduler, 1);
+	}
+	
+	
+	
 
 	@SuppressWarnings("unchecked")
 	public void ConnectToSystemManager(RMIRemoteInfo systemManagerRemoteInfo) {
@@ -81,7 +107,26 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		}
 		Common.Logger.TraceInformation("conneceted to Remote System Mnager:"
 				+ systemManagerRemoteInfo.GetRmiAddress());
+		if(this.updateJarPath!=null&&this.executerClassName!=null){
+			byte[] arr=null;
+			try {
+				Common.Logger.TraceInformation("Reading update jar File "+this.updateJarPath);
+				arr = JarFileReader.ReadFileBytes(this.updateJarPath);
+			} catch (FileNotFoundException e) {
+				Common.Logger.TerminateSystem("Failed to find update jar file: "+updateJarPath,e);
+				
+			}
+			try {
+				Common.Logger.TraceInformation("Updating sysatem Manager ... ");
+				String s=sysManager.Update(arr,this.executerClassName);
+				Common.Logger.TraceInformation("Update: "+s);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		try {
+			
 			myRemoteInfo = sysManager.AssignClientRemoteInfo(this.getPort(),GlobalID);
 		} catch (RemoteException e) {
 			Common.Logger.TerminateSystem("Remote System Mnager Failed to assign Remote ID to Client.",null);

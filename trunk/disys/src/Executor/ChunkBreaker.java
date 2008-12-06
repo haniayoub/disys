@@ -34,12 +34,15 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 		for(Item item:items){
 			if(item instanceof CleanExitTask)
 			{
+				Common.Logger.TraceInformation("Exit Command [Task] recieved");
 				//TODO: free all buffers
-				System.out.print("Executer has been killed, exiting...");
-				System.exit(0);
+				//System.out.print("Executer has been killed, exiting...");
+				//System.exit(0);
+				Common.Logger.TerminateSystem("Executer has been killed, exiting...", null);
 			}
 			if(item instanceof AutoUpdateTask)
 			{
+				Common.Logger.TraceInformation("Update Command [Task] recieved , update to :"+((AutoUpdateTask)item).className);
 				try{
 					es.updateExecuters((AutoUpdateTask)item);
 				}
