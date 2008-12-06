@@ -59,9 +59,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 							executersMap.put(ri, blackList.get(ri));
 							blackList.remove(ri);
 						} catch (RemoteException e) {
-							Common.Logger.TraceWarning("executer is not Alive:"
-									+ ri.toString() + " - Removed from Black List (forever)", null);
-							blackList.remove(ri);
+							continue;
 						}
 					}
 				sleep(period);

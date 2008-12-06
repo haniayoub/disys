@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import Common.Chunk;
 import Common.Item;
 import Common.RemoteItem;
+import SystemManager.AutoUpdateTask;
 import SystemManager.CleanExitTask;
 import WorkersSystem.WorkER.AWorker;
 
@@ -16,9 +17,14 @@ import WorkersSystem.WorkER.AWorker;
  */
 public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteItem<ITEM>> {
 
-	public ChunkBreaker(BlockingQueue<Chunk<ITEM>> wi, BlockingQueue<RemoteItem<ITEM>> rq) {
+	@SuppressWarnings("unchecked")
+	public ChunkBreaker(BlockingQueue<Chunk<ITEM>> wi, BlockingQueue<RemoteItem<ITEM>> rq, ExecuterSystem es) {
 		super(wi, rq);
+		this.es = es;
 	}
+	
+	@SuppressWarnings("unchecked")
+	ExecuterSystem es;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -31,6 +37,15 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 				//TODO: free all buffers
 				System.out.print("Executer has been killed, exiting...");
 				System.exit(0);
+			}
+			if(item instanceof AutoUpdateTask)
+			{
+				try{
+					es.updateExecuters((AutoUpdateTask)item);
+				}
+				catch(Exception e){
+					Common.Logger.TraceWarning("Executer System Could not update executers", e);
+				}
 			}
 			RemoteItem ri=new  RemoteItem(item,chunk.getClientRemoteInfo());
 			this.Results.add(ri);
