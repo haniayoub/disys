@@ -6,7 +6,7 @@ import Common.Exceptions;
 import Common.Item;
 
 public class RemoteClient<TASK extends Item, RESULT extends Item> {
-private ClientSystem<TASK, RESULT> clientSystem;
+	public ClientSystem<TASK, RESULT> clientSystem; //TODO: change to private
 	private int taskNum;
 	
 	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize) {
