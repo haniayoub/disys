@@ -33,14 +33,21 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 	}
 	
 	public void UpdateExecuter(E executer){
-		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating Executer ["+this.excutor.getClass().getName()+"] "+this.myIP+ " To :"+executer.getClass().getName());
+		String oldExecuterClass=null;
+		if(this.excutor!= null) this.excutor.getClass().getName();
+		String newExecuterClass=null;
+		if(excutor!= null) excutor.getClass().getName();
+		
+		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating Executer ["+oldExecuterClass+"] "+this.myIP+ " To :"+newExecuterClass);
 	    synchronized(executerLock){
-	    Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating To :"+executer.getClass().getName()+" has Started ...");
+	    	oldExecuterClass=null;
+			if(this.excutor!= null) this.excutor.getClass().getName();
+	    	Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating To :"+oldExecuterClass+" has Started ...");
 		this.excutor=executer;
 		executerLock.notifyAll();
 		}
 		
-		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Update Succeeded : "+this.excutor.getClass().getName());
+		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Update Succeeded : "+oldExecuterClass);
 	}
 	@SuppressWarnings("unchecked")
 	@Override
