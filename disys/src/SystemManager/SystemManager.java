@@ -191,6 +191,10 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	@SuppressWarnings({ "unchecked", "unchecked" })
 	public String Update(byte[] jar,String className) throws RemoteException
 	{
+		if(!this.clientsMap.isEmpty()) {
+			Common.Logger.TraceWarning("Can't Update While There is Clients Connected to the system !", null);
+			return "Can't Update While There is Clients Connected to the system !";
+		}
 		UpdateVer++;
 		Common.Logger.TraceInformation("System is updating to version "+UpdateVer+" new Executer ["+className+"]");
 		try {
