@@ -1,7 +1,11 @@
 package SystemManager;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Common.Chunk;
 import Common.ClientRemoteInfo;
@@ -19,6 +23,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		implements ISystemManager<TASK> {
 	//RMI object Id
 	public static final String GlobalID = "SystemManager";
+	public static final String UpdateDir = "UpdateJars";
+	public static final String UpdateExtension = "ujar";
 	//Max ID to assign to Clients
 	private static final int MAX_ID = 10000;
 	//executers In this System Manager
@@ -28,6 +34,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		new ConcurrentHashMap<ClientRemoteInfo, ClientBox>();
 	//the next id to assign to Client
 	private int nextId = 0;
+	private int UpdateVer = 0;
 	
 	//Component to check if Executers Still alive
 	private HeartBeatChecker<TASK, RESULT> checker;
@@ -36,7 +43,34 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		super(GlobalID);
 		checker=new HeartBeatChecker<TASK, RESULT>(executersMap,200);
 		checker.start();
+		File f=new File(UpdateDir);
+		f.mkdir();
+		UpdateVer=getLastVersion(f);
 	}
+	
+	private int getLastVersion(File dir){
+		File[] files=dir.listFiles(new FilenameFilter(){
+
+			@Override
+			public boolean accept(File dir, String name) {
+				
+				return name.endsWith(UpdateExtension);
+			}
+		});
+		int maxVer=0;
+		int curr=0;
+		for(File f:files){
+		curr=Integer.parseInt(f.getName().replace("."+UpdateExtension,""));
+		if(maxVer<curr)maxVer=curr;
+		}
+		return maxVer;
+	}
+	
+	private String getLastVerFile(){
+		return UpdateDir+"\\"+UpdateVer+"."+UpdateExtension;
+	}
+	
+	
 	@Override
 	public ExecuterRemoteInfo Schedule(int numberOfTask) throws RemoteException {
 		if (executersMap.keySet().isEmpty()) return null;
@@ -144,4 +178,9 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		}
 		return "Clean Exit done. " + s;
 	}
+	/*
+	@Override
+	public void Update(byte[] jar, String className) throws RemoteException {
+		
+	}*/
 }
