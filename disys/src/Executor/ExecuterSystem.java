@@ -1,14 +1,18 @@
 package Executor;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
+import AutoUpdate.JarClassLoader;
 import Common.Chunk;
 import Common.IExecutor;
 import Common.Item;
+import Common.JarFileReader;
 import Common.Logger;
 import Common.RMIRemoteInfo;
 import Common.RemoteInfo;
@@ -16,8 +20,10 @@ import Common.RemoteItem;
 import Networking.NetworkCommon;
 import Networking.RMIItemCollector;
 import Networking.RemoteItemReceiver;
+import SystemManager.AutoUpdateTask;
 import SystemManager.ISystemManager;
 import SystemManager.SystemManager;
+import WorkersSystem.WorkER.AWorker;
 import WorkersSystem.WorkER.WorkerCollection;
 import WorkersSystem.WorkER.WorkerSystem;
 
@@ -87,7 +93,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		}
 		///////////////////////////////////////////////
 		
-		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks);
+		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks, this);
 		String myID=chunkReceiver.getRmiID();
 		taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,myID,tasks,results);
 		resultOrganizer=new RemoteItemOrganizer<RESULT>(results,clientResults);
@@ -107,5 +113,21 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		 ws.stopWork();
 		 chunkReceiver.Dispose();
 		 itemCollector.Dispose();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void updateExecuters(AutoUpdateTask item) throws MalformedURLException, InstantiationException, IllegalAccessException, ClassNotFoundException, FileNotFoundException {
+		for(AWorker e : ExecutersCollection.getWorkerList())
+		{
+			Common.Logger.TraceInformation("Updating Executer...");
+			
+			String fileName = item.className + "_version" + item.version.toString();
+			JarFileReader.WriteFile(fileName, item.jf);
+			File f = new File(fileName);
+			JarClassLoader jcl = new JarClassLoader(f);
+			
+			Common.Logger.TraceInformation("New Class " + item.className + "will be dynamically loaded...");
+			((TaskExecuter)e).UpdateExecuter((IExecutor)jcl.loadClass(item.className).newInstance());
+		}
 	}
 }
