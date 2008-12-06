@@ -22,8 +22,8 @@ public class ClientSystemCalcDemo {
 	}
 	RemoteClient<CalcTask, CalcResult> rc=new RemoteClient<CalcTask, CalcResult>(args[0],Integer.parseInt(args[1]),3);
 	
-	byte[] arr = JarFileReader.ReadFileBytes("NewJar.jar");
-	rc.clientSystem.sysManager.Update(arr, "Calculator2");
+	byte[] arr = JarFileReader.ReadFileBytes("Release\\NewJar.jar");
+	rc.clientSystem.sysManager.Update(arr, "CalcExecuterDemo.Calculator2");
 	rc.Start();
 	
 	CalcTask ct1=new CalcTask(1,12);
@@ -33,7 +33,7 @@ public class ClientSystemCalcDemo {
 	CalcTask ct5=new CalcTask(5,2);
 	CalcTask ct6=new CalcTask(6,10);
 	
-	for(int i=1;i<100;i++){
+	for(int i=1;i<3;i++){
 	rc.AddTask(ct1);
 	rc.AddTask(ct2);
 	rc.AddTask(ct3);
@@ -42,7 +42,7 @@ public class ClientSystemCalcDemo {
 	rc.AddTask(ct6);
 	}
 	
-	for(int i=0;i<100;i++)
+	for(int i=0;i<3;i++)
 		try {
 			System.out.println(rc.GetResult(100, TimeUnit.SECONDS));
 		} catch (Exception e) {

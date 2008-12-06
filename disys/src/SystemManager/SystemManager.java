@@ -184,6 +184,16 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	@SuppressWarnings({ "unchecked", "unchecked" })
 	public String Update(byte[] jar,String className) throws RemoteException
 	{
+		UpdateVer++;
+		try {
+			JarFileReader.WriteFile(this.getLastVerFile(),jar);
+		} catch (FileNotFoundException e1) {
+			UpdateVer--;
+			e1.printStackTrace();
+			return "failed to update";
+			//s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response";
+		}
+		
 		String s="";
 		AutoUpdateTask auTask=null;
 		try {

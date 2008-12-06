@@ -46,6 +46,7 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 				catch(Exception e){
 					Common.Logger.TraceWarning("Executer System Could not update executers", e);
 				}
+				return null;
 			}
 			RemoteItem ri=new  RemoteItem(item,chunk.getClientRemoteInfo());
 			this.Results.add(ri);
