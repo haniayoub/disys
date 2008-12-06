@@ -1,16 +1,16 @@
 package SystemManager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
 import Common.Item;
+import Common.JarFileReader;
 import Common.RMIRemoteInfo;
 import Networking.IClientRemoteObject;
 import Networking.IItemCollector;
@@ -45,12 +45,14 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		checker.start();
 		File f=new File(UpdateDir);
 		f.mkdir();
-		UpdateVer=getLastVersion(f);
+		UpdateVer=getLastVersion();
 		Common.Logger.TraceInformation("System Last Version "+UpdateVer);
 	}
 	
-	private int getLastVersion(File dir){
-		File[] files=dir.listFiles(new FilenameFilter(){
+	private int getLastVersion(){
+		File fl=new File(UpdateDir);
+		
+		File[] files=fl.listFiles(new FilenameFilter(){
 
 			@Override
 			public boolean accept(File dir, String name) {
@@ -179,9 +181,29 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		}
 		return "Clean Exit done. " + s;
 	}
-	/*
-	@Override
-	public void Update(byte[] jar, String className) throws RemoteException {
-		
-	}*/
+	
+	@SuppressWarnings({ "unchecked", "unchecked" })
+	public String Update(byte[] jar,String className) throws RemoteException
+	{
+		String s="";
+		AutoUpdateTask auTask=null;
+		try {
+			auTask = new AutoUpdateTask(JarFileReader.ReadFileBytes(this.getLastVerFile()),this.getLastVersion(),className);
+		} catch (FileNotFoundException e) {
+			throw(new RemoteException(e.toString()));
+		}
+		for (ExecuterRemoteInfo ri  : executersMap.keySet())
+		{
+			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
+			try{
+				Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{auTask});
+				eb.getItemReciever().Add((TASK)c);
+			}
+			catch(Exception e)
+			{
+				s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response";
+			}
+		}
+		return s;
+	}
 }
