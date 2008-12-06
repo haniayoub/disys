@@ -41,13 +41,13 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 		
 		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating Executer ["+oldExecuterClass+"]  To :"+newExecuterClass);
 	    synchronized(executerLock){
-	    	oldExecuterClass=null;
-			if(this.excutor!= null)oldExecuterClass= this.excutor.getClass().getName();
+	    	
 	    	Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Updating To :"+newExecuterClass+" has Started ...");
 		this.excutor=executer;
 		executerLock.notifyAll();
 		}
-		
+	    oldExecuterClass=null;
+		if(this.excutor!= null)oldExecuterClass= this.excutor.getClass().getName();
 		Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]Update Succeeded new executer Class: "+oldExecuterClass);
 	}
 	@SuppressWarnings("unchecked")

@@ -162,4 +162,10 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		es.Exit();
 		System.out.println("executer Done");
 	}
+
+	@SuppressWarnings("unchecked")
+	public RemoteItemReceiver GetItemReciver() {
+	return this.chunkReceiver;
+		
+	}
 }

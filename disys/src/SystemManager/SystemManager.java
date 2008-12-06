@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import Common.Chunk;
@@ -33,16 +34,19 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
 	private ConcurrentHashMap<ClientRemoteInfo, ClientBox> clientsMap=
 		new ConcurrentHashMap<ClientRemoteInfo, ClientBox>();
+	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> blackList =
+		new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
 	//the next id to assign to Client
 	private int nextId = 0;
 	private int UpdateVer = 0;
+	private String LastClassName;
 	
 	//Component to check if Executers Still alive
 	private HeartBeatChecker<TASK, RESULT> checker;
 	
 	public SystemManager() throws Exception {
 		super(GlobalID);
-		checker=new HeartBeatChecker<TASK, RESULT>(executersMap,200);
+		checker=new HeartBeatChecker<TASK, RESULT>(this,executersMap,blackList,500);
 		checker.start();
 		File f=new File(UpdateDir);
 		f.mkdir();
@@ -105,10 +109,11 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			Common.Logger.TraceError("Can't add executer, Couldn't Connect to RMI Objects",null);
 			return;
 		}
+		
 		executersMap.put(remoteInfo,new ExecuterBox<TASK, RESULT>(ir,rc,false));
+		this.updateExecuter(remoteInfo);
 		Common.Logger.TraceInformation("added:"+ remoteInfo.toString());
 	}
-
 	@Override
 	public ClientRemoteInfo AssignClientRemoteInfo(int port, String ID) throws RemoteException {
 		String address = this.GetClientHost();
@@ -205,8 +210,10 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		} catch (FileNotFoundException e) {
 			throw(new RemoteException(e.toString()));
 		}
+		LastClassName=className;
 		Common.Logger.TraceInformation("Sendig Update Task to Executers");
 		Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{auTask});
+		LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
 		for (ExecuterRemoteInfo ri  : executersMap.keySet())
 		{
 			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
@@ -217,14 +224,39 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			{
 				Common.Logger.TraceInformation( "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response"+"\n");
 				s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response"+"\n";
-				//TODO: put executer in black list
+				Common.Logger.TraceInformation( "Moving Executer " + ri.getItemRecieverInfo().toString()+ " To Black List\n");
+				toREmove.add(ri);
 			}
 		}
+		for(ExecuterRemoteInfo ri:toREmove) this.MoveToBlackList(ri);
 		Common.Logger.TraceInformation("Update operation has been sent to executers");
 		s+="Update operation has been sent to executers";
 		return s;
 	}
 	
+	private void MoveToBlackList(ExecuterRemoteInfo ri){
+		blackList.put(ri, executersMap.get(ri));
+		executersMap.remove(ri);
+	}
+	@SuppressWarnings({ "unchecked", "unused" })
+	public void updateExecuter(ExecuterRemoteInfo ri) throws RemoteException{
+		AutoUpdateTask auTask=null;
+		try {
+			auTask = new AutoUpdateTask(JarFileReader.ReadFileBytes(this.getLastVerFile()),this.getLastVersion(),LastClassName);
+		} catch (FileNotFoundException e) {
+			
+			Common.Logger.TraceError("Update File Not Found",e);
+			return;
+		}
+		updateExecuter(ri,auTask);
+	}
+	@SuppressWarnings("unchecked")
+	private void updateExecuter(ExecuterRemoteInfo ri,AutoUpdateTask updateTask) throws RemoteException{
+		Common.Logger.TraceInformation("Sendig Update Task to Executer "+ri.getItemRecieverInfo().toString() );
+		Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{updateTask});
+		ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
+	    eb.getItemReciever().Add((TASK)c);
+	}
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws InterruptedException, IOException {
 
@@ -238,6 +270,11 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		//System.console().readLine();
 		System.in.read();
 		Common.Logger.TraceInformation("SystemManager Stopped!");
+	}
+
+	public int GetLastVersion() {
+		
+		return this.UpdateVer;
 	}
 	
 }
