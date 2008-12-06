@@ -53,7 +53,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	private SynchronizedCounter sCounter;
 	//private ItemPrinter<RESULT> resultPrinter = new ItemPrinter<RESULT>(results, null);
 	
-	private ISystemManager<TASK> sysManager;
+	public ISystemManager<TASK> sysManager;  //TODO: Change to be private...
 	public static final String GlobalID = "Client";
 	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize) throws Exception {
 		super(GlobalID);
@@ -69,7 +69,6 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 
 		ws.add(chunkCreatorWorker, 1);
 		ws.add(chunkScheduler, 1);
-		//ws.add(resultPrinter, 1);
 	}
 
 	@SuppressWarnings("unchecked")
