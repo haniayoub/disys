@@ -25,6 +25,7 @@ public class MainTest {
 			IExecutor ex=null;
 			try {
 				ex=(IExecutor) jcl.loadClass(s).newInstance();
+			
 				System.out.println(ex.toString());
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block

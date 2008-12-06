@@ -82,7 +82,6 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		}
 		Common.Logger.TraceInformation("conneceted to Remote System Mnager:"
 				+ systemManagerRemoteInfo.GetRmiAddress());
-		
 		try {
 			myRemoteInfo = sysManager.AssignClientRemoteInfo(this.getPort(),GlobalID);
 		} catch (RemoteException e) {
@@ -91,7 +90,6 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		
 		if (myRemoteInfo == null) 
 			Common.Logger.TerminateSystem("Remote System Failed Mnager to assign Remote ID to Client:null Client ID",null);		
-		
 		Common.Logger.TraceInformation("My Remote Info is :" + myRemoteInfo.toString());
 	}
 
