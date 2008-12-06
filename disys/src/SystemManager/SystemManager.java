@@ -3,8 +3,10 @@ package SystemManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
+
 import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
@@ -214,6 +216,21 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			}
 		}
 		return s;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws InterruptedException, IOException {
+
+		try {
+			new SystemManager();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Common.Logger.TraceInformation("SystemManager is online");
+		//System.console().readLine();
+		System.in.read();
+		Common.Logger.TraceInformation("SystemManager Stopped!");
 	}
 	
 }
