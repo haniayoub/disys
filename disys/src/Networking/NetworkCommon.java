@@ -28,7 +28,7 @@ public class NetworkCommon {
 		try {
 			return (T)Naming.lookup(ri.GetRmiAddress());
 		} catch (Exception e) {
-			Common.Logger.TraceError("Couldn't Load RMI Remote Object :"+ri.GetRmiAddress(), e);
+			Common.Logger.TraceError("Connection Failed:"+ri.GetRmiAddress(), null);
 		}
 		return null;
 	}

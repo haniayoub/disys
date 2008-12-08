@@ -1,8 +1,6 @@
 package SystemManager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
@@ -12,7 +10,6 @@ import Common.Chunk;
 import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
 import Common.Item;
-import Common.JarFileReader;
 import Common.RMIRemoteInfo;
 import Networking.IClientRemoteObject;
 import Networking.IItemCollector;
@@ -24,9 +21,12 @@ import Networking.RMIObjectBase;
 public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObjectBase
 		implements ISystemManager<TASK> {
 	//RMI object Id
+	@SuppressWarnings("unused")
+	
 	public static final String GlobalID = "SystemManager";
 	public static final String UpdateDir = "UpdateJars";
-	public static final String UpdateExtension = "ujar";
+
+	public static final String ExecutersList = "executersList";
 	//Max ID to assign to Clients
 	private static final int MAX_ID = 10000;
 	//executers In this System Manager
@@ -38,9 +38,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
 	//the next id to assign to Client
 	private int nextId = 0;
-	private int UpdateVer = 0;
-	private String LastClassName;
-	
+	private VersionManager versionManager=new VersionManager(UpdateDir);
+	private ExecutersList executersFile=new ExecutersList(ExecutersList);
 	//Component to check if Executers Still alive
 	private HeartBeatChecker<TASK, RESULT> checker;
 	
@@ -50,35 +49,18 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		checker.start();
 		File f=new File(UpdateDir);
 		f.mkdir();
-		UpdateVer=getLastVersion();
-		Common.Logger.TraceInformation("System Last Version "+UpdateVer);
-	}
-	
-	private int getLastVersion(){
-		File fl=new File(UpdateDir);
+		File exListfile=new File(ExecutersList);
 		
-		File[] files=fl.listFiles(new FilenameFilter(){
-
-			@Override
-			public boolean accept(File dir, String name) {
-				
-				return name.endsWith(UpdateExtension);
-			}
-		});
-		int maxVer=0;
-		int curr=0;
-		for(File f:files){
-		curr=Integer.parseInt(f.getName().replace("."+UpdateExtension,""));
-		if(maxVer<curr)maxVer=curr;
+		//UpdateVer=getLastVersion();
+		//LastClassName=getVersionClassName(UpdateVer);
+		Common.Logger.TraceInformation("System Last Version "+versionManager.getLastVersion());
+		if(!exListfile.exists()){
+			exListfile.createNewFile();
+		}else{
+			LinkedList<ExecuterRemoteInfo> executersArr=executersFile.LoadExecutersList();
+			for(ExecuterRemoteInfo ex:executersArr) addExecuter(ex);
 		}
-		return maxVer;
 	}
-	
-	private String getLastVerFile(){
-		return UpdateDir+"\\"+UpdateVer+"."+UpdateExtension;
-	}
-	
-	
 	@Override
 	public ExecuterRemoteInfo Schedule(int numberOfTask) throws RemoteException {
 		if (executersMap.keySet().isEmpty()) return null;
@@ -90,6 +72,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		return remoteInfo;
 	}
 
+	
 	@Override
 	public void addExecuter(int itemRecieverPort, int resultCollectorPort)
 			throws RemoteException {
@@ -98,21 +81,31 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		Common.Logger.TraceError("Can't add executer , address couldn't be resolved!",null);
 		return;
 		}
-		ExecuterRemoteInfo remoteInfo = 
-			new ExecuterRemoteInfo(address,itemRecieverPort, resultCollectorPort);
+		addExecuter(address,itemRecieverPort,resultCollectorPort);
+		executersFile.addExecuterToFile(address,itemRecieverPort,resultCollectorPort);
+	}
+	private void addExecuter(ExecuterRemoteInfo er) throws RemoteException{
 		
+		addExecuter(er.getItemRecieverInfo().Ip(),er.getItemRecieverInfo().Port(),er.getResultCollectorInfo().Port());
+	}
+
+	private void addExecuter(String address, int irPort, int rcPort) throws RemoteException {
+		Common.Logger.TraceInformation("Adding New Executer : "+address+" "+irPort+ " "+rcPort);
+		ExecuterRemoteInfo remoteInfo = 
+			new ExecuterRemoteInfo(address,irPort, rcPort);
 		IRemoteItemReceiver<TASK> ir=
 			NetworkCommon.loadRMIRemoteObject(remoteInfo.getItemRecieverInfo());
 		IItemCollector<RESULT> rc=
 			NetworkCommon.loadRMIRemoteObject(remoteInfo.getResultCollectorInfo());
 		if(ir==null||rc==null){
-			Common.Logger.TraceError("Can't add executer, Couldn't Connect to RMI Objects",null);
+			Common.Logger.TraceError("executer is offline",null);
 			return;
 		}
 		
 		executersMap.put(remoteInfo,new ExecuterBox<TASK, RESULT>(ir,rc,false));
 		this.updateExecuter(remoteInfo);
 		Common.Logger.TraceInformation("added:"+ remoteInfo.toString());
+		
 	}
 	@Override
 	public ClientRemoteInfo AssignClientRemoteInfo(int port, String ID) throws RemoteException {
@@ -195,28 +188,13 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			Common.Logger.TraceWarning("Can't Update While There is Clients Connected to the system !", null);
 			return "Can't Update While There is Clients Connected to the system !";
 		}
-		UpdateVer++;
-		Common.Logger.TraceInformation("System is updating to version "+UpdateVer+" new Executer ["+className+"]");
-		try {
-			String newVerFile=this.getLastVerFile();
-			Common.Logger.TraceInformation("Saving New Update Jar to :"+newVerFile);
-			JarFileReader.WriteFile(newVerFile,jar);
-		} catch (FileNotFoundException e1) {
-			UpdateVer--;
-			e1.printStackTrace();
-			return "failed to update File not Found ";
-		}
-		
 		String s="";
+		s+=versionManager.addVersion(jar, className);
 		AutoUpdateTask auTask=null;
-		try {
-			auTask = new AutoUpdateTask(JarFileReader.ReadFileBytes(this.getLastVerFile()),this.getLastVersion(),className);
-		} catch (FileNotFoundException e) {
-			throw(new RemoteException(e.toString()));
-		}
-		LastClassName=className;
+		auTask = new AutoUpdateTask(jar,versionManager.getLastVersion().version,className);
 		Common.Logger.TraceInformation("Sendig Update Task to Executers");
 		Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{auTask});
+		
 		LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
 		for (ExecuterRemoteInfo ri  : executersMap.keySet())
 		{
@@ -245,13 +223,12 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	@SuppressWarnings({ "unchecked", "unused" })
 	public void updateExecuter(ExecuterRemoteInfo ri) throws RemoteException{
 		AutoUpdateTask auTask=null;
-		try {
-			auTask = new AutoUpdateTask(JarFileReader.ReadFileBytes(this.getLastVerFile()),this.getLastVersion(),LastClassName);
-		} catch (FileNotFoundException e) {
-			
-			Common.Logger.TraceError("Update File Not Found",e);
+		Version last=versionManager.getLastVersion();
+		if(last.jar==null||last.className==null){
+			Common.Logger.TraceError("System Manager has no updates for executers",null);
 			return;
 		}
+		auTask = new AutoUpdateTask(last.jar,last.version,last.className);
 		updateExecuter(ri,auTask);
 	}
 	@SuppressWarnings("unchecked")
@@ -276,9 +253,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		Common.Logger.TraceInformation("SystemManager Stopped!");
 	}
 
-	public int GetLastVersion() {
-		
-		return this.UpdateVer;
+	public int GetLastVersionNumber() {
+		return versionManager.getLastVersion().version;
 	}
 	
 }
