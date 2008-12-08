@@ -69,8 +69,8 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 						Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
 						continue;
 						}
-					if(erd.Version < sysm.GetLastVersion()) {
-						Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersion(),null);
+					if(erd.Version < sysm.GetLastVersionNumber()) {
+						Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersionNumber(),null);
 						sysm.updateExecuter(ri);
 						toUpdate.add(ri);
 						continue;
@@ -100,7 +100,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					toDelete.add(ri);
 					continue;
 					}
-				if(erd.Version < sysm.GetLastVersion()) {
+				if(erd.Version < sysm.GetLastVersionNumber()) {
 					Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version,null);
 					continue;
 				}

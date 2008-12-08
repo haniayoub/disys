@@ -62,7 +62,7 @@ public class ChunkScheduler<TASK extends Item,RESULT extends Item> extends AWork
 			Common.Logger.TraceWarning("Couldn't add Chunk to Remote Receiver:"+itemRecieverInfo.GetRmiAddress(), null);
 			return task;
 		}
-		Common.Logger.TraceInformation("Chunk [size:"+task.numberOfItems()+"] Sent to Remote Receiver:"+itemRecieverInfo.GetRmiAddress());
+		//Common.Logger.TraceInformation("Chunk [size:"+task.numberOfItems()+"] Sent to Remote Receiver:"+itemRecieverInfo.GetRmiAddress());
 		resultCollector.WaitForResults(executerAddress.getResultCollectorInfo(),task);
 	    return null;
 	}

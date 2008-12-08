@@ -66,18 +66,18 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 						continue;
 					}
 					if (resultChunk == null) {
-						Common.Logger
-								.TraceInformation("no results available from:"
-										+ ri.GetRmiAddress());
+					//	Common.Logger
+					//			.TraceInformation("no results available from:"
+					//					+ ri.GetRmiAddress());
 						continue;
 					}
 					for (RESULT r : resultChunk.getItems())
 						system.AddResult(r);
-					Common.Logger.TraceInformation("new "
-							+ resultChunk.numberOfItems() + " results from:"
-							+ ri.GetRmiAddress());
-					executers.put(ri, executers.get(ri)
-							- resultChunk.numberOfItems());
+					//Common.Logger.TraceInformation("new "
+					//		+ resultChunk.numberOfItems() + " results from:"
+					//		+ ri.GetRmiAddress());
+					//executers.put(ri, executers.get(ri)
+					//		- resultChunk.numberOfItems());
 				}
 				sleep(period);
 			}
@@ -142,8 +142,8 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 		if (!executers.containsKey(ri))
 			executers.put(ri, 0);
 		executers.put(ri, chunk.numberOfItems() + executers.get(ri));
-		Logger.TraceInformation("Waiting For " + chunk.numberOfItems()
-				+ " results from " + ri.GetRmiAddress());
+		//Logger.TraceInformation("Waiting For " + chunk.numberOfItems()
+		//		+ " results from " + ri.GetRmiAddress());
 
 		// / Task Recovery support
 		/*
