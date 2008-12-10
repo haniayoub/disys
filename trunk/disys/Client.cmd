@@ -1,2 +1,2 @@
-java -jar Release\Client.jar localhost 3000
+java -jar Release\Client.jar localhost 5000
 pause

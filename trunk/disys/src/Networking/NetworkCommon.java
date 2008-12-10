@@ -42,12 +42,22 @@ public class NetworkCommon {
 		for (int i = INITIAL_PORT; i <= MAX_PORT; ++i) {
 			try {
 				LocateRegistry.createRegistry(i);
-				System.out.println("using port "+i);
 				return i;
 			} catch (RemoteException e) {
 				failureException = e;
 			}
 		}
+		Logger.TraceError("Failed to create registry", failureException);
+		throw failureException;
+	}
+	static public int createRegistry(int r) throws RemoteException {
+		RemoteException failureException = null;
+			try {
+				LocateRegistry.createRegistry(r);
+				return r;
+			} catch (RemoteException e) {
+				failureException = e;
+			}
 		Logger.TraceError("Failed to create registry", failureException);
 		throw failureException;
 	}
