@@ -76,8 +76,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	public ExecuterSystem(E executer,int numerOfWorkers,String SysManagerAddress,int sysManagerport) {
 		super();
 		File f=new File(UpdateDir);
-		f.mkdir();
-		systemManagerRemoteInfo=new RMIRemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
+		f.mkdir();		
 		try {
 			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks);
 		} catch (Exception e) {
@@ -89,28 +88,33 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		} catch (Exception e) {
 			Logger.TerminateSystem("Error intializing Remote Chunk Reciever ", e);
 		}
+		
+		Common.Logger.TraceInformation("Starting Executer IRport: "+chunkReceiver.getPort()+" RCport:"+itemCollector.getPort()+" Workers:"+numerOfWorkers);
+
+		if(SysManagerAddress!=null){
 		//////////////////////////Fire Wall problematic !!!!
+		systemManagerRemoteInfo=new RMIRemoteInfo(SysManagerAddress,sysManagerport,SystemManager.GlobalID);
 		sysManager=NetworkCommon.loadRMIRemoteObject(systemManagerRemoteInfo);
+		Common.Logger.TraceInformation("Connecting to system Manager "+SysManagerAddress +" "+ sysManagerport);
 		if(sysManager!=null){
 		try {
 			sysManager.addExecuter(chunkReceiver.getPort(),itemCollector.getPort());
 		} catch (RemoteException e) {
-			Logger.TraceWarning("Couldn't add Executer to System Manager", e);
+			Logger.TraceWarning("Couldn't add Executer to System Manager", null);
 		}
 		}
 		///////////////////////////////////////////////
-		
+		}
 		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks, this);
 		String myID=chunkReceiver.getRmiID();
 		taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,myID,tasks,results);
 		resultOrganizer=new RemoteItemOrganizer<RESULT>(results,clientResults);
 		numerOfExecuters= numerOfWorkers;
 		ExecutersCollection=new WorkerCollection(taskExecuter,numerOfExecuters);
-		
 		ws.add(chunkBreaker,1);
 		ws.add(ExecutersCollection);
 		ws.add(resultOrganizer,1);
-	}
+			}
 
 	public void Run(String[] args) {
 		 ws.startWork();
@@ -144,28 +148,46 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	private String getLastVerFile(int UpdateVer){
 		return UpdateDir+"\\"+UpdateVer+"."+UpdateExtension;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public RemoteItemReceiver GetItemReciver() {
+	return this.chunkReceiver;
+		
+	}
 	/**
 	 * @param args
 	 * @throws IOException 
 	 */
 	@SuppressWarnings("unchecked")
+	
 	public static void main(String[] args) throws InterruptedException, IOException {
-		if(args.length<2){
-			System.out.println("parameters: [System Manager Address] [System Manager Port]");
-			Thread.sleep(2000);
-			return ;
+		PrintUsage();
+		int workers=3;
+		String address=null;
+		int port=0;
+		if(args.length>1){
+		workers=Integer.parseInt(args[0]);
 		}
-		ExecuterSystem es=new ExecuterSystem(null, 3,args[0],Integer.parseInt(args[1])); 
+		if(args.length>2){
+			address=args[1];
+			port=Integer.parseInt(args[2]);
+			}
+		ExecuterSystem es=new ExecuterSystem(null, workers,address,port); 
 		System.out.println("Executer Started !");
 		es.Run(args);
 		System.in.read();
 		es.Exit();
 		System.out.println("executer Done");
 	}
-
-	@SuppressWarnings("unchecked")
-	public RemoteItemReceiver GetItemReciver() {
-	return this.chunkReceiver;
-		
+	public static void PrintUsage(){
+		System.out.println("-------------------------------[Executer]----------------------------------");
+		System.out.println("parameters:[worker Threads] [System Manager Address] [System Manager Port]");
+		System.out.println("[worker Threads] = the number of worker threads default 3");
+		System.out.println("[System Manager Address]   = optional to notify the system Manager");
+		System.out.println("[System Manager Port]      = optional to notify the system Manager");
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println();
 	}
+
+	
 }

@@ -20,6 +20,8 @@ public class VersionManager {
 	
 	public VersionManager(String Dir){
 		UpdateDir=Dir;
+		File f=new File(UpdateDir);
+		f.mkdir();
 		SetLastVersion();	
 	}
 	public Version getLastVersion() {

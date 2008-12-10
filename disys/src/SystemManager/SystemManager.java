@@ -43,23 +43,25 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	//Component to check if Executers Still alive
 	private HeartBeatChecker<TASK, RESULT> checker;
 	
-	public SystemManager() throws Exception {
-		super(GlobalID);
-		checker=new HeartBeatChecker<TASK, RESULT>(this,executersMap,blackList,500);
+	public SystemManager(int port,int checkInterval) throws Exception {
+		super(GlobalID,port);
+		 Initialize(port,checkInterval);
+	}
+	public void Initialize(int port,int checkInterval) throws IOException{
+		Common.Logger.TraceInformation("System Manager is Running on port "+this.getPort() +" Heartbeat Check Interval "+checkInterval);
+		Common.Logger.TraceInformation("RMI ID:"+this.getRmiID());
+		checker=new HeartBeatChecker<TASK, RESULT>(this,executersMap,blackList,checkInterval);
 		checker.start();
 		File f=new File(UpdateDir);
 		f.mkdir();
 		File exListfile=new File(ExecutersList);
-		
-		//UpdateVer=getLastVersion();
-		//LastClassName=getVersionClassName(UpdateVer);
 		Common.Logger.TraceInformation("System Last Version "+versionManager.getLastVersion());
 		if(!exListfile.exists()){
 			exListfile.createNewFile();
 		}else{
 			LinkedList<ExecuterRemoteInfo> executersArr=executersFile.LoadExecutersList();
 			for(ExecuterRemoteInfo ex:executersArr) addExecuter(ex);
-		}
+		}	
 	}
 	@Override
 	public ExecuterRemoteInfo Schedule(int numberOfTask) throws RemoteException {
@@ -238,23 +240,38 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
 	    eb.getItemReciever().Add((TASK)c);
 	}
+	public int GetLastVersionNumber() {
+		return versionManager.getLastVersion().version;
+	}
+
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws InterruptedException, IOException {
-
+		int port=0;
+		int interval=300;
+		PrintUsage();
+		if(args.length>0){
+			port=Integer.parseInt(args[0]);
+		}
+		if(args.length>1){
+			interval=Integer.parseInt(args[1]);
+		}
 		try {
-			new SystemManager();
+			new SystemManager(port,interval);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Common.Logger.TraceInformation("SystemManager is online");
-		//System.console().readLine();
 		System.in.read();
 		Common.Logger.TraceInformation("SystemManager Stopped!");
 	}
-
-	public int GetLastVersionNumber() {
-		return versionManager.getLastVersion().version;
+	public static void PrintUsage(){
+		System.out.println("-------------------------------[System Manager]--------------------------");
+		System.out.println("[SysremManager] [port] [Interval]");
+		System.out.println("[SysremManager] = Command Line");
+		System.out.println("[port]          = The Port to listen On , default 3000-30000");
+		System.out.println("[Interval]      = Executers Heartbeat Check interval default 300 ms");
+		System.out.println("--------------------------------------------------------------------------");
+		System.out.println();
 	}
 	
 }
