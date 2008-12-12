@@ -1,6 +1,6 @@
 package CalcExecuterDemo;
 
-import Common.IExecutor;
+import diSys.Common.IExecutor;
 
 public class MultiplyCalculator implements IExecutor<CalcTask,CalcResult>{
 	@Override

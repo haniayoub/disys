@@ -3,8 +3,9 @@ package CalcExecuterDemo;
 import java.io.File;
 import java.io.IOException;
 
-import AutoUpdate.JarClassLoader;
-import Common.IExecutor;
+import diSys.AutoUpdate.JarClassLoader;
+import diSys.Common.IExecutor;
+
 
 
 public class MainTest {

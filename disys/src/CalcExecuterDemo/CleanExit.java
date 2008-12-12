@@ -2,10 +2,11 @@ package CalcExecuterDemo;
 
 import java.rmi.RemoteException;
 
-import Common.Item;
-import Common.RMIRemoteInfo;
-import SystemManager.ISystemManager;
-import SystemManager.SystemManager;
+import diSys.Common.Item;
+import diSys.Common.RMIRemoteInfo;
+import diSys.SystemManager.ISystemManager;
+import diSys.SystemManager.SystemManager;
+
 
 public class CleanExit {
 
@@ -15,7 +16,7 @@ public class CleanExit {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		RMIRemoteInfo ri=new RMIRemoteInfo(args[0],Integer.parseInt(args[1]),SystemManager.GlobalID);
-		ISystemManager<Item> sm=Networking.NetworkCommon.loadRMIRemoteObject(ri); 
+		ISystemManager<Item> sm=diSys.Networking.NetworkCommon.loadRMIRemoteObject(ri); 
 		try {
 			System.out.println(sm.CleanExit());
 		} catch (RemoteException e) {

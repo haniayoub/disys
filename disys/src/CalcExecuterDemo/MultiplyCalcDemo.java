@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import Client.RemoteClient;
+import diSys.Client.RemoteClient;
+
 
 public class MultiplyCalcDemo {
 	/**
