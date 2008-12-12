@@ -4,15 +4,12 @@ import java.rmi.RemoteException;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
-import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 import diSys.Common.RMIRemoteInfo;
 import diSys.Networking.IItemCollector;
 import diSys.Networking.NetworkCommon;
-
-import sun.net.NetworkServer;
 
 
 
@@ -28,6 +25,7 @@ import sun.net.NetworkServer;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+@SuppressWarnings("serial")
 public class ExecuterTraceFrame extends javax.swing.JFrame {
 
 	{
@@ -42,6 +40,7 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 	private JPanel MainPane;
 	private JTextArea LogTraceArea;
 	private Thread updater;
+	@SuppressWarnings("unchecked")
 	private IItemCollector ic;
 
 	/**

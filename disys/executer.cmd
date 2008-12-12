@@ -1,1 +1,0 @@
-java -jar Release\Executer.jar localhost 3000
