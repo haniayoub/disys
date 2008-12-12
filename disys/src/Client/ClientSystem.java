@@ -138,6 +138,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	}
 
 	public void Start() {
+		
 		ws.startWork();
 		resultCollector.start();
 	}

@@ -50,7 +50,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public void Initialize(int port,int checkInterval) throws IOException{
 		Common.Logger.TraceInformation("System Manager is Running on port "+this.getPort() +" Heartbeat Check Interval "+checkInterval);
 		Common.Logger.TraceInformation("RMI ID:"+this.getRmiID());
-		checker=new HeartBeatChecker<TASK, RESULT>(this,executersMap,blackList,checkInterval);
+		checker=new HeartBeatChecker<TASK, RESULT>(this,executersMap,blackList,clientsMap,checkInterval);
 		checker.start();
 		File f=new File(UpdateDir);
 		f.mkdir();

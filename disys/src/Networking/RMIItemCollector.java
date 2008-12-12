@@ -50,4 +50,10 @@ public class RMIItemCollector<ITEM extends Item> extends RMIObjectBase
 		return (Chunk<ITEM>) Chunk.CreateChunk(itemsList);
 	}
 
+	@Override
+	public String CollectLog() throws RemoteException {
+		
+		return Common.Logger.logTracer.toString();
+	}
+
 }

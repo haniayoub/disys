@@ -21,7 +21,7 @@ public class ClientSystemCalcDemo {
 	}
 	String managerAddress=args[0];
 	int p=Integer.parseInt(args[1]);
-	RemoteClient<CalcTask, CalcResult> rc=new RemoteClient<CalcTask, CalcResult>(managerAddress,p,3,"release\\newjar.jar",Calculator.class.getName());
+	RemoteClient<CalcTask, CalcResult> rc=new RemoteClient<CalcTask, CalcResult>(managerAddress,p,3,"newjar.jar",Calculator.class.getName());
 	rc.Start();
 	
 	CalcTask ct1=new CalcTask(1,12);

@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import Common.ClientRemoteInfo;
 import Common.ExecuterRemoteInfo;
 import Common.Item;
 import Executor.ExecuterRemoteData;
@@ -12,7 +13,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 	// executers In this System Manager
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap;
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> blackList ;
-	
+	private ConcurrentHashMap<ClientRemoteInfo, ClientBox> clientsMap;
 	@SuppressWarnings({ "unused", "unchecked" })
 	private SystemManager sysm;
 	private Thread workerThread;
@@ -27,6 +28,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 		//check the heart beat of each executer 
 		public void run() {
 			while (!done) {
+				HeartBeatClients();
 				HeartBeatExecuters();
 				CheckToUpdateList();
 				blackListCounter++;
@@ -59,6 +61,22 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 				executersMap.remove(ri);
 			}
 		}
+		private void HeartBeatClients(){
+			LinkedList<ClientRemoteInfo> toDelete = new LinkedList<ClientRemoteInfo>();
+			for (ClientRemoteInfo cri : clientsMap.keySet()) {
+				try {
+					clientsMap.get(cri).isIdle();
+				} catch (RemoteException e) {
+					toDelete.add(cri);
+				}
+			}
+			for (ClientRemoteInfo cri : toDelete) {
+				Common.Logger.TraceWarning("Client is not Alive:"
+						+ cri.toString() + " - Removing ...", null);
+				clientsMap.remove(cri);
+			}
+		}
+		
 		private void CheckBLackList(){
 		    for (ExecuterRemoteInfo ri : blackList.keySet())
 			{
@@ -133,8 +151,10 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 			SystemManager systemM,
 			ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap,
 			ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> blackList ,
+			ConcurrentHashMap<ClientRemoteInfo, ClientBox> clientsMap,
 			int period) {
 		super();
+		this.clientsMap=clientsMap;
 		this.sysm=systemM;
 		this.executersMap = executersMap;
 		this.blackList=blackList;
