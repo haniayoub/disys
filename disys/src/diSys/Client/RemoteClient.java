@@ -19,9 +19,9 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	taskNum=0;
 	}
 	
-	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize,String updateJarPath,String executerClassName) {
+	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize,String updateJarPath,String executerClassName,boolean forceUpdate) {
 		try {
-			clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize,updateJarPath,executerClassName);
+			clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize,updateJarPath,executerClassName, forceUpdate);
 		} catch (Exception e) {
 			diSys.Common.Logger.TraceWarning("Client is not connected through RMI : this could interrupt system Clean Exit", e);
 		}

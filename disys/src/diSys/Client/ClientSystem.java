@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import diSys.Common.Chunk;
 import diSys.Common.ClientRemoteInfo;
 import diSys.Common.Item;
-import diSys.Common.JarFileReader;
+import diSys.Common.FileManager;
 import diSys.Common.RMIRemoteInfo;
 import diSys.Common.SynchronizedCounter;
 import diSys.Networking.IClientRemoteObject;
@@ -60,6 +60,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	
 	private String updateJarPath;
 	private String executerClassName;
+	private boolean forceUpdate;
 	
 	public static final String GlobalID = "Client";
 	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize) throws Exception {
@@ -77,10 +78,11 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		ws.add(chunkCreatorWorker, 1);
 		ws.add(chunkScheduler, 1);
 	}
-	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize,String updateJarPath,String executerClassName) throws Exception {
+	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize,String updateJarPath,String executerClassName,boolean ForceUpdate) throws Exception {
 		super(GlobalID);
 		this.updateJarPath=updateJarPath;
 		this.executerClassName=executerClassName;
+		this.forceUpdate=ForceUpdate;
 		sCounter=new SynchronizedCounter(0);
 		RemoteSysManagerInfo = new RMIRemoteInfo(SysManagerAddress,
 				sysManagerport, SystemManager.GlobalID);
@@ -112,14 +114,14 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 			byte[] arr=null;
 			try {
 				diSys.Common.Logger.TraceInformation("Reading update jar File "+this.updateJarPath);
-				arr = JarFileReader.ReadFileBytes(this.updateJarPath);
+				arr = FileManager.ReadFileBytes(this.updateJarPath);
 			} catch (FileNotFoundException e) {
 				diSys.Common.Logger.TerminateSystem("Failed to find update jar file: "+updateJarPath,e);
 				
 			}
 			try {
 				diSys.Common.Logger.TraceInformation("Updating sysatem Manager ... ");
-				String s=sysManager.Update(arr,this.executerClassName);
+				String s=sysManager.Update(arr,this.executerClassName,forceUpdate);
 				diSys.Common.Logger.TraceInformation("Update: "+s);
 			} catch (RemoteException e) {
 				e.printStackTrace();
@@ -147,6 +149,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	public void Stop() {
 		ws.stopWork();
 		resultCollector.Stop();
+		this.Dispose();
 	}
 	
 	public void AddTask(TASK task){

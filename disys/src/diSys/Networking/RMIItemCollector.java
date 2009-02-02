@@ -25,9 +25,9 @@ public class RMIItemCollector<ITEM extends Item> extends RMIObjectBase
 
 	private ConcurrentHashMap<RemoteInfo, ConcurrentLinkedQueue<ITEM>> clientResults;
 	public RMIItemCollector(
-			ConcurrentHashMap<RemoteInfo, ConcurrentLinkedQueue<ITEM>> clientResults)
+			ConcurrentHashMap<RemoteInfo, ConcurrentLinkedQueue<ITEM>> clientResults,int port)
 			throws Exception {
-		super(GlobalId);
+		super(GlobalId,port);
 		this.clientResults = clientResults;
 	}
 

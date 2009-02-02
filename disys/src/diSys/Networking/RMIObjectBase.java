@@ -2,6 +2,7 @@ package diSys.Networking;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
@@ -18,6 +19,7 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 
 	private String rmiID;
 	private int port;
+	private Registry reg;
 	/**
 	 * you have to register the port first
 	 * @param rmiID
@@ -31,7 +33,7 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 			port = NetworkCommon.createRegistry();
 		}
 		else {
-			port = NetworkCommon.createRegistry(port);
+			reg = NetworkCommon.createRegistry(port);
 		}
 		this.port=port;
 		try {
@@ -59,6 +61,9 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 	public void Dispose() {
 		try {
 			Naming.unbind("//:" + port + "/" + rmiID);
+			UnicastRemoteObject.unexportObject(this, true); 
+			if(reg!=null)UnicastRemoteObject.unexportObject(reg, true); 
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,6 +71,12 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 					+ rmiID);
 		}
 		System.out.println("Unbinded ://:" + port + "/" + rmiID);
+		try {
+			this.finalize();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String getRmiID() {

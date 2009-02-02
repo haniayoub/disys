@@ -2,6 +2,7 @@ package diSys.AutoUpdate;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -13,6 +14,7 @@ import java.util.jar.JarFile;
 public class JarClassLoader extends URLClassLoader {
 //    private URL url;
     private JarFile jar;
+    public static URLClassLoader sysloader=(URLClassLoader)java.lang.ClassLoader.getSystemClassLoader();
 	
     /**
 	 * Creates a new JarClassLoader for the specified url.
@@ -74,16 +76,43 @@ public class JarClassLoader extends URLClassLoader {
     	}
     	return classes.toArray(new String[]{});
     }
-    /*
-    public void atts() throws IOException{
-   	  //URL u = new URL("jar", "", url + "!/");
-     ClassLoader fc=new ClassLoader
-     java.lang.
-    	System.out.println(url);
-    	JarURLConnection uc = (JarURLConnection)url.openConnection();
-     Attributes attr = uc.getMainAttributes();
-     for(Object o:attr.keySet()){
-     System.out.println(attr.get(o));
-     }
-    }*/
+    @SuppressWarnings("unchecked")
+    private static final Class[] parameters = new Class[] {URL.class};
+    @SuppressWarnings({ "unchecked", "static-access" })
+    public void AddUrlToSystem(URL url){
+    	
+    	
+		
+			sysloader = (URLClassLoader)java.lang.ClassLoader.getSystemClassLoader();
+			sysloader.newInstance(new URL[]{url},this);
+			Class sysclass = URLClassLoader.class;
+        try {
+            Method method = sysclass.getDeclaredMethod("addURL", parameters);
+            method.setAccessible(true);
+            diSys.Common.Logger.TraceInformation("adding Url to System Class Loader :"+url);
+            method.invoke(sysloader, new Object[] {url});
+        } catch (Throwable t) {
+            t.printStackTrace();
+            diSys.Common.Logger.TraceError("Error while adding URL :"+url,null);
+        }
+        /*
+        for(String clazz:getClasses()){
+            try {
+              diSys.Common.Logger.TraceInformation("Loading Class:"+clazz);
+              //this.loadClass(clazz);
+              //Class.
+              //sysloader.newInstance(new URL[]{url},this);
+              Class.forName(clazz,false,sysloader);
+            }
+            catch (ClassNotFoundException e) {
+    			diSys.Common.Logger.TraceWarning("Class not Found:"+clazz, e);
+    		}
+            catch(Exception e){
+            	diSys.Common.Logger.TraceWarning("Error loading class:"+clazz +" , "+e.getMessage(),null);
+            }
+            
+        }
+        diSys.Common.Logger.TraceInformation("Done Loading!!");
+  */
+      }
 }

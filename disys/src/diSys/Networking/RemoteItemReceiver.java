@@ -22,8 +22,8 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	public static final String GlobalId = "itemReciever";
 	
 	private BlockingQueue<ITEM> recievedItems;
-	public RemoteItemReceiver(BlockingQueue<ITEM> itemsQueue) throws Exception {
-		super(GlobalId);
+	public RemoteItemReceiver(BlockingQueue<ITEM> itemsQueue,int port) throws Exception {
+		super(GlobalId,port);
 		recievedItems = itemsQueue;
 	}
 
