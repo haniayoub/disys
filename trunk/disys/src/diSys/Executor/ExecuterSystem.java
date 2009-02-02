@@ -3,7 +3,6 @@ package diSys.Executor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,9 +11,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import diSys.AutoUpdate.JarClassLoader;
 import diSys.Common.Chunk;
+import diSys.Common.FileManager;
 import diSys.Common.IExecutor;
 import diSys.Common.Item;
-import diSys.Common.JarFileReader;
 import diSys.Common.Logger;
 import diSys.Common.RMIRemoteInfo;
 import diSys.Common.RemoteInfo;
@@ -25,7 +24,6 @@ import diSys.Networking.RemoteItemReceiver;
 import diSys.SystemManager.AutoUpdateTask;
 import diSys.SystemManager.ISystemManager;
 import diSys.SystemManager.SystemManager;
-import diSys.WorkersSystem.WorkER.AWorker;
 import diSys.WorkersSystem.WorkER.WorkerCollection;
 import diSys.WorkersSystem.WorkER.WorkerSystem;
 
@@ -43,8 +41,9 @@ public
 class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
 	
 	public static final String UpdateDir = "ExecuterUpdateJars";
-	public static final String UpdateExtension = "ujar";
-	
+	public static final String UpdateExtension = "jar";
+	public static final String ClassNameExtension = "clsn";
+	public static final String VersionFile = "Version.txt";
 	//the chunks received from clients 
 	private BlockingQueue<Chunk<TASK>> recievedChunks = 
 		new LinkedBlockingQueue<Chunk<TASK>>();
@@ -63,7 +62,8 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	
 	private RemoteItemReceiver<Chunk<TASK>> chunkReceiver;
 	private ChunkBreaker<TASK> chunkBreaker;
-	private TaskExecuter<TASK,RESULT,E> taskExecuter;
+	@SuppressWarnings("unchecked")
+	private TaskExecuter<TASK,RESULT,IExecutor> taskExecuter;
 	private RemoteItemOrganizer<RESULT> resultOrganizer;
     private RMIItemCollector<RESULT> itemCollector; 
 	//system manager reference
@@ -73,19 +73,21 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
     private int numerOfExecuters;
 	private WorkerSystem ws=new WorkerSystem();
 	private WorkerCollection ExecutersCollection;
+	private int Version;
 	@SuppressWarnings("unchecked")
-	public ExecuterSystem(E executer,int numerOfWorkers,String SysManagerAddress,int sysManagerport) {
+	public ExecuterSystem(IExecutor executer,int numerOfWorkers,int irport,int rcport,String SysManagerAddress,int sysManagerport) throws InterruptedException {
 		super();
 		File f=new File(UpdateDir);
-		f.mkdir();		
+		f.mkdir();
+		Thread.sleep(1000);
 		try {
-			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks);
+			chunkReceiver=new RemoteItemReceiver<Chunk<TASK>>(recievedChunks,irport);
 		} catch (Exception e) {
 			Logger.TerminateSystem("Error intializing Remote Chunk Reciever", e);
 		}
 		
 		try {
-			itemCollector=new RMIItemCollector<RESULT>(clientResults);
+			itemCollector=new RMIItemCollector<RESULT>(clientResults,rcport);
 		} catch (Exception e) {
 			Logger.TerminateSystem("Error intializing Remote Chunk Reciever ", e);
 		}
@@ -106,16 +108,33 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		}
 		///////////////////////////////////////////////
 		}
+		IExecutor newExec=executer;
+		try {
+			newExec=LoadUpdates();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks, this);
+		chunkReceiver.Version=this.Version;
 		String myID=chunkReceiver.getRmiID();
-		taskExecuter = new TaskExecuter<TASK,RESULT,E>(executer,myID,tasks,results);
+		taskExecuter = new TaskExecuter<TASK,RESULT,IExecutor>(newExec,myID,tasks,results);
 		resultOrganizer=new RemoteItemOrganizer<RESULT>(results,clientResults);
 		numerOfExecuters= numerOfWorkers;
 		ExecutersCollection=new WorkerCollection(taskExecuter,numerOfExecuters);
 		ws.add(chunkBreaker,1);
 		ws.add(ExecutersCollection);
 		ws.add(resultOrganizer,1);
-			}
+	}
 
 	public void Run(String[] args) {
 		 ws.startWork();
@@ -126,13 +145,13 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		 chunkReceiver.Dispose();
 		 itemCollector.Dispose();
 	}
-
+/*
 	@SuppressWarnings("unchecked")
 	public void updateExecuters(AutoUpdateTask item) throws MalformedURLException, InstantiationException, IllegalAccessException, ClassNotFoundException, FileNotFoundException {
 
 		String fileName =getLastVerFile(item.version);
 		diSys.Common.Logger.TraceInformation("Saving new Update Jar File to:"+fileName);
-		JarFileReader.WriteFile(fileName, item.jf);
+		FileManager.WriteFile(fileName, item.jf);
 		
 		File f = new File(fileName);
 		JarClassLoader jcl = new JarClassLoader(f);
@@ -145,16 +164,80 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 			((TaskExecuter)e).UpdateExecuter(newExecuter);
 		}
 	}
-	
+	*/
 	private String getLastVerFile(int UpdateVer){
-		return UpdateDir+"\\"+UpdateVer+"."+UpdateExtension;
+		return getVerDir(UpdateVer)+"\\Updates."+UpdateExtension;
+	}
+	
+	private String classNameFile(int UpdateVer){
+		return getVerDir(UpdateVer)+"\\ClassName."+ClassNameExtension;
+	}
+	
+	private String getVerDir(int UpdateVer){
+		return "Ver"+UpdateVer;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public RemoteItemReceiver GetItemReciver() {
 	return this.chunkReceiver;
+	}
+	
+	public void PrepareToUpdate(AutoUpdateTask item) throws FileNotFoundException {
+		diSys.Common.Logger.TraceInformation("Update Process started to version "+item.version);
+		File dir=new File(getVerDir(item.version));
+		dir.mkdir();
+		
+		FileManager.WriteFile(getLastVerFile(item.version), item.jf);
+		
+		FileManager.WriteFile(classNameFile(item.version),item.className.getBytes());
+		
+		FileManager.WriteFile(VersionFile,item.version.toString().getBytes());
+		diSys.Common.Logger.TraceInformation("Update data saved successfuly to dir "+dir.getName());
+		
+		this.Exit();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		  String command="cmd /c start java -jar executer.jar 1 3000 3001";
+		Runtime rt = Runtime.getRuntime();
+        try {
+			rt.exec(command);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+      
+        diSys.Common.Logger.TraceInformation("Rerunning ..."+command);
+        System.runFinalization();
+        diSys.Common.Logger.TerminateSystem("Done ...", null);
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	public IExecutor LoadUpdates() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException{
+	    String versionString=FileManager.ReadLine(VersionFile);
+	    diSys.Common.Logger.TraceInformation("Loading updates Version "+versionString);
+	    int version=Integer.parseInt(versionString);
+	    File f = new File(getLastVerFile(version));
+	    String executerClassName=FileManager.ReadLine(classNameFile(version));
+		JarClassLoader jcl = new JarClassLoader(f);
+		jcl.AddUrlToSystem(f.toURI().toURL());
+		diSys.Common.Logger.TraceInformation("New Class " + executerClassName + " will be dynamically loaded...");
+		
+		IExecutor newExecuter=(IExecutor)jcl.loadClass(executerClassName).newInstance();
+		this.Version=version;
+		// BufferedReader in = new BufferedReader(new FileReader("foo.in"));
+		return newExecuter;
+	}
+
+	public int GetVersion() {
+		// TODO Auto-generated method stub
+		return this.Version;
+	}
+
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -163,17 +246,21 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
 		PrintUsage();
-		int workers=3;
-		String address=null;
-		int port=0;
-		if(args.length>1){
-		workers=Integer.parseInt(args[0]);
+		if(args.length<3){
+			System.out.println("Bad args ...!");
+			return; 
 		}
-		if(args.length>2){
-			address=args[1];
-			port=Integer.parseInt(args[2]);
+		String sysmAddress=null;
+		int sysmPort=0;
+		int workers=Integer.parseInt(args[0]);
+		int irport=Integer.parseInt(args[1]);
+		int rcport=Integer.parseInt(args[2]);
+		
+		if(args.length>3){
+			sysmAddress=args[3];
+			sysmPort=Integer.parseInt(args[4]);
 			}
-		ExecuterSystem es=new ExecuterSystem(null, workers,address,port); 
+		ExecuterSystem es=new ExecuterSystem(null, workers,irport,rcport,sysmAddress,sysmPort); 
 		System.out.println("Executer Started !");
 		es.Run(args);
 		System.in.read();
@@ -182,13 +269,15 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	}
 	public static void PrintUsage(){
 		System.out.println("-------------------------------[Executer]----------------------------------");
-		System.out.println("parameters:[worker Threads] [System Manager Address] [System Manager Port]");
+		System.out.println("parameters:[worker Threads] [Irport] [Rcport] [System Manager Address] [System Manager Port]");
 		System.out.println("[worker Threads] = the number of worker threads default 3");
+		System.out.println("[Item Receiver Port]       = the port to listen foe incoming tasks");
+		System.out.println("[Result Collector Port]    = the port to listen for result collectors");
 		System.out.println("[System Manager Address]   = optional to notify the system Manager");
 		System.out.println("[System Manager Port]      = optional to notify the system Manager");
+		System.out.println("example : java -jar executer 3 3000 3001");
 		System.out.println("----------------------------------------------------------------------------");
 		System.out.println();
 	}
-
 	
 }

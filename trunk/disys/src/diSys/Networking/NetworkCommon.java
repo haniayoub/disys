@@ -4,6 +4,7 @@ import java.rmi.Naming;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 import diSys.Common.Logger;
 import diSys.Common.RMIRemoteInfo;
@@ -51,11 +52,10 @@ public class NetworkCommon {
 		Logger.TraceError("Failed to create registry", failureException);
 		throw failureException;
 	}
-	static public int createRegistry(int r) throws RemoteException {
+	static public Registry createRegistry(int r) throws RemoteException {
 		RemoteException failureException = null;
 			try {
-				LocateRegistry.createRegistry(r);
-				return r;
+				return LocateRegistry.createRegistry(r);
 			} catch (RemoteException e) {
 				failureException = e;
 			}

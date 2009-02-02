@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import diSys.Common.JarFileReader;
+import diSys.Common.FileManager;
 
 
 public class VersionManager {
@@ -35,7 +35,7 @@ public class VersionManager {
 		String classNameFile=getClassNameFileName(newVer);
 		diSys.Common.Logger.TraceInformation("Saving New Update Jar to :"+newVerFile + " and "+classNameFile);
 		try {
-			JarFileReader.WriteFile(newVerFile,jarFile);
+			FileManager.WriteFile(newVerFile,jarFile);
 			File f=new File(classNameFile);
 			try {
 				f.createNewFile();
@@ -54,7 +54,7 @@ public class VersionManager {
 	public Version GetVersion(int version){
 		String lastClassName=GetClassName(version);
 		try {
-			return new Version(JarFileReader.ReadFileBytes(getJarFileName(version)),lastClassName,version);
+			return new Version(FileManager.ReadFileBytes(getJarFileName(version)),lastClassName,version);
 		} catch (FileNotFoundException e) {
 			diSys.Common.Logger.TraceWarning("Failed to read update File:"+getJarFileName(version),null);
 			return null;
@@ -64,7 +64,7 @@ public class VersionManager {
 		int lastVerNum=getLastVersionNumber();
 		String lastClassName=GetClassName(lastVerNum);
 		try {
-			LastVersion=new Version(JarFileReader.ReadFileBytes(getJarFileName(lastVerNum)),lastClassName,lastVerNum);
+			LastVersion=new Version(FileManager.ReadFileBytes(getJarFileName(lastVerNum)),lastClassName,lastVerNum);
 		} catch (FileNotFoundException e) {
 			diSys.Common.Logger.TraceWarning("Failed to read update File:"+getJarFileName(lastVerNum),null);
 			LastVersion=new Version(null,null,0);

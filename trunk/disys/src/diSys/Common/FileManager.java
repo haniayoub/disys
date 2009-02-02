@@ -1,12 +1,14 @@
 package diSys.Common;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class JarFileReader {
+public class FileManager {
 	
 	public static byte[] ReadFileBytes(String filePath) throws FileNotFoundException{
 		byte[] $=null;
@@ -34,5 +36,11 @@ public class JarFileReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
+	}
+	public static String ReadLine(String versionFile) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader(versionFile));
+		String line=in.readLine();
+		in.close();
+		return line;
 	}
 }
