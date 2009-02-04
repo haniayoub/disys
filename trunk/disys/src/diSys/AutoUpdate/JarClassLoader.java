@@ -56,6 +56,11 @@ public class JarClassLoader extends URLClassLoader {
     	}
     	return classes.toArray(new String[]{});
     }
+    
+    @SuppressWarnings("unchecked")
+	public Class GetClass(String name) throws ClassNotFoundException{
+    	return this.findClass(name);
+    }
     @SuppressWarnings("unchecked")
 	public String[] getSubClassesof(Class c,boolean includeInterfaces){
     	LinkedList<String> classes=new LinkedList<String>(); 

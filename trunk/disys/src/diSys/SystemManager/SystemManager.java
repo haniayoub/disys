@@ -12,6 +12,7 @@ import diSys.Common.ClientRemoteInfo;
 import diSys.Common.ExecuterRemoteInfo;
 import diSys.Common.Item;
 import diSys.Common.RMIRemoteInfo;
+import diSys.Common.SystemUpdates;
 import diSys.Networking.IClientRemoteObject;
 import diSys.Networking.IItemCollector;
 import diSys.Networking.IRemoteItemReceiver;
@@ -187,7 +188,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	}
 	
 	@SuppressWarnings({ "unchecked", "unchecked" })
-	synchronized public String Update(byte[] jar,String className,boolean force) throws RemoteException
+	synchronized public String Update(SystemUpdates updates,boolean force) throws RemoteException
 	{
 		if(this.clientsMap.size()>1&&!force) {
 			throw new RemoteException("Can't Update While There is Another Clients Connected to the system !");
@@ -195,10 +196,10 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			//return "Can't Update While There is Clients Connected to the system !";
 		}
 		String s="";
-		s+=versionManager.addVersion(jar, className);
+		s+=versionManager.addVersion(updates.UpdateJar(), updates.ExecuterClassName());
 		
 		LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
-		AutoUpdateTask auTask =new AutoUpdateTask(jar,versionManager.getLastVersion().version,className);
+		AutoUpdateTask auTask =new AutoUpdateTask(updates.UpdateJar(),versionManager.getLastVersion().version,updates.ExecuterClassName());
 		for (ExecuterRemoteInfo ri  : executersMap.keySet())
 		{
 			executersMap.get(ri).Blocked=true;
