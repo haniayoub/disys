@@ -14,6 +14,7 @@ import diSys.Common.Item;
 import diSys.Common.FileManager;
 import diSys.Common.RMIRemoteInfo;
 import diSys.Common.SynchronizedCounter;
+import diSys.Common.SystemUpdates;
 import diSys.Networking.IClientRemoteObject;
 import diSys.Networking.NetworkCommon;
 import diSys.Networking.RMIObjectBase;
@@ -58,8 +59,9 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	
 	private ISystemManager<TASK> sysManager;  //TODO: Change to be private...
 	
-	private String updateJarPath;
-	private String executerClassName;
+//	private String updateJarPath;
+//	private String executerClassName;
+	SystemUpdates updates;
 	private boolean forceUpdate;
 	
 	public static final String GlobalID = "Client";
@@ -78,10 +80,9 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		ws.add(chunkCreatorWorker, 1);
 		ws.add(chunkScheduler, 1);
 	}
-	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize,String updateJarPath,String executerClassName,boolean ForceUpdate) throws Exception {
+	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize,SystemUpdates updates,boolean ForceUpdate) throws Exception {
 		super(GlobalID);
-		this.updateJarPath=updateJarPath;
-		this.executerClassName=executerClassName;
+		this.updates=updates;
 		this.forceUpdate=ForceUpdate;
 		sCounter=new SynchronizedCounter(0);
 		RemoteSysManagerInfo = new RMIRemoteInfo(SysManagerAddress,
@@ -121,25 +122,15 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 			diSys.Common.Logger.TerminateSystem("Remote System Failed Mnager to assign Remote ID to Client:null Client ID",null);		
 		diSys.Common.Logger.TraceInformation("My Remote Info is :" + myRemoteInfo.toString());
 
-		if(this.updateJarPath!=null&&this.executerClassName!=null){
-			byte[] arr=null;
-			try {
-				diSys.Common.Logger.TraceInformation("Reading update jar File "+this.updateJarPath);
-				arr = FileManager.ReadFileBytes(this.updateJarPath);
-			} catch (FileNotFoundException e) {
-				diSys.Common.Logger.TerminateSystem("Failed to find update jar file: "+updateJarPath,e);
-				
-			}
 			try {
 				diSys.Common.Logger.TraceInformation("Updating sysatem Manager ... ");
-				String s=sysManager.Update(arr,this.executerClassName,forceUpdate);
+				String s=sysManager.Update(updates,forceUpdate);
 				diSys.Common.Logger.TraceInformation("Update: "+s);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
 		}
-		
-	}
+
 
 	public void Start() {
 		

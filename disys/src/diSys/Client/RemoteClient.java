@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import diSys.Common.Exceptions;
 import diSys.Common.Item;
+import diSys.Common.SystemUpdates;
 
 
 public class RemoteClient<TASK extends Item, RESULT extends Item> {
@@ -19,9 +20,9 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	taskNum=0;
 	}
 	
-	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize,String updateJarPath,String executerClassName,boolean forceUpdate) {
+	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize,SystemUpdates updates,boolean forceUpdate) {
 		try {
-			clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize,updateJarPath,executerClassName, forceUpdate);
+			clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize,updates, forceUpdate);
 		} catch (Exception e) {
 			diSys.Common.Logger.TraceWarning("Client is not connected through RMI : this could interrupt system Clean Exit", e);
 		}

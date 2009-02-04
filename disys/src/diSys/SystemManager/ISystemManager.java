@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import diSys.Common.ClientRemoteInfo;
 import diSys.Common.ExecuterRemoteInfo;
 import diSys.Common.Item;
+import diSys.Common.SystemUpdates;
 
 
 public interface ISystemManager<ITEM extends Item> extends Remote {
@@ -15,6 +16,6 @@ public interface ISystemManager<ITEM extends Item> extends Remote {
 			throws RemoteException;
 
 	public ClientRemoteInfo AssignClientRemoteInfo(int port,String ID) throws RemoteException;
-	public String Update(byte[] jar,String className,boolean force) throws RemoteException;
+	public String Update(SystemUpdates updates,boolean force) throws RemoteException;
 	public String CleanExit() throws RemoteException;
 }
