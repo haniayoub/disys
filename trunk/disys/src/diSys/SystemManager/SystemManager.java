@@ -40,7 +40,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		new ConcurrentLinkedQueue<ExecuterRemoteInfo>();
 	//the next id to assign to Client
 	private int nextId = 0;
-	private VersionManager versionManager=new VersionManager(UpdateDir);
+	private VersionManager versionManager=new VersionManager(UpdateDir,5);
 	private ExecutersList executersFile=new ExecutersList(ExecutersList);
 	//Component to check if Executers Still alive
 	private HeartBeatChecker<TASK, RESULT> checker;
@@ -187,40 +187,16 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	}
 	
 	@SuppressWarnings({ "unchecked", "unchecked" })
-	public String Update(byte[] jar,String className,boolean force) throws RemoteException
+	synchronized public String Update(byte[] jar,String className,boolean force) throws RemoteException
 	{
-		if(!this.clientsMap.isEmpty()&&!force) {
-			diSys.Common.Logger.TraceWarning("Can't Update While There is Clients Connected to the system !", null);
-			return "Can't Update While There is Clients Connected to the system !";
+		if(this.clientsMap.size()>1&&!force) {
+			throw new RemoteException("Can't Update While There is Another Clients Connected to the system !");
+			//diSys.Common.Logger.TraceWarning("Can't Update While There is Clients Connected to the system !", null);
+			//return "Can't Update While There is Clients Connected to the system !";
 		}
 		String s="";
 		s+=versionManager.addVersion(jar, className);
 		
-		/*AutoUpdateTask auTask=null;
-		auTask = new AutoUpdateTask(jar,versionManager.getLastVersion().version,className);
-		diSys.Common.Logger.TraceInformation("Sendig Update Task to Executers");
-		Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{auTask});
-		
-		LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
-		for (ExecuterRemoteInfo ri  : executersMap.keySet())
-		{
-			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
-			try{
-				eb.getItemReciever().Add((TASK)c);
-			}
-			catch(Exception e)
-			{
-				diSys.Common.Logger.TraceInformation( "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response"+"\n");
-				s += "Executer " + ri.getItemRecieverInfo().toString()+ " didn't response"+"\n";
-				diSys.Common.Logger.TraceInformation( "Moving Executer " + ri.getItemRecieverInfo().toString()+ " To Black List\n");
-				toREmove.add(ri);
-			}
-		}
-		
-		for(ExecuterRemoteInfo ri:toREmove) this.MoveToBlackList(ri);
-		diSys.Common.Logger.TraceIn
-		formation("Update operation has been sent to executers");
-		*/
 		LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
 		AutoUpdateTask auTask =new AutoUpdateTask(jar,versionManager.getLastVersion().version,className);
 		for (ExecuterRemoteInfo ri  : executersMap.keySet())

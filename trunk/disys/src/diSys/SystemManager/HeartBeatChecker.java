@@ -33,14 +33,19 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 		//check the heart beat of each executer 
 		public void run() {
 			while (!done) {
+				try{
 				HeartBeatClients();
 				HeartBeatExecuters();
 				CheckToUpdateList();
 				CheckBLackList();
-				blackListCounter++;
+				/*blackListCounter++;
 				if(blackListCounter%10 == 0){
 					blackListCounter = 0;
 					CheckBLackList();
+				}*/
+				}
+				catch(Exception e){
+				diSys.Common.Logger.TraceWarning("Ecxeption in heartbeat checker", e);
 				}
 				sleep(period);
 			}
