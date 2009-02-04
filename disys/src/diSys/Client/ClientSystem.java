@@ -110,6 +110,17 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		}
 		diSys.Common.Logger.TraceInformation("conneceted to Remote System Mnager:"
 				+ systemManagerRemoteInfo.GetRmiAddress());
+		try {
+			
+			myRemoteInfo = sysManager.AssignClientRemoteInfo(this.getPort(),GlobalID);
+		} catch (RemoteException e) {
+			diSys.Common.Logger.TerminateSystem("Remote System Mnager Failed to assign Remote ID to Client.",null);
+		}
+		
+		if (myRemoteInfo == null) 
+			diSys.Common.Logger.TerminateSystem("Remote System Failed Mnager to assign Remote ID to Client:null Client ID",null);		
+		diSys.Common.Logger.TraceInformation("My Remote Info is :" + myRemoteInfo.toString());
+
 		if(this.updateJarPath!=null&&this.executerClassName!=null){
 			byte[] arr=null;
 			try {
@@ -128,16 +139,6 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 			}
 		}
 		
-		try {
-			
-			myRemoteInfo = sysManager.AssignClientRemoteInfo(this.getPort(),GlobalID);
-		} catch (RemoteException e) {
-			diSys.Common.Logger.TerminateSystem("Remote System Mnager Failed to assign Remote ID to Client.",null);
-		}
-		
-		if (myRemoteInfo == null) 
-			diSys.Common.Logger.TerminateSystem("Remote System Failed Mnager to assign Remote ID to Client:null Client ID",null);		
-		diSys.Common.Logger.TraceInformation("My Remote Info is :" + myRemoteInfo.toString());
 	}
 
 	public void Start() {

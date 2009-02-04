@@ -18,9 +18,10 @@ public class VersionManager {
 	
 	private final String UpdateDir;
 	private Version LastVersion;
-	
-	public VersionManager(String Dir){
+	private int NumOfVersions;
+	public VersionManager(String Dir,int NumOfVersions){
 		UpdateDir=Dir;
+		this.NumOfVersions=NumOfVersions;
 		File f=new File(UpdateDir);
 		f.mkdir();
 		SetLastVersion();	
@@ -36,18 +37,15 @@ public class VersionManager {
 		diSys.Common.Logger.TraceInformation("Saving New Update Jar to :"+newVerFile + " and "+classNameFile);
 		try {
 			FileManager.WriteFile(newVerFile,jarFile);
-			File f=new File(classNameFile);
-			try {
-				f.createNewFile();
-				BufferedWriter bw=new BufferedWriter(new FileWriter(f));
-				bw.write(className);
-				bw.close();
-			} catch (IOException e) {
-				diSys.Common.Logger.TraceWarning("Failed to Create Class Name File:"+classNameFile,e);
-			}
+			FileManager.WriteFile(classNameFile, className.getBytes());
 		} catch (FileNotFoundException e1) {
 			diSys.Common.Logger.TraceWarning("Failed to Create jar File:"+newVerFile,e1);
 		}
+		
+		File f1=new File(getJarFileName(newVer-NumOfVersions));
+		File f2=new File(getClassNameFileName(newVer-NumOfVersions));
+		f1.delete();
+		f2.delete();
 		LastVersion=new Version(jarFile,className,newVer);
 		return "new Version "+LastVersion+" Saved Successfully";
 	}
