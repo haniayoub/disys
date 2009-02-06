@@ -28,9 +28,9 @@ public class NetworkCommon {
 	public static <T extends Remote> T loadRMIRemoteObject(RMIRemoteInfo ri){
 		
 		try {
-			Registry remoteRegistry = LocateRegistry.getRegistry(ri.Ip(),ri.Port());
+			//Registry remoteRegistry = LocateRegistry.getRegistry(ri.Ip(),ri.Port());
 			// Get remote object reference
-			return (T)remoteRegistry.lookup(ri.RMIId());
+			return (T)Naming.lookup(ri.GetRmiAddress());
 			//return (T)Naming.lookup(ri.GetRmiAddress());
 		} catch (Exception e) {
 			diSys.Common.Logger.TraceError("Connection Failed:"+ri.GetRmiAddress(), null);
