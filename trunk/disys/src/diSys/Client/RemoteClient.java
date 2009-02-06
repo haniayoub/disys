@@ -12,6 +12,7 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	private int taskNum;
 	
 	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize) {
+	
 	try {
 		clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize);
 	} catch (Exception e) {
