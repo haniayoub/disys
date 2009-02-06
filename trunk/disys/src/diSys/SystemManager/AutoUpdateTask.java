@@ -1,16 +1,15 @@
 package diSys.SystemManager;
 
 import diSys.Common.Item;
+import diSys.Common.SystemUpdates;
 
 @SuppressWarnings("serial")
 public class AutoUpdateTask extends Item {
-	public AutoUpdateTask(byte[] jf, int version, String className) {
+	public AutoUpdateTask(SystemUpdates updates, int version) {
 		super(-2);
 		this.version = version;
-		this.jf = jf;
-		this.className = className;
+		this.updates=updates;
 	}
 	public final Integer version;
-	public final byte[] jf;
-	public final String className;
+	public final SystemUpdates updates;
 }

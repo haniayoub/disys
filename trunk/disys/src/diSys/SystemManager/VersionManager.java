@@ -10,6 +10,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import diSys.Common.FileManager;
+import diSys.Common.SystemUpdates;
 
 
 public class VersionManager {
@@ -29,15 +30,16 @@ public class VersionManager {
 	public Version getLastVersion() {
 		return LastVersion;
 	}
-	public String addVersion(byte[] jarFile,String className){
+	public String addVersion(SystemUpdates updates){
+		if(LastVersion==null) LastVersion=new Version(null,0);
 		int newVer=LastVersion.version+1;
-		diSys.Common.Logger.TraceInformation("adding new version "+newVer+" new Executer ["+className+"]");
+		diSys.Common.Logger.TraceInformation("adding new version "+newVer+" new Executer ["+updates.ExecuterClassName()+"]");
 		String newVerFile=getJarFileName(newVer);
 		String classNameFile=getClassNameFileName(newVer);
 		diSys.Common.Logger.TraceInformation("Saving New Update Jar to :"+newVerFile + " and "+classNameFile);
 		try {
-			FileManager.WriteFile(newVerFile,jarFile);
-			FileManager.WriteFile(classNameFile, className.getBytes());
+			FileManager.WriteFile(newVerFile,updates.UpdateJar());
+			FileManager.WriteFile(classNameFile,updates.ExecuterClassName().getBytes());
 		} catch (FileNotFoundException e1) {
 			diSys.Common.Logger.TraceWarning("Failed to Create jar File:"+newVerFile,e1);
 		}
@@ -46,26 +48,31 @@ public class VersionManager {
 		File f2=new File(getClassNameFileName(newVer-NumOfVersions));
 		f1.delete();
 		f2.delete();
-		LastVersion=new Version(jarFile,className,newVer);
+		LastVersion=new Version(updates,newVer);
 		return "new Version "+LastVersion+" Saved Successfully";
 	}
 	public Version GetVersion(int version){
 		String lastClassName=GetClassName(version);
 		try {
-			return new Version(FileManager.ReadFileBytes(getJarFileName(version)),lastClassName,version);
-		} catch (FileNotFoundException e) {
-			diSys.Common.Logger.TraceWarning("Failed to read update File:"+getJarFileName(version),null);
+			return new Version(new SystemUpdates(getJarFileName(version),lastClassName),version);
+		} catch (Exception e) {
+			diSys.Common.Logger.TraceWarning("Failed to read update File:"+getJarFileName(version),e);
 			return null;
 		}
 	}
 	private void SetLastVersion(){
+		
 		int lastVerNum=getLastVersionNumber();
 		String lastClassName=GetClassName(lastVerNum);
+		if(lastVerNum==0)
+			{
+			LastVersion=new Version(null,0);
+			diSys.Common.Logger.TraceWarning("System has no updates for executers ... You need to Update the system!",null);
+			return;
+			}
 		try {
-			LastVersion=new Version(FileManager.ReadFileBytes(getJarFileName(lastVerNum)),lastClassName,lastVerNum);
-		} catch (FileNotFoundException e) {
-			diSys.Common.Logger.TraceWarning("Failed to read update File:"+getJarFileName(lastVerNum),null);
-			LastVersion=new Version(null,null,0);
+			LastVersion=new Version(new SystemUpdates(getJarFileName(lastVerNum),lastClassName),lastVerNum);
+		} catch (Exception e) {
 		}
 	}
 	private String getJarFileName(int ver){

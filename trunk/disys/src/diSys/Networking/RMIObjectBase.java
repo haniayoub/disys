@@ -26,16 +26,16 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 	 * @param port
 	 * @throws Exception
 	 */
-	public RMIObjectBase(String rmiID, int port) throws Exception {
+	public RMIObjectBase(String rmiID, int startPort,int endPort) throws Exception {
 		super();
 		this.rmiID = rmiID;
-		if(port==0){
-			port = NetworkCommon.createRegistry();
+		port=endPort;
+		if(startPort!=0){
+			port = NetworkCommon.createRegistry(startPort,endPort);
 		}
 		else {
 			reg = NetworkCommon.createRegistry(port);
 		}
-		this.port=port;
 		try {
 			Naming.bind("//:" + port + "/" + rmiID, this);
 		} catch (Exception e) {
@@ -45,8 +45,12 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 		}
 	}
 
-	public RMIObjectBase(String rmiID) throws Exception {
+	/*public RMIObjectBase(String rmiID) throws Exception {
 		this(rmiID, 0);
+	}*/
+	
+	public RMIObjectBase(String rmiID,int port) throws Exception {
+		this(rmiID, 0,port);
 	}
 
 	public String GetClientHost() {

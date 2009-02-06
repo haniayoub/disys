@@ -36,7 +36,8 @@ import diSys.WorkersSystem.WorkER.WorkerSystem;
  */
 @SuppressWarnings("serial")
 public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObjectBase implements IClientRemoteObject{
-	
+	private static final int INITIAL_PORT = 6666;
+	private static final int MAX_PORT = 7000;
 	private PriorityBlockingQueue<TASK> tasks = new PriorityBlockingQueue<TASK>(100, 
 			new Comparator<TASK>() {
           		public int compare(TASK t1, TASK t2) {
@@ -61,16 +62,16 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	
 //	private String updateJarPath;
 //	private String executerClassName;
-	SystemUpdates updates;
+//	SystemUpdates updates;
 	private boolean forceUpdate;
 	
 	public static final String GlobalID = "Client";
 	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize) throws Exception {
-		super(GlobalID);
+		super(GlobalID,INITIAL_PORT,MAX_PORT);
 		sCounter=new SynchronizedCounter(0);
 		RemoteSysManagerInfo = new RMIRemoteInfo(SysManagerAddress,
 				sysManagerport, SystemManager.GlobalID);
-		ConnectToSystemManager(RemoteSysManagerInfo);
+		ConnectToSystemManager(RemoteSysManagerInfo,null);
 		chunkCreatorWorker = new ChunkCreator<TASK>(tasks, taskChunks,
 				myRemoteInfo, chunkSize);
 		resultCollector = new ResultCollector<TASK,RESULT>(myRemoteInfo.Id(),1000,this);
@@ -81,13 +82,12 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		ws.add(chunkScheduler, 1);
 	}
 	public ClientSystem(String SysManagerAddress, int sysManagerport,int chunkSize,SystemUpdates updates,boolean ForceUpdate) throws Exception {
-		super(GlobalID);
-		this.updates=updates;
+		super(GlobalID,INITIAL_PORT,MAX_PORT);
 		this.forceUpdate=ForceUpdate;
 		sCounter=new SynchronizedCounter(0);
 		RemoteSysManagerInfo = new RMIRemoteInfo(SysManagerAddress,
 				sysManagerport, SystemManager.GlobalID);
-		ConnectToSystemManager(RemoteSysManagerInfo);
+		ConnectToSystemManager(RemoteSysManagerInfo,updates);
 		chunkCreatorWorker = new ChunkCreator<TASK>(tasks, taskChunks,
 				myRemoteInfo, chunkSize);
 		resultCollector = new ResultCollector<TASK,RESULT>(myRemoteInfo.Id(),1000,this);
@@ -102,7 +102,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 	
 
 	@SuppressWarnings("unchecked")
-	public void ConnectToSystemManager(RMIRemoteInfo systemManagerRemoteInfo) {
+	public void ConnectToSystemManager(RMIRemoteInfo systemManagerRemoteInfo,SystemUpdates updates) {
 	
 		sysManager=NetworkCommon.loadRMIRemoteObject(systemManagerRemoteInfo);
 		if(sysManager==null){
@@ -121,7 +121,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 		if (myRemoteInfo == null) 
 			diSys.Common.Logger.TerminateSystem("Remote System Failed Mnager to assign Remote ID to Client:null Client ID",null);		
 		diSys.Common.Logger.TraceInformation("My Remote Info is :" + myRemoteInfo.toString());
-
+		if(updates!=null)
 			try {
 				diSys.Common.Logger.TraceInformation("Updating sysatem Manager ... ");
 				String s=sysManager.Update(updates,forceUpdate);
