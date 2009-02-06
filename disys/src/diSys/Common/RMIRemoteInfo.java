@@ -55,6 +55,6 @@ public class RMIRemoteInfo extends RemoteInfo implements Serializable {
 	
 	public String toString()
 	{
-		return rmiId;
+		return GetRmiAddress();
 	}
 }

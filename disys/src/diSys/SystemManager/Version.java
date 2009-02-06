@@ -1,16 +1,17 @@
 package diSys.SystemManager;
 
+import diSys.Common.SystemUpdates;
+
 public class Version{
 	public final int version;
-	public final String className;
-	public final byte[] jar;
+	public final SystemUpdates updates;
 	
-	public Version(byte[] jar,String className,int versionNumber){
+	public Version(SystemUpdates updates,int versionNumber){
 		version=versionNumber;
-		this.className=className;
-		this.jar=jar;
+		this.updates=updates;
 	}
 	public String toString(){
-		return "Version:"+version+" Class:"+className;
+		if(updates==null)return "Version:"+version+" Updates:null";
+		return "Version:"+version+" Class:"+updates.ExecuterClassName();
 	}
 }

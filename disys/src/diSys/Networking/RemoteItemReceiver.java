@@ -18,7 +18,7 @@ import diSys.Executor.ExecuterRemoteData;
 @SuppressWarnings("serial")
 public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 		implements IRemoteItemReceiver<ITEM> {
-	public int Version=0; 
+	public int Version=-1; 
 	public static final String GlobalId = "itemReciever";
 	
 	private BlockingQueue<ITEM> recievedItems;

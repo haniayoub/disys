@@ -28,16 +28,16 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 
 	public class Worker implements Runnable {
 		private boolean done = false;
-		private LinkedList<ExecuterBox<TASK, RESULT>> toUpdate=new  LinkedList<ExecuterBox<TASK, RESULT>>();
-		private int blackListCounter = 0;
+	//	private LinkedList<ExecuterBox<TASK, RESULT>> toUpdate=new  LinkedList<ExecuterBox<TASK, RESULT>>();
+	//	private int blackListCounter = 0;
 		//check the heart beat of each executer 
 		public void run() {
 			while (!done) {
 				try{
 				HeartBeatClients();
 				HeartBeatExecuters();
-				CheckToUpdateList();
 				CheckBLackList();
+				//CheckToUpdateList();
 				/*blackListCounter++;
 				if(blackListCounter%10 == 0){
 					blackListCounter = 0;
@@ -55,10 +55,19 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 			for (ExecuterRemoteInfo ri : executersMap.keySet()) {
 				try {
 					ExecuterRemoteData erd = (ExecuterRemoteData)executersMap.get(ri).getItemReciever().getExecuterData();
-					if(erd == null)
+					if(erd == null){
 						diSys.Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+						continue;
+					}
 					executersMap.get(ri).setNumOfTasks(erd.numOfTasks);
 					executersMap.get(ri).setLog(erd.log);
+					
+					if(erd.Version < sysm.GetLastVersionNumber()) {
+						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersionNumber(),null);
+						toDelete.add(ri);
+						blackList.add(ri);
+						continue;
+					}
 				} catch (RemoteException e) {
 					diSys.Common.Logger.TraceWarning("executer is not Alive:"
 							+ ri.toString() + " - Moved to Black List", null);
@@ -77,7 +86,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 			for (ClientRemoteInfo cri : clientsMap.keySet()) {
 				try {
 					clientsMap.get(cri).isIdle();
-				} catch (RemoteException e) {
+				} catch (Exception e) {
 					toDelete.add(cri);
 				}
 			}
@@ -90,16 +99,18 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 		
 		@SuppressWarnings("unchecked")
 		private void CheckBLackList(){
+			LinkedList<ExecuterRemoteInfo> toDelete = new LinkedList<ExecuterRemoteInfo>();
 		    for (ExecuterRemoteInfo ri : blackList)
 			{
 				try {
+					diSys.Common.Logger.TraceInformation("Loading executer "+ri.getItemRecieverInfo().toString());
 					IRemoteItemReceiver<TASK> ir=
 						NetworkCommon.loadRMIRemoteObject(ri.getItemRecieverInfo());
 					IItemCollector<RESULT> rc=
 						NetworkCommon.loadRMIRemoteObject(ri.getResultCollectorInfo());
 					if(ir==null||rc==null){
-						diSys.Common.Logger.TraceWarning("executer is offline",null);
-						return;
+						diSys.Common.Logger.TraceWarning("executer is offline 1",null);
+						continue;
 					}
 					ExecuterBox<TASK, RESULT> exec=new ExecuterBox<TASK, RESULT>(ri,ir,rc,false);
 					//executersMap.put(ri,new ExecuterBox<TASK, RESULT>(ir,rc,false));
@@ -112,54 +123,78 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					if(erd.Version < sysm.GetLastVersionNumber()) {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersionNumber(),null);
 						sysm.updateExecuter(exec);
-						toUpdate.add(exec);
+						//sysm.toUpdateList.add(exec);
+						continue;
+					}
+					if(erd.Version==0){
+						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" System Manager has no updates: "+sysm.GetLastVersionNumber(),null);
 						continue;
 					}
 					diSys.Common.Logger.TraceInformation("Executer "+ ri.toString()+" is Online and up to Date version:"+erd.Version +" Removing from black List");
 					//sysm.addExecuter(ri.getItemRecieverInfo().Ip(), ri.getItemRecieverInfo().Port(), ri.getResultCollectorInfo().Port());
 					//executersMap.put(ri, blackList.get(ri));
 					executersMap.put(ri,exec);
-					blackList.remove(ri);
-					toUpdate.remove(exec);
-				} catch (RemoteException e) {
-				diSys.Common.Logger.TraceWarning("***************executer is offline",null);{
-					continue;}
+					toDelete.add(ri);
+					//blackList.remove(ri);
+				} catch (Exception e) {
+					diSys.Common.Logger.TraceWarning("***************executer is offline",e);
+					continue;
 				}
+			
 			}
+			for (ExecuterRemoteInfo ri : toDelete) {
+				diSys.Common.Logger.TraceInformation("Removing Executer from black list:"
+						+ ri.toString());
+				blackList.remove(ri);
+			}
+		    
 		}
+		/*
+		@SuppressWarnings("unchecked")
 		private void CheckToUpdateList(){
-			LinkedList<ExecuterBox<TASK, RESULT>> toDelete = new LinkedList<ExecuterBox<TASK, RESULT>>();
-			for (ExecuterBox<TASK, RESULT> exec: toUpdate)
+			LinkedList<ExecuterRemoteInfo> toDelete = new LinkedList<ExecuterRemoteInfo>();
+			for (Object o: sysm.toUpdateList)
 			{
-				ExecuterRemoteData erd=null;
+				ExecuterRemoteInfo ri=(ExecuterRemoteInfo)o;
+				
+				ExecuterBox<TASK, RESULT> exec=executersMap.get(ri);
+				diSys.Common.Logger.TraceInformation("R11111111111111111:");
+				if(exec==null){
+					if(!blackList.contains(ri)) blackList.add(ri);
+					continue;
+				}
+				diSys.Common.Logger.TraceInformation("R222222222222222222:");
+				ExecuterRemoteData erd;
 				try {
 					erd = (ExecuterRemoteData)exec.getItemReciever().getExecuterData();
 				} catch (RemoteException e) {
-					toDelete.add(exec);
+					if(!blackList.contains(ri)) blackList.add(ri);
 					continue;
 				}
-				ExecuterRemoteInfo ri=exec.getRemoteInfo();
+				diSys.Common.Logger.TraceInformation("3333333333333333333:");
 				if(erd == null)
-					{
+				{
 					diSys.Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
-					toDelete.add(exec);
-					continue;
-					}
-				if(erd.Version < sysm.GetLastVersionNumber()) {
-					diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version,null);
+					//toDelete.add(exec);
+					if(!blackList.contains(ri))blackList.add(ri);
 					continue;
 				}
+				diSys.Common.Logger.TraceInformation("44444444444444444444:");
+				if(erd.Version < sysm.GetLastVersionNumber()) {
+					diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version+" Updating ...",null);
+					if(!blackList.contains(ri))blackList.add(ri);
+					continue;
+				}
+				diSys.Common.Logger.TraceInformation("55555555555555555555555:");
 				diSys.Common.Logger.TraceInformation("Executer "+ ri.toString()+" is up to Date version:"+erd.Version +" Removing from black List");
-				executersMap.put(ri,exec);
-				blackList.remove(exec);
-				toDelete.add(exec);
+				toDelete.add(ri);
 			}
-			for (ExecuterBox<TASK, RESULT> ri : toDelete) {
-				diSys.Common.Logger.TraceInformation("Removing Executer :"
+			for (ExecuterRemoteInfo ri : toDelete) {
+				diSys.Common.Logger.TraceInformation("Removing Executer from update list:"
 						+ ri.toString());
-				toUpdate.remove(ri);
+				sysm.toUpdateList.remove(ri);
 			}
-		}
+		}*/
 		private void sleep(final int period) {
 			try {
 				Thread.sleep(period);

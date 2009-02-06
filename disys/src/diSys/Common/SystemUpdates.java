@@ -33,10 +33,16 @@ public class SystemUpdates implements Serializable{
 	
 	private static boolean VerfiyUpdates(String updateJarPath,String executerClassName){
 		diSys.Common.Logger.TraceInformation("Verifying Updates Jar:"+updateJarPath+" Executer Class"+executerClassName);
+		File jar=new File(updateJarPath);
+		if(!jar.exists()){
+			diSys.Common.Logger.TraceError(updateJarPath+" Do not exist ",null);
+			return false;
+		}
 		JarClassLoader jcl;
+		
 		try {
 		
-			jcl = new JarClassLoader(new File(updateJarPath));
+			jcl = new JarClassLoader(jar);
 		} catch (MalformedURLException e) {
 			diSys.Common.Logger.TraceError(e.getMessage(), e);
 			return false;

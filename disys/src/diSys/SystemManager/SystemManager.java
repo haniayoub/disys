@@ -11,8 +11,10 @@ import diSys.Common.Chunk;
 import diSys.Common.ClientRemoteInfo;
 import diSys.Common.ExecuterRemoteInfo;
 import diSys.Common.Item;
+import diSys.Common.Logger;
 import diSys.Common.RMIRemoteInfo;
 import diSys.Common.SystemUpdates;
+import diSys.Executor.ExecuterRemoteData;
 import diSys.Networking.IClientRemoteObject;
 import diSys.Networking.IItemCollector;
 import diSys.Networking.IRemoteItemReceiver;
@@ -39,6 +41,9 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		new ConcurrentHashMap<ClientRemoteInfo, ClientBox>();
 	private ConcurrentLinkedQueue<ExecuterRemoteInfo> blackList =
 		new ConcurrentLinkedQueue<ExecuterRemoteInfo>();
+	/*private ConcurrentLinkedQueue<ExecuterRemoteInfo> toUpdateList =
+		new ConcurrentLinkedQueue<ExecuterRemoteInfo>();
+	*/
 	//the next id to assign to Client
 	private int nextId = 0;
 	private VersionManager versionManager=new VersionManager(UpdateDir,5);
@@ -68,12 +73,19 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	}
 	@Override
 	public ExecuterRemoteInfo Schedule(int numberOfTask) throws RemoteException {
-		if (executersMap.keySet().isEmpty()) return null;
+		if (executersMap.isEmpty()){
+			Logger.TraceInformation("Executers list is empty !!!");
+			return null;
+		}
 		diSys.Common.Logger.TraceInformation(this.GetClientHost() + " Whant to Execute "
 					+ numberOfTask + " Tasks");
 		
 		ExecuterRemoteInfo remoteInfo=ScheduleExecuter(numberOfTask);
+		if(remoteInfo==null){
+			diSys.Common.Logger.TraceInformation("No executers");
+		}else{
 		diSys.Common.Logger.TraceInformation("Scheduling executer:" + remoteInfo.toString());
+		}
 		return remoteInfo;
 	}
 
@@ -99,7 +111,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		diSys.Common.Logger.TraceInformation("Adding New Executer : "+address+" "+irPort+ " "+rcPort);
 		ExecuterRemoteInfo remoteInfo = 
 			new ExecuterRemoteInfo(address,irPort, rcPort);
-		IRemoteItemReceiver<TASK> ir=
+		/*IRemoteItemReceiver<TASK> ir=
 			NetworkCommon.loadRMIRemoteObject(remoteInfo.getItemRecieverInfo());
 		IItemCollector<RESULT> rc=
 			NetworkCommon.loadRMIRemoteObject(remoteInfo.getResultCollectorInfo());
@@ -110,11 +122,13 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		
 		executersMap.put(remoteInfo,new ExecuterBox<TASK, RESULT>(remoteInfo,ir,rc,false));
 		this.updateExecuter(remoteInfo);
+		*/
+		blackList.add(remoteInfo);
 		diSys.Common.Logger.TraceInformation("added:"+ remoteInfo.toString());
 		
 	}
 	@Override
-	public ClientRemoteInfo AssignClientRemoteInfo(int port, String ID) throws RemoteException {
+	synchronized public ClientRemoteInfo AssignClientRemoteInfo(int port, String ID) throws RemoteException {
 		String address = this.GetClientHost();
 		if(address==null){
 		diSys.Common.Logger.TraceError("Can't Create Client RemoteInfo , address couldn't be resolved!",null);
@@ -141,11 +155,17 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		ExecuterRemoteInfo remoteInfo = null;
 		int minNumOfTasks = Integer.MAX_VALUE;
 		
+		if(executersMap.isEmpty()){
+			Logger.TraceInformation("Executers list is empty !");
+		}
 		for (ExecuterRemoteInfo ri : executersMap.keySet()) 
 		{
 			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
-			if(eb.Blocked)
+			if(eb.Blocked){
+				Logger.TraceInformation(eb.getRemoteInfo()+" is Blocked !");
 				continue;
+			}
+				
 			if(eb.getNumOfTasks() < minNumOfTasks)
 			{
 				remoteInfo = ri;
@@ -196,22 +216,142 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			//return "Can't Update While There is Clients Connected to the system !";
 		}
 		String s="";
-		s+=versionManager.addVersion(updates.UpdateJar(), updates.ExecuterClassName());
+		s+=versionManager.addVersion(updates);
 		
-		LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
-		AutoUpdateTask auTask =new AutoUpdateTask(updates.UpdateJar(),versionManager.getLastVersion().version,updates.ExecuterClassName());
+		//LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
+		LinkedList<ExecuterRemoteInfo> toUpdate=new LinkedList<ExecuterRemoteInfo>();
+		//AutoUpdateTask auTask =new AutoUpdateTask(updates,versionManager.getLastVersion().version);
 		for (ExecuterRemoteInfo ri  : executersMap.keySet())
 		{
 			executersMap.get(ri).Blocked=true;
-			
-			updateExecuter(ri,auTask);
-			toREmove.add(ri);
+			toUpdate.add(ri);
+		//	updateExecuter(ri,auTask);
+			//toREmove.add(ri);
 		}
-		for(ExecuterRemoteInfo ri:toREmove) this.MoveToBlackList(ri);
+	/*
+		for(ExecuterRemoteInfo ri:toREmove) {
+			//this.MoveToBlackList(ri);
+			toUpdate.add(executersMap.get(ri));
+			//executersMap.remove(ri);
+			//toUpdateList.add(ri);
+		}
+		*/
+		//Wait untill system is up to date !!!
+		/*while(!toUpdateList.isEmpty()){
+			diSys.Common.Logger.TraceInformation("Waiting System to Update ...");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+		}*/
+		 startUpdate(toUpdate);
 		
+		
+		diSys.Common.Logger.TraceInformation("System is up to date");
 		s+="Update operation has been sent to executers";
 		return s;
 	}
+	private void startUpdate(LinkedList<ExecuterRemoteInfo> toUpdate)
+	{
+		for (ExecuterRemoteInfo ri: toUpdate)
+		{
+			try {
+				this.updateExecuter(ri);
+			} catch (RemoteException e) {
+				blackList.add(ri);
+			}
+		}
+	}
+		
+	/*
+	private void startUpdate(LinkedList<ExecuterBox<TASK, RESULT>> toUpdate)
+	{
+		for (ExecuterBox<TASK, RESULT> exec: toUpdate)
+		{
+			try {
+				this.updateExecuter(exec);
+			} catch (RemoteException e) {
+			blackList.add(exec.getRemoteInfo());
+			}
+		}
+		LinkedList<ExecuterRemoteInfo> updateList=new LinkedList<ExecuterRemoteInfo>();
+		LinkedList<ExecuterRemoteInfo> badList=new LinkedList<ExecuterRemoteInfo>();
+		LinkedList<ExecuterRemoteInfo> toDelete=new LinkedList<ExecuterRemoteInfo>();
+		
+		for (ExecuterBox<TASK, RESULT> exec: toUpdate) updateList.add(exec.getRemoteInfo());
+		
+		for (int timer=0 ;timer<10;timer++){
+			if(updateList.isEmpty()){
+				Logger.TraceInformation("Update System Completed Successfully ["+toDelete.size()+" executers]");
+				break;
+			}
+			for(ExecuterRemoteInfo ri:updateList){
+				try {
+					Logger.TraceInformation("Checking "+ri.getItemRecieverInfo()+" Update Ststus");
+					IRemoteItemReceiver<TASK> ir=
+					NetworkCommon.loadRMIRemoteObjectNoLog(ri.getItemRecieverInfo());
+					IItemCollector<RESULT> rc=
+					NetworkCommon.loadRMIRemoteObjectNoLog(ri.getResultCollectorInfo());
+					if(ir==null||rc==null){
+					diSys.Common.Logger.TraceWarning(ri.getItemRecieverInfo()+ " is offline 1",null);
+					badList.add(ri);
+					continue;
+					}
+					ExecuterRemoteData erd;
+					try {
+						erd = (ExecuterRemoteData)ir.getExecuterData();
+					} catch (RemoteException e) {
+						diSys.Common.Logger.TraceWarning(ri.getItemRecieverInfo()+ " is offline 2",null);
+						badList.add(ri);
+						continue;
+					}
+					if(erd == null)
+					{
+						diSys.Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
+						badList.add(ri);
+						continue;
+					}
+					if(erd.Version < GetLastVersionNumber()) {
+						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version+" adding to bad list",null);
+						badList.add(ri);
+						continue;
+					}
+					diSys.Common.Logger.TraceInformation("Executer "+ ri.toString()+" is up to Date version:"+erd.Version +" Removing from bad List ");
+					badList.remove(ri);
+					toDelete.add(ri);
+				}catch(Exception e){
+					badList.add(ri);
+					continue;
+					}
+			}
+			for (ExecuterRemoteInfo riexe : toDelete) {
+				diSys.Common.Logger.TraceInformation("Removing updated Executer from update list:"
+				+ riexe.getItemRecieverInfo());
+				updateList.remove(riexe);
+				diSys.Common.Logger.TraceInformation("Returning executer to executers list"
+						+ riexe.getItemRecieverInfo());
+				IRemoteItemReceiver<TASK> ir=
+				NetworkCommon.loadRMIRemoteObjectNoLog(riexe.getItemRecieverInfo());
+				IItemCollector<RESULT> rc=
+				NetworkCommon.loadRMIRemoteObjectNoLog(riexe.getResultCollectorInfo());
+				if(ir==null||rc==null){
+				diSys.Common.Logger.TraceWarning("executer is offline 5",null);
+				blackList.add(riexe);
+				continue;
+				}
+				executersMap.put(riexe, new ExecuterBox<TASK, RESULT>(riexe,ir,rc,false));
+				diSys.Common.Logger.TraceInformation("executer is back"+ riexe.getItemRecieverInfo());
+			}
+			try {Thread.sleep(1000);} catch (InterruptedException e) {};
+		}
+		for (ExecuterRemoteInfo riexe : badList) {
+			diSys.Common.Logger.TraceInformation("Removing bad Executers to black list:"
+			+ riexe.getItemRecieverInfo());
+			blackList.add(riexe);
+			//updateList.remove(riexe);
+		}
+		
+	}*/
 	
 	private void MoveToBlackList(ExecuterRemoteInfo ri){
 		blackList.add(ri);
@@ -221,12 +361,12 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public void updateExecuter(ExecuterRemoteInfo ri) throws RemoteException{
 		AutoUpdateTask auTask=null;
 		Version last=versionManager.getLastVersion();
-		if(last.jar==null||last.className==null){
+		if(last==null){
 			diSys.Common.Logger.TraceError("System Manager has no updates for executers",null);
 			return;
 		}
-		auTask = new AutoUpdateTask(last.jar,last.version,last.className);
-		updateExecuter(ri);
+		auTask = new AutoUpdateTask(last.updates,last.version);
+		updateExecuter(ri,auTask);
 		this.MoveToBlackList(ri);
 		
 	}
@@ -236,6 +376,10 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		diSys.Common.Logger.TraceInformation("Sendig Update Task to Executer "+ri.getItemRecieverInfo().toString() );
 		Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{updateTask});
 		ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
+		if(eb==null){
+			diSys.Common.Logger.TraceWarning("Executer is not alive "+ri.getItemRecieverInfo().toString(),null );
+			return;
+		}
 	    eb.getItemReciever().Add((TASK)c);
 	}
 	
@@ -243,24 +387,25 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public void updateExecuter(ExecuterBox<TASK, RESULT> eb) throws RemoteException{
 		AutoUpdateTask auTask=null;
 		Version last=versionManager.getLastVersion();
-		if(last.jar==null||last.className==null){
+		if(last==null){
 			diSys.Common.Logger.TraceError("System Manager has no updates for executers",null);
 			return;
 		}
-		auTask = new AutoUpdateTask(last.jar,last.version,last.className);
-		diSys.Common.Logger.TraceInformation("Sendig Update Task to Executer "+eb.getRemoteInfo().getItemRecieverInfo().toString() );
+		auTask = new AutoUpdateTask(last.updates,last.version);
+		diSys.Common.Logger.TraceInformation("Sendig Update Task to Executer "+eb.getRemoteInfo().toString() );
 		Chunk<Item> c = new Chunk<Item>(-2, null, null, new Item[]{auTask});
 	    eb.getItemReciever().Add((TASK)c);
 		
 	}
 	public int GetLastVersionNumber() {
+		if(versionManager.getLastVersion()==null) return 0;
 		return versionManager.getLastVersion().version;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws InterruptedException, IOException {
 		int port=0;
-		int interval=300;
+		int interval=3000;
 		PrintUsage();
 		if(args.length>0){
 			port=Integer.parseInt(args[0]);
@@ -268,6 +413,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		if(args.length>1){
 			interval=Integer.parseInt(args[1]);
 		}
+		//interval=3000;
 		try {
 			new SystemManager(port,interval);
 		} catch (Exception e) {

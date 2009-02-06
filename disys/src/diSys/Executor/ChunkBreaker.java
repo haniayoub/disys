@@ -18,6 +18,7 @@ import diSys.WorkersSystem.WorkER.AWorker;
  */
 public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteItem<ITEM>> {
 
+	boolean updateState=false;
 	@SuppressWarnings("unchecked")
 	public ChunkBreaker(BlockingQueue<Chunk<ITEM>> wi, BlockingQueue<RemoteItem<ITEM>> rq, ExecuterSystem es) {
 		super(wi, rq);
@@ -43,18 +44,28 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 			}
 			if(item instanceof AutoUpdateTask)
 			{
-				diSys.Common.Logger.TraceInformation("Update Command [Task] recieved , update to :"+((AutoUpdateTask)item).className);
+				diSys.Common.Logger.TraceInformation("Update Command [Task] recieved , update to :"+((AutoUpdateTask)item).updates.ExecuterClassName());
 				try{
 					if(es.GetVersion()==((AutoUpdateTask)item).version){
 						diSys.Common.Logger.TraceInformation("System at version "+es.GetVersion()+"is up to date no need to update . ");
 						return null;
 					}
+					if(!updateState){
+					updateState=true;
 					es.PrepareToUpdate((AutoUpdateTask)item);
+					
+					}else{
+						
+						
+						diSys.Common.Logger.TraceWarning("Executer Already in update state", null);
+						return null;
+					}
 					//es.updateExecuters((AutoUpdateTask)item);
 					
 					//es.GetItemReciver().Version=((AutoUpdateTask)item).version;
 				}
 				catch(Exception e){
+					updateState=false;
 					diSys.Common.Logger.TraceWarning("Executer System Could not update executers", e);
 				}
 				return null;

@@ -80,7 +80,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		super();
 		File f=new File(UpdateDir);
 		f.mkdir();
-		Thread.sleep(1000);
+		//Thread.sleep(1000);
 		IExecutor newExec=executer;
 		try {
 			newExec=LoadUpdates();
@@ -163,9 +163,9 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		File dir=new File(getVerDir(item.version));
 		dir.mkdir();
 		
-		FileManager.WriteFile(getLastVerFile(item.version), item.jf);
+		FileManager.WriteFile(getLastVerFile(item.version), item.updates.UpdateJar());
 		
-		FileManager.WriteFile(classNameFile(item.version),item.className.getBytes());
+		FileManager.WriteFile(classNameFile(item.version),item.updates.ExecuterClassName().getBytes());
 		
 		FileManager.WriteFile(VersionFile,item.version.toString().getBytes());
 		diSys.Common.Logger.TraceInformation("Update data saved successfuly to dir "+dir.getName());
@@ -175,9 +175,12 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
 		}
-		String command="java -jar executer.jar "+CommandLineArgs;
-		CommandLineRunner.Run(command);
+		String command="cmd /c java -jar executer.jar "+CommandLineArgs;
+		//String command="cmd /c executer.cmd";
+		
+		
         System.runFinalization();
+        CommandLineRunner.Run(command);
         diSys.Common.Logger.TerminateSystem("Done ...", null);
 		
 	}
