@@ -28,6 +28,7 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 	 */
 	public RMIObjectBase(String rmiID, int startPort,int endPort) throws Exception {
 		super();
+		Security.ConfigureSecuritySettings();
 		this.rmiID = rmiID;
 		port=endPort;
 		if(startPort!=0){

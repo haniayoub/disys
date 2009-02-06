@@ -1,6 +1,7 @@
 package diSys.Client;
 
 import java.io.FileNotFoundException;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
@@ -18,6 +19,7 @@ import diSys.Common.SystemUpdates;
 import diSys.Networking.IClientRemoteObject;
 import diSys.Networking.NetworkCommon;
 import diSys.Networking.RMIObjectBase;
+import diSys.Networking.Security;
 import diSys.SystemManager.ISystemManager;
 import diSys.SystemManager.SystemManager;
 import diSys.WorkersSystem.WorkER.WorkerSystem;
@@ -103,7 +105,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends RMIObj
 
 	@SuppressWarnings("unchecked")
 	public void ConnectToSystemManager(RMIRemoteInfo systemManagerRemoteInfo,SystemUpdates updates) {
-	
+		
 		sysManager=NetworkCommon.loadRMIRemoteObject(systemManagerRemoteInfo);
 		if(sysManager==null){
 		diSys.Common.Logger.TerminateSystem("Failed to connecet to Remote System Mnager:"+
