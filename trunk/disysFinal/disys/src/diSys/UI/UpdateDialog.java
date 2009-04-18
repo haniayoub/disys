@@ -163,7 +163,7 @@ public class UpdateDialog extends javax.swing.JDialog {
 					jButtonBrowse = new JButton();
 					jPanel1.add(jButtonBrowse);
 					jButtonBrowse.setText("Browse");
-					jButtonBrowse.setBounds(85, 63, 67, 23);
+					jButtonBrowse.setBounds(85, 63, 72, 23);
 					jButtonBrowse.addMouseListener(new MouseAdapter() {
 						public void mousePressed(MouseEvent evt) {
 							jButtonBrowseMousePressed(evt);
@@ -180,16 +180,20 @@ public class UpdateDialog extends javax.swing.JDialog {
 	private void jButtonCommetMouseClicked(MouseEvent evt) {
 		//System.out.println("jButtonCommet.mouseClicked, event="+evt);
 		//TODO add your code for jButtonCommet.mouseClicked
+		this.sysUp.setExecuterClassName(this.jComboBoxClassName.getSelectedItem().toString());
+		this.sysUp.setIncludeJars(files);
 		try {
 			this.sysUp.VerfiyUpdates(jLabelFile.getText(),jComboBoxClassName.getSelectedItem().toString());
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage()+"\n\r please check if there is missing jars !", "Error!", JOptionPane.ERROR_MESSAGE);
 			return;
+		}catch(NoClassDefFoundError e){
+			JOptionPane.showMessageDialog(this, e.getMessage()+" Class not found Error\n\r please check if there is missing jars !", "Error!", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 		
 		SystemManagerUI.updateThread.pause();
-		this.sysUp.setExecuterClassName(this.jComboBoxClassName.getSelectedItem().toString());
-		this.sysUp.setIncludeJars(files);
+		
 		boolean force=this.jCheckForce.isSelected();
 		String message=null;
 		try {

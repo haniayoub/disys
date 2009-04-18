@@ -84,6 +84,11 @@ public class ExecutersPanel extends javax.swing.JPanel {
 					jScrollPane1.setViewportView(executersList);
 					executersList.setBounds(10, 31, 316, 250);
 					executersList.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+					executersList.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
+							executersListMouseClicked(evt);
+						}
+					});
 					executersList.addListSelectionListener(new ListSelectionListener() {
 						public void valueChanged(ListSelectionEvent evt) {
 							executersListValueChanged(evt);
@@ -106,7 +111,7 @@ public class ExecutersPanel extends javax.swing.JPanel {
 				RemoveButton = new JButton();
 				this.add(RemoveButton);
 				RemoveButton.setText("Remove");
-				RemoveButton.setBounds(89, 329, 73, 20);
+				RemoveButton.setBounds(89, 329, 78, 20);
 				RemoveButton.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent evt) {
 						RemoveButtonMousePressed(evt);
@@ -138,7 +143,7 @@ public class ExecutersPanel extends javax.swing.JPanel {
 			{
 				jLabel2 = new JLabel();
 				this.add(jLabel2);
-				jLabel2.setText("Enactive Executers :");
+				jLabel2.setText("Inactive Executers :");
 				jLabel2.setBounds(347, 11, 110, 14);
 			}
 		} catch (Exception e) {
@@ -190,6 +195,17 @@ public class ExecutersPanel extends javax.swing.JPanel {
 	
 	private void jList1ValueChanged(ListSelectionEvent evt) {
 	   this.executersList.clearSelection();
+	}
+	
+	private void executersListMouseClicked(MouseEvent evt) {
+		if(evt.getClickCount()==2){
+			try{
+		      new ExecuterTraceFrame(((ExecuterRemoteInfo)this.executersList.getSelectedValue()).getResultCollectorInfo()).setVisible(true);
+			}catch(Exception e){
+
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 
 }

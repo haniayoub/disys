@@ -86,8 +86,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		try {
 			newExec=LoadUpdates();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.TraceWarning("Executer Is could not load Updates", e);
 		}
 		
 		try {
@@ -206,9 +205,17 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	}
 
 	@SuppressWarnings("unchecked")
-	public IExecutor LoadUpdates() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException{
-	    String versionString=FileManager.ReadLine(VersionFile);
-	    diSys.Common.Logger.TraceInformation("Loading updates Version "+versionString);
+	public IExecutor LoadUpdates(){
+	    String versionString;
+	   
+	    diSys.Common.Logger.TraceInformation("Loading updates!..");
+	    try {
+			versionString = FileManager.ReadLine(VersionFile);
+		} catch (IOException e) {
+			Logger.TraceError("Couldn't read Version from version file!", e);
+			return null;
+		}
+		 diSys.Common.Logger.TraceInformation("Loading updates Version "+versionString);
 	    int version=Integer.parseInt(versionString);
 	    
 	    File fdel = new File(getVerDir(version-2));
@@ -217,18 +224,44 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	    diSys.Common.Logger.TraceInformation("Deleteing dir "+fdel.getName()+" :"+ fdel.delete());
 	    
 	    File f = new File(getLastVerFile(version));
-	    String executerClassName=FileManager.ReadLine(classNameFile(version));
+	    String executerClassName;
+		try {
+			executerClassName = FileManager.ReadLine(classNameFile(version));
+		} catch (IOException e) {
+			Logger.TraceError("Couldn't Read IExecuter Class Name!", e);
+			return null;
+		}
 	   // jcl = new JarClassLoader(f);
 	    
 		//JarClassLoader.AddUrlToSystem(f.toURI().toURL());
 		diSys.Common.Logger.TraceInformation("New Class " + executerClassName + " will be dynamically loaded...");
-		JarClassLoader.AddUrlToSystem(f.toURI().toURL());
+		try {
+			JarClassLoader.AddUrlToSystem(f.toURI().toURL());
+		} catch (MalformedURLException e) {
+			Logger.TraceError("Couldn't Update !", e);
+			return null;
+		}
 		String IncludeJarsDir=getUpdateJarsDir(version);
 		File jarsf=new File(IncludeJarsDir);
-         for(File ff:jarsf.listFiles())JarClassLoader.AddUrlToSystem(ff.toURI().toURL());
+         for(File ff:jarsf.listFiles())
+			try {
+				JarClassLoader.AddUrlToSystem(ff.toURI().toURL());
+			} catch (MalformedURLException e) {
+				Logger.TraceError("Couldn't Update !", e);
+				return null;
+			}
+			Logger.TraceInformation("Intializing class " +executerClassName);
+		IExecutor newExecuter;
+		try {
+			newExecuter = (IExecutor)Class.forName(executerClassName).newInstance();
+		} catch (Exception e) {
+			Logger.TraceError("Couldn't Update Failed to initialize Executer Class!", e);
+			return null;
+		}catch(NoClassDefFoundError e){
+			Logger.TraceInformation("Couldn't Update Failed to initialize Executer Class!");
+			return null;
+		}
         	 
-		IExecutor newExecuter=(IExecutor)Class.forName(executerClassName).newInstance();
-
 		this.Version=version;
 		
 		// BufferedReader in = new BufferedReader(new FileReader("foo.in"));
