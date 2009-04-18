@@ -35,7 +35,7 @@ public class RMIItemCollector<ITEM extends Item> extends RMIObjectBase
 	@SuppressWarnings("unchecked")
 	@Override
 	public Chunk<ITEM> Collect(long id) throws RemoteException {
-		String ip=this.GetClientHost();
+		String ip=diSys.Networking.NetworkCommon.GetClientHost();
 		if(ip==null){
 		Logger.TraceError("The Clinet Ip is null aborting Collect Items", null);
 		return null;

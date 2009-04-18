@@ -3,9 +3,6 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.rmi.NoSuchObjectException;
-import java.rmi.RemoteException;
-import java.rmi.server.RemoteObject;
 
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
@@ -14,18 +11,15 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 
 import diSys.Common.SystemUpdates;
 
@@ -42,6 +36,7 @@ import diSys.Common.SystemUpdates;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+@SuppressWarnings("serial")
 public class UpdateDialog extends javax.swing.JDialog {
 
 	{
@@ -185,6 +180,13 @@ public class UpdateDialog extends javax.swing.JDialog {
 	private void jButtonCommetMouseClicked(MouseEvent evt) {
 		//System.out.println("jButtonCommet.mouseClicked, event="+evt);
 		//TODO add your code for jButtonCommet.mouseClicked
+		try {
+			this.sysUp.VerfiyUpdates(jLabelFile.getText(),jComboBoxClassName.getSelectedItem().toString());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, e.getMessage()+"\n\r please check if there is missing jars !", "Error!", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		SystemManagerUI.updateThread.pause();
 		this.sysUp.setExecuterClassName(this.jComboBoxClassName.getSelectedItem().toString());
 		this.sysUp.setIncludeJars(files);
