@@ -50,7 +50,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	*/
 	//the next id to assign to Client
 	private int nextId = 0;
-	
+	//Round Robin counter
 	private int RRcounter = 0;
 	
 	private VersionManager versionManager=new VersionManager(UpdateDir,5);
@@ -167,13 +167,13 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		if(executersMap.isEmpty()){
 			Logger.TraceInformation("Executers list is empty !");
 		}
-		ExecuterRemoteInfo RRlist[] = {};
+		ExecuterRemoteInfo RRlist[] = new ExecuterRemoteInfo[executersMap.size()];
 		int i=0;
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
 		{
 			RRlist[i++] = ri;
 		}
-		RRcounter%=i;
+		RRcounter = RRcounter%i;
 		return RRlist[RRcounter++];
 		
 		/*
