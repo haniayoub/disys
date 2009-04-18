@@ -88,7 +88,7 @@ public class UpdatePnael extends javax.swing.JPanel {
 				BrowseButton = new JButton();
 				this.add(BrowseButton);
 				BrowseButton.setText("Browse");
-				BrowseButton.setBounds(510, 68, 83, 20);
+				BrowseButton.setBounds(510, 68, 84, 20);
 				BrowseButton.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent evt) {
 						BrowseButtonMouseClicked(evt);
@@ -100,6 +100,7 @@ public class UpdatePnael extends javax.swing.JPanel {
 				this.add(UpdateButton);
 				UpdateButton.setText("Update");
 				UpdateButton.setBounds(12, 269, 77, 20);
+				UpdateButton.setPreferredSize(new java.awt.Dimension(77, 20));
 				UpdateButton.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent evt) {
 						UpdateButtonMouseClicked(evt);
@@ -110,7 +111,8 @@ public class UpdatePnael extends javax.swing.JPanel {
 				jButtonUpdateToLast = new JButton();
 				this.add(jButtonUpdateToLast);
 				jButtonUpdateToLast.setText("Update to this version");
-				jButtonUpdateToLast.setBounds(139, 8, 129, 23);
+				jButtonUpdateToLast.setBounds(139, 8, 147, 23);
+				jButtonUpdateToLast.setPreferredSize(new java.awt.Dimension(147, 23));
 				jButtonUpdateToLast.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent evt) {
 						jButtonUpdateToLastMouseClicked(evt);

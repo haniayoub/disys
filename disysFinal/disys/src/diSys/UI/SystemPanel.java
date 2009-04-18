@@ -132,7 +132,8 @@ public class SystemPanel extends javax.swing.JPanel {
 				startButton = new JButton();
 				this.add(startButton);
 				startButton.setText("Connect");
-				startButton.setBounds(20, 266, 72, 20);
+				startButton.setBounds(10, 266, 83, 20);
+				startButton.setPreferredSize(new java.awt.Dimension(83, 20));
 				startButton.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent evt) {
 						startButtonMouseClicked(evt);
@@ -144,6 +145,7 @@ public class SystemPanel extends javax.swing.JPanel {
 				this.add(stopButton);
 				stopButton.setText("Disconnect");
 				stopButton.setBounds(103, 266, 102, 20);
+				stopButton.setPreferredSize(new java.awt.Dimension(102, 20));
 				stopButton.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent evt) {
 						stopButtonMousePressed(evt);

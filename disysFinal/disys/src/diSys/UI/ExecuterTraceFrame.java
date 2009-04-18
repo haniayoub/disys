@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -40,13 +41,14 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 	private JPanel MainPane;
 	private JTextArea LogTraceArea;
 	private Thread updater;
+	private JScrollPane jScrollPane1;
 	@SuppressWarnings("unchecked")
 	private IItemCollector ic;
 
 	/**
 	* Auto-generated main method to display this JFrame
 	*/
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				ExecuterTraceFrame inst = new ExecuterTraceFrame();
@@ -54,12 +56,12 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 				inst.setVisible(true);
 			}
 		});
-	}
+	}*/
 	
-	public ExecuterTraceFrame() {
+	public ExecuterTraceFrame(RMIRemoteInfo ri) {
 		super();
 		initGUI();
-		ic=NetworkCommon.loadRMIRemoteObject(new RMIRemoteInfo("localhost",3001,diSys.Networking.RMIItemCollector.GlobalId));
+		ic=NetworkCommon.loadRMIRemoteObject(ri);
 
 		updater=new Thread(new Runnable(){
 			@Override
@@ -83,14 +85,19 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 				getContentPane().add(MainPane, BorderLayout.CENTER);
 				MainPane.setLayout(null);
 				{
-					LogTraceArea = new JTextArea();
-					MainPane.add(LogTraceArea);
-					LogTraceArea.setText("Ececec");
-					LogTraceArea.setBounds(10, 33, 364, 258);
+					jScrollPane1 = new JScrollPane();
+					MainPane.add(jScrollPane1);
+					jScrollPane1.setBounds(10, 16, 580, 306);
+					{
+						LogTraceArea = new JTextArea();
+						jScrollPane1.setViewportView(LogTraceArea);
+						LogTraceArea.setText("Ececec");
+						LogTraceArea.setBounds(10, 16, 364, 275);
+					}
 				}
 			}
 			pack();
-			this.setSize(400, 338);
+			this.setSize(616, 371);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
