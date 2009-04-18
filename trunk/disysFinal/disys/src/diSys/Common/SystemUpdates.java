@@ -34,10 +34,7 @@ public class SystemUpdates implements Serializable{
 				}
 				this.executerClassName=this.executerClassNames[0];
 			}
-		if(!VerfiyUpdates(updateJarPath, this.executerClassName)){
-			throw new Exception("Updates Verification Failed");
-		}
-		diSys.Common.Logger.TraceInformation("Update Verification : OK ...");
+
 		
 		if(updateJarPath!=null){
 		diSys.Common.Logger.TraceInformation("Reading update jar File :"+updateJarPath);
@@ -61,45 +58,48 @@ public class SystemUpdates implements Serializable{
 		for(File f:files){
 			try {
 				IncludeJars.put(f.getName(), FileManager.ReadFileBytes(f.getAbsolutePath()));
+				try {
+					JarClassLoader.AddUrlToSystem(f.toURI().toURL());
+				} catch (MalformedURLException e) {
+				}
 			} catch (FileNotFoundException e) {
 			}
 		}
 	}
-	private static boolean VerfiyUpdates(String updateJarPath,String executerClassName){
+	
+	public void VerfiyUpdates(String updateJarPath,String executerClassName) throws Exception{
 		diSys.Common.Logger.TraceInformation("Verifying Updates Jar:"+updateJarPath+" Executer Class"+executerClassName);
 		File jar=new File(updateJarPath);
 		if(!jar.exists()){
 			diSys.Common.Logger.TraceError(updateJarPath+" Do not exist ",null);
-			return false;
+			throw new Exception(updateJarPath+" Do not exist ");
 		}
-		JarClassLoader jcl;
-		
+		//for()
+		JarClassLoader jcl=null;
 		try {
-		
 			jcl = new JarClassLoader(jar);
 		} catch (MalformedURLException e) {
 			diSys.Common.Logger.TraceError(e.getMessage(), e);
-			return false;
+			throw new Exception(e.getMessage());
 		}
 		//jcl.getSubClassesof(c, includeInterfaces)
-		/*try {
-			jcl.GetClass(executerClassName).is
+	    try {
+			//jcl.GetClass(executerClassName).is
 			Object o=jcl.GetClass(executerClassName).newInstance();
 			if(!(o instanceof IExecutor)) {
 				diSys.Common.Logger.TraceError(executerClassName+" Do not implement "+IExecutor.class.getName() +" Interface ...",null);
-				return false;
+				throw new Exception(executerClassName+" Do not implement "+IExecutor.class.getName() +" Interface ...");
 			}
 		} catch (InstantiationException e) {
 			diSys.Common.Logger.TraceError(executerClassName+" instantiation Failed please Check your implementation" , e);
-			return false;
+			throw new Exception(executerClassName+" instantiation Failed please Check your implementation");
 		} catch (IllegalAccessException e) {
 			diSys.Common.Logger.TraceError(e.getMessage(), e);
-			return false;
+			throw new Exception(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			diSys.Common.Logger.TraceError(executerClassName+" was not found in the Jar: " +updateJarPath, null);
-			return false;
-		}*/
-		return true;
+			diSys.Common.Logger.TraceError(executerClassName+" was not found in the given Jar: " +updateJarPath, null);
+			throw new Exception(executerClassName+" was not found in the given Jars");
+		}
 	
 	}
 	public String[] getExecuterClassNames() {

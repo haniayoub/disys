@@ -1,11 +1,9 @@
 package diSys.Networking;
 
-import java.net.NetworkInterface;
 import java.rmi.RemoteException;
 import java.util.concurrent.BlockingQueue;
 
 import diSys.Common.Item;
-import diSys.Common.Logger;
 import diSys.Executor.ExecuterRemoteData;
 
 
