@@ -9,6 +9,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import diSys.Common.Chunk;
 import diSys.Common.ClientRemoteInfo;
 import diSys.Common.ExecuterRemoteInfo;
@@ -36,6 +38,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	//Max ID to assign to Clients
 	private static final int MAX_ID = 10000;
 	//executers In this System Manager
+
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap=
 		new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
 	private ConcurrentHashMap<ClientRemoteInfo, ClientBox> clientsMap=
@@ -47,6 +50,9 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	*/
 	//the next id to assign to Client
 	private int nextId = 0;
+	
+	private int RRcounter = 0;
+	
 	private VersionManager versionManager=new VersionManager(UpdateDir,5);
 	private ExecutersList executersFile=new ExecutersList(ExecutersList);
 	//Component to check if Executers Still alive
@@ -156,12 +162,22 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	}
 	
 	private ExecuterRemoteInfo ScheduleExecuter(int numberOfTasks){
-		ExecuterRemoteInfo remoteInfo = null;
-		int minNumOfTasks = Integer.MAX_VALUE;
+		//ExecuterRemoteInfo remoteInfo = null;
 		
 		if(executersMap.isEmpty()){
 			Logger.TraceInformation("Executers list is empty !");
 		}
+		ExecuterRemoteInfo RRlist[] = {};
+		int i=0;
+		for (ExecuterRemoteInfo ri : executersMap.keySet())
+		{
+			RRlist[i++] = ri;
+		}
+		RRcounter%=i;
+		return RRlist[RRcounter++];
+		
+		/*
+		int minNumOfTasks = Integer.MAX_VALUE;
 		for (ExecuterRemoteInfo ri : executersMap.keySet()) 
 		{
 			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
@@ -177,6 +193,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			}
 		}
 		return remoteInfo;
+		*/
 	}
 	
 	@SuppressWarnings("unchecked")
