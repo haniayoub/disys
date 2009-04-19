@@ -91,22 +91,21 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 				{
 					jScrollPane1 = new JScrollPane();
 					MainPane.add(jScrollPane1);
-					jScrollPane1.setPreferredSize(new java.awt.Dimension(588, 307));
-					jScrollPane1.setBounds(7, 11, 588, 307);
+					jScrollPane1.setBounds(7, 11, 598, 320);
 					{
 						LogTraceArea = new JTextArea();
 						jScrollPane1.setViewportView(LogTraceArea);
 						LogTraceArea.setText("");
 						LogTraceArea.setAutoscrolls(true);
 						LogTraceArea.setEditable(false);
-						LogTraceArea.setPreferredSize(new java.awt.Dimension(566, 287));
+						LogTraceArea.setBounds(9, 11, 586, 305);
 						//LogTraceArea.setAutoscrolls(true);
 						//jScrollPane1.setAutoscrolls(true);
 					}
 				}
 			}
 			pack();
-			this.setSize(621, 367);
+			this.setSize(621, 365);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
