@@ -1,6 +1,4 @@
 package diSys.UI;
-import com.cloudgarden.layout.AnchorConstraint;
-import com.cloudgarden.layout.AnchorLayout;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
@@ -9,7 +7,6 @@ import java.rmi.RemoteException;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import diSys.Common.RMIRemoteInfo;
@@ -86,23 +83,22 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
 				MainPane = new JPanel();
-				AnchorLayout MainPaneLayout = new AnchorLayout();
 				GridBagConstraints c = new GridBagConstraints();
 				getContentPane().add(MainPane, BorderLayout.CENTER);
-				MainPane.setLayout(MainPaneLayout);
+				MainPane.setLayout(null);
 				MainPane.setPreferredSize(new java.awt.Dimension(595, 318));
 				{
 					jScrollPane1 = new JScrollPane();
-					MainPane.add(jScrollPane1, new AnchorConstraint(31, 984, 983, 10, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
-					jScrollPane1.setAutoscrolls(true);
-					jScrollPane1.setPreferredSize(new java.awt.Dimension(589, 313));
+					MainPane.add(jScrollPane1);
+					jScrollPane1.setPreferredSize(new java.awt.Dimension(588, 307));
+					jScrollPane1.setBounds(7, 11, 588, 307);
 					{
 						LogTraceArea = new JTextArea();
 						jScrollPane1.setViewportView(LogTraceArea);
 						LogTraceArea.setText("");
 						LogTraceArea.setAutoscrolls(true);
 						LogTraceArea.setEditable(false);
-						LogTraceArea.setPreferredSize(new java.awt.Dimension(571, 292));
+						LogTraceArea.setPreferredSize(new java.awt.Dimension(588, 307));
 						//LogTraceArea.setAutoscrolls(true);
 						//jScrollPane1.setAutoscrolls(true);
 					}
