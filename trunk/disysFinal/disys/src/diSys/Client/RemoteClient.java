@@ -10,8 +10,13 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	public ClientSystem<TASK, RESULT> clientSystem; //TODO: change to private
 	private int taskNum;
 	
+	/**
+	 * Crate new remote client and connects it with the system manager
+	 * @param SysManagerAddress : the system manager Address 
+	 * @param sysManagerport System manager port
+	 * @param chunkSize The chunk of tasks maximum size to be created and sent to executer
+	 */
 	public RemoteClient(String SysManagerAddress, int sysManagerport,int chunkSize) {
-	
 	try {
 		clientSystem=new ClientSystem<TASK, RESULT>(SysManagerAddress,sysManagerport,chunkSize);
 	} catch (Exception e) {
@@ -19,10 +24,17 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	}
 	taskNum=0;
 	}
+	
+	/**
+	 *  start the Remote client system
+	 */
 	public void Start(){
 		clientSystem.Start();
 	}
 	
+	/**
+	 * Stop the remote Client System
+	 */
 	public void Stop(){
 		if(taskNum!=0){
 			diSys.Common.Logger.TraceWarning("The user didn't read all the Results of the tasks", null);
@@ -30,11 +42,21 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 		clientSystem.Stop();
 	}
 	
+	/**
+	 * add Task to the Queue to be sent to Executers
+	 * @param task
+	 */
 	public void AddTask(TASK task){
 		clientSystem.AddTask(task);
 		taskNum++;
 	}
 	
+	/**
+	 *  Returns the least recent Result  
+	 * 	Note : Blocking call if there is Tasks in waiting queue
+	 * @return the least recent Result
+	 * @throws Exception the exception thrown at the remote executer while executing the relevant task of the result , if exists 
+	 */
 	public RESULT GetResult() throws Exception{
 		if(taskNum==0) {
 			System.out.println("GetResult:No Tasks in execution / No Results available");
@@ -47,6 +69,13 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 		return r;
 	}
 	
+	/**
+	 * the Same as GetResult() with time constraints 
+	 * @param timeOut the time to wait for a result to be ready
+	 * @param timeUnit
+	 * @return the least recent Result
+	 * @throws Exception the exception thrown at the remote executer while executing the relevant task of the result , if exists 
+	 */
 	public RESULT GetResult(int timeOut,TimeUnit timeUnit) throws Exception{
 		if(taskNum==0) {
 		System.out.println("GetResult:No Tasks in execution / No Results available");
@@ -67,12 +96,11 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 		}
 	}
 	
+	/**
+	 * get the number of tasks in execution or waiting for execution
+	 * @return
+	 */
 	public int GetTaskNum(){
 		return taskNum;
-	}
-	
-	public void Exit() throws Exception{
-		if(taskNum!=0) throw new Exceptions.ClientException("The user didn't read all the Results of the tasks");
-		clientSystem.Stop();
 	}
 }
