@@ -87,12 +87,17 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 				{
 					jScrollPane1 = new JScrollPane();
 					MainPane.add(jScrollPane1);
-					jScrollPane1.setBounds(10, 16, 580, 306);
+					jScrollPane1.setBounds(11, 17, 578, 304);
+					jScrollPane1.setAutoscrolls(true);
 					{
 						LogTraceArea = new JTextArea();
 						jScrollPane1.setViewportView(LogTraceArea);
-						LogTraceArea.setText("Ececec");
-						LogTraceArea.setBounds(10, 16, 364, 275);
+						LogTraceArea.setText("");
+						LogTraceArea.setBounds(11, 17, 578, 304);
+						LogTraceArea.setAutoscrolls(true);
+						LogTraceArea.setEditable(false);
+						//LogTraceArea.setAutoscrolls(true);
+						//jScrollPane1.setAutoscrolls(true);
 					}
 				}
 			}
@@ -106,7 +111,8 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 	private void update(){
 		while(true){
 		try {
-			LogTraceArea.append(ic.CollectLog());
+			//LogTraceArea.append(ic.CollectLog());
+			LogTraceArea.setText(LogTraceArea.getText()+ic.CollectLog());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
