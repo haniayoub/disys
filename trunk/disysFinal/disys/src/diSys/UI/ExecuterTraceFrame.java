@@ -1,5 +1,9 @@
 package diSys.UI;
+import com.cloudgarden.layout.AnchorConstraint;
+import com.cloudgarden.layout.AnchorLayout;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Rectangle;
 import java.rmi.RemoteException;
 
 import javax.swing.JPanel;
@@ -62,7 +66,7 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 		super();
 		initGUI();
 		ic=NetworkCommon.loadRMIRemoteObject(ri);
-
+		this.setTitle(ri.toString());
 		updater=new Thread(new Runnable(){
 			@Override
 			public void run() {
@@ -82,27 +86,30 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
 				MainPane = new JPanel();
+				AnchorLayout MainPaneLayout = new AnchorLayout();
+				GridBagConstraints c = new GridBagConstraints();
 				getContentPane().add(MainPane, BorderLayout.CENTER);
-				MainPane.setLayout(null);
+				MainPane.setLayout(MainPaneLayout);
+				MainPane.setPreferredSize(new java.awt.Dimension(595, 318));
 				{
 					jScrollPane1 = new JScrollPane();
-					MainPane.add(jScrollPane1);
-					jScrollPane1.setBounds(11, 17, 578, 304);
+					MainPane.add(jScrollPane1, new AnchorConstraint(31, 984, 983, 10, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL, AnchorConstraint.ANCHOR_REL));
 					jScrollPane1.setAutoscrolls(true);
+					jScrollPane1.setPreferredSize(new java.awt.Dimension(589, 313));
 					{
 						LogTraceArea = new JTextArea();
 						jScrollPane1.setViewportView(LogTraceArea);
 						LogTraceArea.setText("");
-						LogTraceArea.setBounds(11, 17, 578, 304);
 						LogTraceArea.setAutoscrolls(true);
 						LogTraceArea.setEditable(false);
+						LogTraceArea.setPreferredSize(new java.awt.Dimension(571, 292));
 						//LogTraceArea.setAutoscrolls(true);
 						//jScrollPane1.setAutoscrolls(true);
 					}
 				}
 			}
 			pack();
-			this.setSize(616, 371);
+			this.setSize(621, 367);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,7 +119,10 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 		while(true){
 		try {
 			//LogTraceArea.append(ic.CollectLog());
-			LogTraceArea.setText(LogTraceArea.getText()+ic.CollectLog());
+			LogTraceArea.setText(ic.CollectLog());
+			jScrollPane1.scrollRectToVisible(
+					  new Rectangle(0,LogTraceArea.getHeight()-2,1,1));
+		
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
