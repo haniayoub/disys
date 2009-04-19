@@ -81,6 +81,7 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			this.setResizable(false);
 			{
 				MainPane = new JPanel();
 				GridBagConstraints c = new GridBagConstraints();
@@ -98,7 +99,7 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 						LogTraceArea.setText("");
 						LogTraceArea.setAutoscrolls(true);
 						LogTraceArea.setEditable(false);
-						LogTraceArea.setPreferredSize(new java.awt.Dimension(588, 307));
+						LogTraceArea.setPreferredSize(new java.awt.Dimension(566, 287));
 						//LogTraceArea.setAutoscrolls(true);
 						//jScrollPane1.setAutoscrolls(true);
 					}

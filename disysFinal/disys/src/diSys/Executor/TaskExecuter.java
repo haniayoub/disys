@@ -47,7 +47,7 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 			if(out.toString().length()!=0){
 				StringBuilder sb=new StringBuilder();
 				sb.append("_____________________________________________________\n");
-				sb.append("Task Log :"+task.toString()+"\n");
+				sb.append("Task ["+task.getId()+"]Log :"+task.toString()+"\n");
 				sb.append(out.toString());
 				sb.append("_____________________________________________________\n");
 				Result.setLog(sb.toString());
