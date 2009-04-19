@@ -46,8 +46,8 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 			  
 			if(out.toString().length()!=0){
 				StringBuilder sb=new StringBuilder();
-				sb.append("Wroker Thread ["+this.getId()+"]");
-				sb.append("___________ Executer:["+myIP+"] Wroker Thread ["+this.getId()+"] Task:["+task.getId()+"]______\n");
+				sb.append("_____________________________________________________\n");
+				sb.append("Task Log :"+task.toString()+"\n");
 				sb.append(out.toString());
 				sb.append("_____________________________________________________\n");
 				Result.setLog(sb.toString());
