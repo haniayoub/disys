@@ -27,6 +27,10 @@ public class Item implements Serializable, Cloneable{
 		this.id = id;
 		this.e=null;
 	}
+	public String toString(){
+		return "Item Id:"+id;
+		
+	}
 	public Item(final long id, int priority) {
 		this(id);
 		int prio = priority;
