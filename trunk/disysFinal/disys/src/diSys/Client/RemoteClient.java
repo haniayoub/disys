@@ -1,5 +1,6 @@
 package diSys.Client;
 
+import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
 import diSys.Common.Exceptions;
@@ -102,5 +103,18 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	 */
 	public int GetTaskNum(){
 		return taskNum;
+	}
+	
+	/**
+	 * Indicates all results were received and there is no more tasks to run  
+	 * @return
+	 */
+	public boolean IsIdle(){
+		try {
+			return clientSystem.IsIdle();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
