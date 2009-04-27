@@ -1,6 +1,7 @@
 package diSys.UI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import javax.swing.BorderFactory;
 
@@ -11,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 
+import diSys.Common.FileManager;
 import diSys.Common.RMIRemoteInfo;
 import diSys.Common.SystemManagerData;
 import diSys.SystemManager.SystemManager;
@@ -72,9 +74,12 @@ public class SystemPanel extends javax.swing.JPanel {
 	}
 	*/
 	
+	private String infoFile="DisysUiInfo.txt";
+	
 	public SystemPanel() {
 		super();
 		initGUI();
+		LoadInfoFile();
 	}
 	
 	private void initGUI() {
@@ -237,6 +242,7 @@ public class SystemPanel extends javax.swing.JPanel {
 		if(SystemManagerUI.sysManager==null){
 			  JOptionPane.showMessageDialog(this,"Failed to connect");
 		}else{
+			SaveInfoFile();
 			SystemManagerUI.UpdateUI();
 			if(SystemManagerUI.updateThread.IsRunning())
 				SystemManagerUI.updateThread.resume();
@@ -285,4 +291,27 @@ public class SystemPanel extends javax.swing.JPanel {
 	private void jButtonShowTraceMousePressed(MouseEvent evt) {
 		SystemManagerUI.sysmLogDlg.setVisible(true);
 	}
+	
+	private void LoadInfoFile(){
+		String[] lines;
+		try {
+			lines = diSys.Common.FileManager.ReadLines(this.infoFile);
+		this.TextBox_HostName.setText(lines[0]);
+		this.TextBox_port.setText(lines[1]);
+		} catch (Exception e) {
+			
+		}
+		
+	}
+	private void SaveInfoFile(){
+		try {
+			String lines=this.TextBox_HostName.getText()+"\r\n"+this.TextBox_port.getText();
+			FileManager.WriteFile(this.infoFile,lines.getBytes());
+		
+		} catch (Exception e) {
+			
+		}
+		
+	}
+	
 }

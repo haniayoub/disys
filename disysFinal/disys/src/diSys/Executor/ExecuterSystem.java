@@ -210,8 +210,8 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	   
 	    diSys.Common.Logger.TraceInformation("Loading updates!..");
 	    try {
-			versionString = FileManager.ReadLine(VersionFile);
-		} catch (IOException e) {
+			versionString = FileManager.ReadLines(VersionFile)[0];
+		} catch (Exception e) {
 			Logger.TraceError("Couldn't read Version from version file!", e);
 			return null;
 		}
@@ -226,8 +226,8 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	    File f = new File(getLastVerFile(version));
 	    String executerClassName;
 		try {
-			executerClassName = FileManager.ReadLine(classNameFile(version));
-		} catch (IOException e) {
+			executerClassName = FileManager.ReadLines(classNameFile(version))[0];
+		} catch (Exception e) {
 			Logger.TraceError("Couldn't Read IExecuter Class Name!", e);
 			return null;
 		}
@@ -282,7 +282,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
 		PrintUsage();
-		if(args.length<3){
+		if(args.length<2){
 			System.out.println("Bad args ...!");
 			return; 
 		}
