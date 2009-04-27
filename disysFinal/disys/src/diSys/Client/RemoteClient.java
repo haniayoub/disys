@@ -29,6 +29,7 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	 *  start the Remote client system
 	 */
 	public void Start(){
+		if(clientSystem!=null)
 		clientSystem.Start();
 	}
 	
@@ -39,6 +40,7 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 		if(taskNum!=0){
 			diSys.Common.Logger.TraceWarning("The user didn't read all the Results of the tasks", null);
 		}
+		if(clientSystem!=null)
 		clientSystem.Stop();
 	}
 	

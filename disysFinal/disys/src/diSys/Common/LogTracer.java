@@ -1,21 +1,21 @@
 package diSys.Common;
 
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class LogTracer {
-	 private LinkedList<String> Lines;
+	 private ConcurrentLinkedQueue<String> Lines;
 	 private int MaxSize;
 	 public LogTracer(int maxLines){
-		 Lines=new LinkedList<String>();
+		 Lines=new ConcurrentLinkedQueue<String>();
 		 MaxSize=maxLines;
 	 }
 	 public void addLine(String line){
-	 Lines.addFirst(line);
-	 if (Lines.size()>MaxSize)Lines.removeLast();
+	 Lines.add(line);
+	 if (Lines.size()>MaxSize)Lines.poll();
 	 }
 	 public String toString(){
 		 String $="";
-		 for(String line:Lines) $+=line+"\n";
+		 for(String line:Lines) $=line+"\n"+$;
 		 return $;
 	 }
 }
