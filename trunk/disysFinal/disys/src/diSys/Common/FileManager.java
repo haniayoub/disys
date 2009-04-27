@@ -37,10 +37,18 @@ public class FileManager {
 			e.printStackTrace();
 		}		
 	}
-	public static String ReadLine(String versionFile) throws IOException {
+	public static String[] ReadLines(String versionFile) throws IOException {
+		LinkedList<String> lines=new LinkedList<String>();
 		BufferedReader in = new BufferedReader(new FileReader(versionFile));
-		String line=in.readLine();
+		String line=null;
+		while((line=in.readLine())!=null){
+			lines.add(line);
+		}
+		
 		in.close();
-		return line;
+		String[] $ =new String[lines.size()];
+		int i=0;
+		for(String s:lines)$[i++]=s;
+		return $;
 	}
 }
