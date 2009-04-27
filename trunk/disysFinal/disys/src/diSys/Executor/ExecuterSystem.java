@@ -288,28 +288,34 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		}
 		String sysmAddress=null;
 		int sysmPort=0;
-		int workers=Integer.parseInt(args[0]);
-		int irport=Integer.parseInt(args[1]);
-		int rcport=Integer.parseInt(args[2]);
+		//int workers=Integer.parseInt(args[0]);
+		int irport=Integer.parseInt(args[0]);
+		int rcport=Integer.parseInt(args[1]);
 		
-		if(args.length>3){
-			sysmAddress=args[3];
-			sysmPort=Integer.parseInt(args[4]);
+		if(args.length>2){
+			sysmAddress=args[2];
+			sysmPort=Integer.parseInt(args[3]);
 			}
 		CommandLineArgs="";
 		for(String s:args)
 		CommandLineArgs=CommandLineArgs+" "+s;
-		ExecuterSystem es=new ExecuterSystem(null, workers,irport,rcport,sysmAddress,sysmPort); 
+		ExecuterSystem es=new ExecuterSystem(null, 1,irport,rcport,sysmAddress,sysmPort); 
 		System.out.println("Executer Started !");
 		es.Run(args);
-		System.in.read();
-		es.Exit();
+		while(true)
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+			
+			}
+		/*es.Exit();
 		System.out.println("executer Done");
+	*/
 	}
 	public static void PrintUsage(){
 		System.out.println("-------------------------------[Executer]----------------------------------");
-		System.out.println("parameters:[worker Threads] [Irport] [Rcport] [System Manager Address] [System Manager Port]");
-		System.out.println("[worker Threads] = the number of worker threads default 3");
+		System.out.println("parameters:[Irport] [Rcport] [System Manager Address] [System Manager Port]");
+		//System.out.println("[worker Threads] = the number of worker threads default 3");
 		System.out.println("[Item Receiver Port]       = the port to listen foe incoming tasks");
 		System.out.println("[Result Collector Port]    = the port to listen for result collectors");
 		System.out.println("[System Manager Address]   = optional to notify the system Manager");

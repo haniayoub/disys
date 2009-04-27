@@ -38,7 +38,7 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 	@Override
 	public RemoteItem<RESULT> doItem(RemoteItem<TASK> task) {
 		Item Result;
-	    diSys.Common.Logger.TraceInformation("WrokerId ["+this.getId()+"]:executing Task id["+task.getId()+"] for ["+task.getRemoteInfo()+"]");
+	    diSys.Common.Logger.TraceInformation("executing Task id["+task.getId()+"] for ["+task.getRemoteInfo()+"]");
 	    ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try{ 
 			  System.setOut(new PrintStream(out));	
@@ -46,6 +46,7 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 			  
 			  Result = excutor.run(item);
 			  System.setOut(std);
+			  diSys.Common.Logger.TraceInformation("Finished executing Task id["+task.getId()+"]");
 			if(out.toString().length()!=0){
 				StringBuilder sb=new StringBuilder();
 				sb.append("_____________________________________________________\n\r");

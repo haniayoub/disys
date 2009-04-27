@@ -74,7 +74,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					ri.setVersion(erd.Version);
 					
 					if(erd.Version < sysm.GetLastVersionNumber()) {
-						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersionNumber(),null);
+						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" neet to Update to "+sysm.GetLastVersionNumber(),null);
 						executersMap.get(ri).Blocked=true;
 						//sysm.updateExecuter(executersMap.get(ri));
 						//toDelete.add(ri);
@@ -142,17 +142,19 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					if(erd.Version < sysm.GetLastVersionNumber()) {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersionNumber(),null);
 						//sysm.updateExecuter(exec);
+						 toDelete.add(ri);
+						 exec.Blocked=true;
 						 executersMap.put(ri, exec);
-						 executersMap.get(ri).Blocked=true;
-						//toDelete.add(ri);
-						//sysm.toUpdateList.add(exec);
 						continue;
 				
 						//exec.Blocked=true;
 					}
 					if(erd.Version==0){
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" System Manager has no updates: "+sysm.GetLastVersionNumber(),null);
-						//exec.Blocked=true;
+						//sysm.updateExecuter(exec);
+						 toDelete.add(ri);
+						 exec.Blocked=true;
+						 executersMap.put(ri, exec);
 						continue;
 					}
 					diSys.Common.Logger.TraceInformation("Executer "+ ri.toString()+" is Online and up to Date version:"+erd.Version +" Removing from black List");

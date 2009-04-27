@@ -81,7 +81,7 @@ public class UpdatePnael extends javax.swing.JPanel {
 			{
 				jTextField1 = new JTextField();
 				this.add(jTextField1);
-				jTextField1.setText("D:\\study\\projects\\Distrebuted\\Disys\\diSysExample\\UpdateJar.jar");
+				jTextField1.setText("");
 				jTextField1.setBounds(12, 67, 486, 20);
 			}
 			{

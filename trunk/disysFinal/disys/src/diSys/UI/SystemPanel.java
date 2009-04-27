@@ -43,6 +43,8 @@ public class SystemPanel extends javax.swing.JPanel {
 	private JLabel jLabel2;
 	private JLabel jLabel3;
 	private JLabel jLabel5;
+	private JButton jButtonShowTrace;
+	private JButton jButtonCleanKill;
 	private JLabel jLabel_version_text;
 	private JPanel jPanel1;
 	private JLabel jLabel_version;
@@ -89,13 +91,13 @@ public class SystemPanel extends javax.swing.JPanel {
 			{
 				jLabel1 = new JLabel();
 				this.add(jLabel1);
-				jLabel1.setText("Runnig Executers :");
+				jLabel1.setText("Active Executers :");
 				jLabel1.setBounds(20, 163, 114, 14);
 			}
 			{
 				jLabel2 = new JLabel();
 				this.add(jLabel2);
-				jLabel2.setText("Suspended Executers :");
+				jLabel2.setText("Inactive Executers :");
 				jLabel2.setBounds(20, 185, 114, 14);
 			}
 			{
@@ -196,6 +198,28 @@ public class SystemPanel extends javax.swing.JPanel {
 				jLabel_version_text.setText(" ");
 				jLabel_version_text.setBounds(173, 119, 32, 16);
 			}
+			{
+				jButtonCleanKill = new JButton();
+				this.add(jButtonCleanKill);
+				jButtonCleanKill.setText("Clean Kill");
+				jButtonCleanKill.setBounds(276, 265, 129, 23);
+				jButtonCleanKill.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent evt) {
+						jButtonCleanKillMousePressed(evt);
+					}
+				});
+			}
+			{
+				jButtonShowTrace = new JButton();
+				this.add(jButtonShowTrace);
+				jButtonShowTrace.setText("Show Trace");
+				jButtonShowTrace.setBounds(276, 236, 127, 23);
+				jButtonShowTrace.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent evt) {
+						jButtonShowTraceMousePressed(evt);
+					}
+				});
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -241,5 +265,24 @@ public class SystemPanel extends javax.swing.JPanel {
 		SystemManagerUI.sysManager=null;
 		SystemManagerUI.UpdateUI();
 	}
-
+	
+	private void jButtonCleanKillMousePressed(MouseEvent evt) {
+		int Userreply=JOptionPane.YES_OPTION;
+	
+	    Userreply=JOptionPane.showConfirmDialog(this,"This Operation will kill all the executers connected to the system !\n are you sure?","are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if(Userreply==JOptionPane.NO_OPTION) return;
+	//	JOptionPane.showConfirmDialog(this,"", title, optionType, messageType)
+		try{
+		String result=SystemManagerUI.sysManager.CleanExit();
+		JOptionPane.showMessageDialog(this,result, "Done!", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+	
+		}
+	
+	}
+	
+	private void jButtonShowTraceMousePressed(MouseEvent evt) {
+		SystemManagerUI.sysmLogDlg.setVisible(true);
+	}
 }

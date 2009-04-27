@@ -39,11 +39,16 @@ public class RMIObjectBase extends UnicastRemoteObject implements
 			reg=NetworkCommon.createRegistry(port);
 		}
 		try {
-			Naming.rebind("//:" + port + "/" + rmiID, this);
+			Naming.bind("//:" + port + "/" + rmiID, this);
 		} catch (Exception e) {
-			diSys.Common.Logger.TraceError("Failed To Bind :" + "//:" + port + "/"
-					+ rmiID, e);
-			throw e;
+				try {
+			Naming.rebind("//:" + port + "/" + rmiID, this);
+			} catch (Exception e1) {
+				diSys.Common.Logger.TraceError("Failed To reBind :" + "//:" + port + "/"
+						+ rmiID, e1);
+			
+				throw e;
+			}
 		}
 	}
 

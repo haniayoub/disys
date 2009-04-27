@@ -72,6 +72,7 @@ public class SystemManagerUI extends javax.swing.JFrame{
 	public static UpdatePnael updatePanel=new UpdatePnael();
 	public static SystemManagerUI me;
 	public static UpdaterThread updateThread=new UpdaterThread(1000);
+	public static SystemManegerLogTrace sysmLogDlg=new SystemManegerLogTrace();
 	private void initGUI() {
 		try {
 			{
@@ -112,6 +113,11 @@ public class SystemManagerUI extends javax.swing.JFrame{
 			SystemManagerUI.sysManager=null;
 			e.printStackTrace();
 		}
+		if(SystemManagerUI.sysmLogDlg.isVisible())
+			try {
+				SystemManagerUI.sysmLogDlg.setText(SystemManagerUI.sysManager.CollectLog());
+			} catch (RemoteException e) {
+			}
 		sysPanel.UpdateSysUI();
 		executersPanel.UpdateSysUI();
 		clientsPanel.UpdateSysUI();

@@ -2,6 +2,8 @@ package diSys.UI;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 
 import javax.swing.JPanel;
@@ -76,6 +78,14 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 		e.printStackTrace();
 	}
 		updater.start();
+		
+		 addWindowListener(new WindowAdapter() {
+		      @SuppressWarnings("deprecation")
+			public void windowClosing(WindowEvent e) {
+		        dispose();
+		        updater.stop();
+		      }
+		    });
 	}
 	
 	private void initGUI() {
@@ -99,8 +109,6 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 						LogTraceArea.setAutoscrolls(true);
 						LogTraceArea.setEditable(false);
 						LogTraceArea.setBounds(9, 11, 586, 305);
-						//LogTraceArea.setAutoscrolls(true);
-						//jScrollPane1.setAutoscrolls(true);
 					}
 				}
 			}
@@ -116,9 +124,9 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 		try {
 			//LogTraceArea.append(ic.CollectLog());
 			LogTraceArea.setText(ic.CollectLog());
-			jScrollPane1.scrollRectToVisible(
+			/*jScrollPane1.scrollRectToVisible(
 					  new Rectangle(0,LogTraceArea.getHeight()-2,1,1));
-		
+		*/
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();

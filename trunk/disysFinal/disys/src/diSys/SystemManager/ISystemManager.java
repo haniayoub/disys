@@ -23,6 +23,7 @@ public interface ISystemManager<ITEM extends Item> extends Remote {
 	public String UpdateToLastRevision(boolean force) throws RemoteException;
 	public String CleanExit() throws RemoteException;
 	public SystemManagerData GetData() throws RemoteException;
+	public String CollectLog() throws RemoteException;
 	
 	
 }

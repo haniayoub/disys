@@ -268,38 +268,6 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	        		diSys.Common.Logger.TerminateSystem("Terminate due to update", null);
 	            }
 	        }, delay, period);
-	    
-	    //checker=new HeartBeatChecker<TASK, RESULT>(this,executersMap,blackList,clientsMap,checkInterval);
-		//checker.start();
-	
-	  
-
-		//executersMap=new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
-		//for(ExecuterBox<TASK, RESULT> exe:toUpdate) {
-			//	blackList.add(ri);
-			   // toUpdate.add(executersMap.get(ri));
-			//	exe.Blocked=false;
-			//	executersMap.put(exe.getRemoteInfo(),exe);
-				//toUpdateList.add(ri);
-		//	}
-
-		//	for(ExecuterRemoteInfo ri:toREmove) {
-		//	blackList.add(ri);
-		    //toUpdate.add(executersMap.get(ri));
-			//executersMap.remove(ri);
-			//toUpdateList.add(ri);
-	//	}
-
-		//Wait untill system is up to date !!!
-		/*while(!toUpdateList.isEmpty()){
-			diSys.Common.Logger.TraceInformation("Waiting System to Update ...");
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		}*/
-		// startUpdate(toUpdate);
-		
 		
 		diSys.Common.Logger.TraceInformation("System is up to date");
 		s+="Update operation has been sent to executers";
@@ -370,14 +338,42 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		if(versionManager.getLastVersion()==null) return 0;
 		return versionManager.getLastVersion().version;
 	}
-
+	@Override
+	public SystemManagerData GetData() throws RemoteException {
+		SystemManagerData $ =new SystemManagerData();
+		$.Version=this.GetLastVersionNumber();
+		 for (ExecuterRemoteInfo ri : executersMap.keySet())
+		 {
+			 	$.activeExecuters.add(ri);
+		 }
+		 for (ClientRemoteInfo cri  : clientsMap.keySet())
+		 {
+			 	$.Clients.add(cri);
+		 }
+		 $.enActiveExecuters.addAll(blackList);	
+		 for (ExecuterRemoteInfo ri : executersMap.keySet())
+		 {
+			 	if( $.enActiveExecuters.contains(ri))$.enActiveExecuters.remove(ri);
+		 }
+		return $;
+	}
+	
+	@Override
+	public String CollectLog() throws RemoteException {
+		
+		return diSys.Common.Logger.logTracer.toString();
+	}
 	private static String CommandLineArgs;
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws InterruptedException, IOException {
+	public static void main(String[] args) throws  IOException {
 		CommandLineArgs="";
 		for(String s:args)
 		CommandLineArgs=CommandLineArgs+" "+s;
-		Thread.sleep(1000);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+		
+		}
 		int port=0;
 		int interval=300;
 		PrintUsage();
@@ -394,8 +390,13 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			e.printStackTrace();
 		}
 		diSys.Common.Logger.TraceInformation("SystemManager is online");
-		System.in.read();
-		diSys.Common.Logger.TraceInformation("SystemManager Stopped!");
+		while(true)
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+			
+			}
+		//diSys.Common.Logger.TraceInformation("SystemManager Stopped!");
 	}
 	public static void PrintUsage(){
 		System.out.println("-------------------------------[System Manager]--------------------------");
@@ -406,21 +407,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		System.out.println("--------------------------------------------------------------------------");
 		System.out.println();
 	}
-	@Override
-	public SystemManagerData GetData() throws RemoteException {
-		SystemManagerData $ =new SystemManagerData();
-		$.Version=this.GetLastVersionNumber();
-		 for (ExecuterRemoteInfo ri : executersMap.keySet())
-		 {
-			 	$.activeExecuters.add(ri);
-		 }
-		 for (ClientRemoteInfo cri  : clientsMap.keySet())
-		 {
-			 	$.Clients.add(cri);
-		 }
-		 $.enActiveExecuters.addAll(blackList);	
-		return $;
-	}
+	
 
 	
 	
