@@ -143,11 +143,11 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		 itemCollector.Dispose();
 	}
 	private String getLastVerFile(int UpdateVer){
-		return getVerDir(UpdateVer)+"\\Updates."+UpdateExtension;
+		return getVerDir(UpdateVer)+"/Updates."+UpdateExtension;
 	}
 	
 	private String classNameFile(int UpdateVer){
-		return getVerDir(UpdateVer)+"\\ClassName."+ClassNameExtension;
+		return getVerDir(UpdateVer)+"/ClassName."+ClassNameExtension;
 	}
 	
 	private String getVerDir(int UpdateVer){
@@ -200,7 +200,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		
 		}
 	private String getUpdateJarsDir(Integer version2) {
-		return getVerDir(version2)+"\\IncludeJars\\";
+		return getVerDir(version2)+"/IncludeJars/";
 	
 	}
 
@@ -212,7 +212,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	    try {
 			versionString = FileManager.ReadLines(VersionFile)[0];
 		} catch (Exception e) {
-			Logger.TraceError("Couldn't read Version from version file!", e);
+			Logger.TraceError("Couldn't read Version from version file!\n"+e.getMessage(),null);
 			return null;
 		}
 		 diSys.Common.Logger.TraceInformation("Loading updates Version "+versionString);
@@ -228,7 +228,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		try {
 			executerClassName = FileManager.ReadLines(classNameFile(version))[0];
 		} catch (Exception e) {
-			Logger.TraceError("Couldn't Read IExecuter Class Name!", e);
+			Logger.TraceError("Couldn't Read IExecuter Class Name!\n"+e.getMessage(),null);
 			return null;
 		}
 	   // jcl = new JarClassLoader(f);
@@ -238,7 +238,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		try {
 			JarClassLoader.AddUrlToSystem(f.toURI().toURL());
 		} catch (MalformedURLException e) {
-			Logger.TraceError("Couldn't Update !", e);
+			Logger.TraceError("Couldn't Update !\n"+e.getMessage(),null);
 			return null;
 		}
 		String IncludeJarsDir=getUpdateJarsDir(version);
@@ -247,7 +247,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 			try {
 				JarClassLoader.AddUrlToSystem(ff.toURI().toURL());
 			} catch (MalformedURLException e) {
-				Logger.TraceError("Couldn't Update !", e);
+				Logger.TraceError("Couldn't Update !\n"+e.getMessage(), null);
 				return null;
 			}
 			Logger.TraceInformation("Intializing class " +executerClassName);
@@ -255,7 +255,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		try {
 			newExecuter = (IExecutor)Class.forName(executerClassName).newInstance();
 		} catch (Exception e) {
-			Logger.TraceError("Couldn't Update Failed to initialize Executer Class!", e);
+			Logger.TraceError("Couldn't Update Failed to initialize Executer Class!\n"+e.getMessage(), null);
 			return null;
 		}catch(NoClassDefFoundError e){
 			Logger.TraceInformation("Couldn't Update Failed to initialize Executer Class!");

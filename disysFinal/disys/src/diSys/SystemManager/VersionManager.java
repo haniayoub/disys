@@ -60,7 +60,7 @@ public class VersionManager {
 		return "new Version "+LastVersion+" Saved Successfully";
 	}
 	private String getIncludeJarsDir(int ver) {
-		return UpdateDir+"\\IncludeJars"+ver+"\\";
+		return UpdateDir+"/IncludeJars"+ver+"/";
 	}
 	public Version GetVersion(int version){
 		String lastClassName=GetClassName(version);
@@ -83,21 +83,21 @@ public class VersionManager {
 			}
 		try {
 			LastVersion=new Version(new SystemUpdates(getJarFileName(lastVerNum),lastClassName),lastVerNum);
-		    File f=new File(UpdateDir+"\\IncludeJars"+lastVerNum+"\\");
+		    File f=new File(UpdateDir+"/IncludeJars"+lastVerNum+"/");
 		    diSys.Common.Logger.TraceInformation("Loading include Jars from:"+f.getName());
 		    LastVersion.updates.setIncludeJars(f.listFiles());
 		} catch (Exception e) {
 		}
 	}
 	private String getJarFileName(int ver){
-		return UpdateDir+"\\"+ver+"."+UpdateExtension;
+		return UpdateDir+"/"+ver+"."+UpdateExtension;
 	}
 	private String getClassNameFileName(int ver){
-		return UpdateDir+"\\"+ver+"."+ClassNameExtension;
+		return UpdateDir+"/"+ver+"."+ClassNameExtension;
 	}
 	
 	private String GetClassName(int version) {
-		String FileName=UpdateDir+"\\"+version+"."+ClassNameExtension;
+		String FileName=UpdateDir+"/"+version+"."+ClassNameExtension;
 		if(!(new File(FileName).exists())) return null;
 		FileReader fr;
 		try {

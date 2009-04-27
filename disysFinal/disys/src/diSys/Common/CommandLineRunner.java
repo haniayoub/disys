@@ -5,7 +5,7 @@ import java.io.IOException;
 public class CommandLineRunner {
 	
 	public static void Run(String Command){
-		String command="bash -c \""+Command+"\"";
+		String command=Command;
 		if(System.getProperty("os.name").toLowerCase().contains("windows")){
 		command="cmd /c start "+Command;
 		}
