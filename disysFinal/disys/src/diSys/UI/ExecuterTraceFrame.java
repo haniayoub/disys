@@ -32,18 +32,6 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 	@SuppressWarnings("unchecked")
 	private IItemCollector ic;
 
-	/**
-	* Auto-generated main method to display this JFrame
-	*/
-	/*public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				ExecuterTraceFrame inst = new ExecuterTraceFrame();
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-			}
-		});
-	}*/
 	
 	public ExecuterTraceFrame(RMIRemoteInfo ri) {
 		super();

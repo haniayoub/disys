@@ -55,10 +55,13 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 	private ResultCollector<TASK, RESULT> resultCollector;
 	private SynchronizedCounter sCounter;
 
-	private ISystemManager<TASK> sysManager; // TODO: Change to be private...
+	private ISystemManager<TASK> sysManager;
 
 	private boolean forceUpdate;
-
+	
+	private Long waitforTaskID=new Long(-1); 
+	private RESULT waitForResult;	
+	private Object ResultMonitor=new Object();
 	public static final String GlobalID = "Client";
 
 	public ClientSystem(String SysManagerAddress, int sysManagerport,
@@ -169,12 +172,42 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 	}
 
 	public void AddResult(RESULT result) {
+		if(waitforTaskID==result.getId()) 
+		{   //Waiting for this result
+			synchronized(ResultMonitor){			
+			waitforTaskID=new Long(-1);
+			waitForResult=result;
+			ResultMonitor.notify();
+			}
+			sCounter.substract(1);
+			return;
+		}
 		results.add(result);
 		sCounter.substract(1);
 	}
 
 	public RESULT Take() throws InterruptedException {
 		return results.take();
+	}
+	
+	public RESULT DoTask(TASK task) {
+		
+		synchronized(ResultMonitor){
+			waitforTaskID=task.getId();
+			waitForResult=null;
+		}
+		AddTask(task);
+		while(true){
+		//Waiting for result
+		synchronized(ResultMonitor){
+		try {
+			ResultMonitor.wait();
+		} catch (InterruptedException e) {
+		}
+		}
+		if(waitForResult==null) continue;
+		return waitForResult;
+		}
 	}
 
 	public RESULT Poll(int timeOut, TimeUnit timeUnit)
