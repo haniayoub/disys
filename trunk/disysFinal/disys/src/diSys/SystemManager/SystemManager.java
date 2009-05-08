@@ -26,8 +26,6 @@ import diSys.Networking.RMIObjectBase;
 public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObjectBase
 		implements ISystemManager<TASK> {
 	//RMI object Id
-	@SuppressWarnings("unused")
-	
 	public static final String GlobalID = "SystemManager";
 	public static final String UpdateDir = "UpdateJars";
 
@@ -43,9 +41,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		new ConcurrentHashMap<ClientRemoteInfo, ClientBox>();
 	private ConcurrentLinkedQueue<ExecuterRemoteInfo> blackList =
 		new ConcurrentLinkedQueue<ExecuterRemoteInfo>();
-	/*private ConcurrentLinkedQueue<ExecuterRemoteInfo> toUpdateList =
-		new ConcurrentLinkedQueue<ExecuterRemoteInfo>();
-	*/
+	
 	//the next id to assign to Client
 	private int nextId = 0;
 	//Round Robin counter
@@ -58,7 +54,6 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	
 	public SystemManager(int port,int checkInterval) throws Exception {
 		super(GlobalID,port);
-		//System.setProperty("sun.rmi.transport.tcp.responseTimeout","1000");
 		Initialize(port,checkInterval);
 	}
 	public void Initialize(int port,int checkInterval) throws IOException{
@@ -226,34 +221,23 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		return "Clean Exit done. " + s;
 	}
 	
-	@SuppressWarnings({ "unchecked", "unchecked" })
 	synchronized public String Update(SystemUpdates updates,boolean force) throws RemoteException
 	{
 		if(this.clientsMap.size()>1&&!force) {
 			throw new RemoteException("Can't Update While There is Another Clients Connected to the system !");
-			//diSys.Common.Logger.TraceWarning("Can't Update While There is Clients Connected to the system !", null);
-			//return "Can't Update While There is Clients Connected to the system !";
 		}
 		String s="";
 		if(updates!=versionManager.getLastVersion().updates)
 		s+=versionManager.addVersion(updates);
-		
-		//LinkedList<ExecuterRemoteInfo> toREmove=new LinkedList<ExecuterRemoteInfo>();
-	    //LinkedList<ExecuterBox<TASK, RESULT>> toUpdate=new LinkedList<ExecuterBox<TASK, RESULT>>();
-		//AutoUpdateTask auTask =new AutoUpdateTask(updates,versionManager.getLastVersion().version);
-	    diSys.Common.Logger.TraceInformation("Waiting heart beat checker ...");
-	 //   System.gc();
-	  //  System.runFinalization();
+		//TODO: no need to wait for heart beat checker !!
+		diSys.Common.Logger.TraceInformation("Waiting heart beat checker ...");
 	    synchronized(UpdateLock){
 	    	checker.Stop();
 	    	diSys.Common.Logger.TraceInformation("Starting update ...");
 	    for (ExecuterRemoteInfo ri  : executersMap.keySet())
 	    {
-	    	
-	//		executersMap.get(ri).Blocked=true;
 		   this.updateExecuter(executersMap.get(ri));
 		   executersMap.get(ri).Blocked=false;
-	//		toREmove.add(ri);
 	    }
 	    }
 	    
@@ -261,7 +245,6 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	    int period = 10000;
 	    Timer timer = new Timer();
 	    this.Dispose();
-		//UnicastRemoteObject.unexportObject(this, true);
 	    timer.scheduleAtFixedRate(new TimerTask() {
 	            public void run() {
 	            	diSys.Common.CommandLineRunner.Run("java -jar SystemManager.jar "+CommandLineArgs);
@@ -276,7 +259,6 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	
 	@Override
 	public String UpdateToLastRevision(boolean force) throws RemoteException {
-		// TODO Auto-generated method stub
 		if(this.versionManager.getLastVersion()==null||this.versionManager.getLastVersion().updates==null) return "Couldn't update , no updates found!";
 	    return Update(this.versionManager.getLastVersion().updates,force);
 	}
@@ -285,7 +267,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		blackList.add(ri);
 		executersMap.remove(ri);
 	}
-	@SuppressWarnings({ "unchecked", "unused" })
+
 	public void updateExecuter(ExecuterRemoteInfo ri) throws RemoteException{
 		AutoUpdateTask auTask=null;
 		Version last=versionManager.getLastVersion();

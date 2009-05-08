@@ -37,9 +37,6 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 			if(item instanceof CleanExitTask)
 			{
 				diSys.Common.Logger.TraceInformation("Exit Command [Task] recieved");
-				//TODO: free all buffers
-				//System.out.print("Executer has been killed, exiting...");
-				//System.exit(0);
 				diSys.Common.Logger.TerminateSystem("Executer has been killed, exiting...", null);
 			}
 			if(item instanceof AutoUpdateTask)

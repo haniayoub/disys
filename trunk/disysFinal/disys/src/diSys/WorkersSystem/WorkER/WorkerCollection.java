@@ -15,13 +15,11 @@ public class WorkerCollection {
 	private LinkedList<AWorker<? extends Item, ? extends Item>> workersList;
 	private LinkedList<Thread> workersThreads;
 
-	@SuppressWarnings("unchecked")
 	public WorkerCollection(AWorker<? extends Item, ? extends Item> w,
 			int numOfWorkers) {
 		this(w,numOfWorkers,null);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public WorkerCollection(AWorker<? extends Item, ? extends Item> w,
 			int numOfWorkers,ClassLoader cl) {
 		workerFactory = new WorkerFactory(w);

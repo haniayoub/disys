@@ -19,7 +19,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap;
 	private ConcurrentLinkedQueue<ExecuterRemoteInfo> blackList ;
 	private ConcurrentHashMap<ClientRemoteInfo, ClientBox> clientsMap;
-	@SuppressWarnings({ "unused", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	private SystemManager sysm;
 	private Thread workerThread;
 	private Worker myWorker;
@@ -44,26 +44,10 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 				sleep(period);
 			}
 		}
-		@SuppressWarnings("unchecked")
 		private void HeartBeatExecuters(){
 			LinkedList<ExecuterRemoteInfo> toDelete = new LinkedList<ExecuterRemoteInfo>();
 			for (ExecuterRemoteInfo ri : executersMap.keySet()) {
 				try {
-					//diSys.Common.Logger.TraceInformation("connecting to executer "+ri.getItemRecieverInfo().toString());
-					/*if(executersMap.get(ri).Blocked){
-						executersMap.get(ri).BlockCounter--;
-						if(executersMap.get(ri).BlockCounter<0){
-							try{
-							executersMap.get(ri).getItemReciever().Alive();
-							}catch(Exception e){
-							toDelete.add(ri);
-							blackList.add(ri);
-							}
-							executersMap.get(ri).Blocked=false;
-							//executersMap.get(ri).Blocked=false;
-						}
-						continue;
-					}*/
 					ExecuterRemoteData erd = (ExecuterRemoteData)executersMap.get(ri).getItemReciever().getExecuterData();
 					if(erd == null){
 						diSys.Common.Logger.TraceWarning("null executer data received " + ri.getItemRecieverInfo().RMIId(), null);
@@ -76,12 +60,9 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					if(erd.Version < sysm.GetLastVersionNumber()) {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" neet to Update to "+sysm.GetLastVersionNumber(),null);
 						executersMap.get(ri).Blocked=true;
-						//sysm.updateExecuter(executersMap.get(ri));
-						//toDelete.add(ri);
-						//blackList.add(ri);
 						continue;
 					}
-					//executersMap.get(ri).Blocked=false;
+					
 				} catch (RemoteException e) {
 					diSys.Common.Logger.TraceWarning("executer is not Alive:"
 							+ ri.toString() + " - Moved to Black List", null);
@@ -111,7 +92,6 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 			}
 		}
 		
-		@SuppressWarnings("unchecked")
 		private void CheckBLackList(){
 			LinkedList<ExecuterRemoteInfo> toDelete = new LinkedList<ExecuterRemoteInfo>();
 		    for (ExecuterRemoteInfo ri : blackList)
@@ -131,7 +111,6 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 						continue;
 					}
 					ExecuterBox<TASK, RESULT> exec=new ExecuterBox<TASK, RESULT>(ri,ir,rc,false);
-					//executersMap.put(ri,new ExecuterBox<TASK, RESULT>(ir,rc,false));
 					ExecuterRemoteData erd = (ExecuterRemoteData)exec.getItemReciever().getExecuterData();
 					if(erd == null)
 						{
@@ -141,28 +120,24 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					
 					if(erd.Version < sysm.GetLastVersionNumber()) {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersionNumber(),null);
-						//sysm.updateExecuter(exec);
+						
 						 toDelete.add(ri);
 						 exec.Blocked=true;
 						 executersMap.put(ri, exec);
 						continue;
 				
-						//exec.Blocked=true;
 					}
 					if(erd.Version==0){
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" System Manager has no updates: "+sysm.GetLastVersionNumber(),null);
-						//sysm.updateExecuter(exec);
+						 //TODO:Update Executer explicitlly here !!
 						 toDelete.add(ri);
 						 exec.Blocked=true;
 						 executersMap.put(ri, exec);
 						continue;
 					}
 					diSys.Common.Logger.TraceInformation("Executer "+ ri.toString()+" is Online and up to Date version:"+erd.Version +" Removing from black List");
-					//sysm.addExecuter(ri.getItemRecieverInfo().Ip(), ri.getItemRecieverInfo().Port(), ri.getResultCollectorInfo().Port());
-					//executersMap.put(ri, blackList.get(ri));
 					executersMap.put(ri,exec);
 					toDelete.add(ri);
-					//blackList.remove(ri);
 				} catch (Exception e) {
 					diSys.Common.Logger.TraceWarning("***************executer is offline",e);
 					continue;

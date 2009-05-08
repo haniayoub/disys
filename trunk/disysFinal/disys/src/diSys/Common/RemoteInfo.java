@@ -14,8 +14,9 @@ public class RemoteInfo implements Serializable {
 	public String Ip() {
 		return ip;
 	}
+
 	public void SetIp(String address) {
-		ip=address;
+		ip = address;
 	}
 
 	@Override

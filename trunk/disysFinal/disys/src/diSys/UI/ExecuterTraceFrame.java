@@ -1,7 +1,5 @@
 package diSys.UI;
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
@@ -15,20 +13,6 @@ import diSys.Common.RMIRemoteInfo;
 import diSys.Networking.IItemCollector;
 import diSys.Networking.NetworkCommon;
 
-
-
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 @SuppressWarnings("serial")
 public class ExecuterTraceFrame extends javax.swing.JFrame {
 
@@ -94,7 +78,6 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 			this.setResizable(false);
 			{
 				MainPane = new JPanel();
-				GridBagConstraints c = new GridBagConstraints();
 				getContentPane().add(MainPane, BorderLayout.CENTER);
 				MainPane.setLayout(null);
 				MainPane.setPreferredSize(new java.awt.Dimension(595, 318));

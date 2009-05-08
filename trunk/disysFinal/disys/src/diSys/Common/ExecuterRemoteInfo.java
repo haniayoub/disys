@@ -5,7 +5,6 @@ import java.io.Serializable;
 import diSys.Networking.RMIItemCollector;
 import diSys.Networking.RemoteItemReceiver;
 
-
 @SuppressWarnings("serial")
 public class ExecuterRemoteInfo implements Serializable {
 	private RMIRemoteInfo itemRecieverInfo;
@@ -18,7 +17,7 @@ public class ExecuterRemoteInfo implements Serializable {
 				RemoteItemReceiver.GlobalId);
 		resultCollectorInfo = new RMIRemoteInfo(ip, resultCollectorPort,
 				RMIItemCollector.GlobalId);
-		version=-1;
+		version = -1;
 	}
 
 	public int getVersion() {
@@ -40,7 +39,7 @@ public class ExecuterRemoteInfo implements Serializable {
 	public String toString() {
 		return "Executer:" + resultCollectorInfo.ip + "   IRPort = "
 				+ itemRecieverInfo.Port() + "   RCPort = "
-				+ resultCollectorInfo.Port() +"   Ver:"+version;
+				+ resultCollectorInfo.Port() + "   Ver:" + version;
 	}
 
 	@Override

@@ -9,6 +9,4 @@ package diSys.Common;
  */
 public interface IExecutor<T extends Item,R extends Item> {
 	 public R run(T task) throws Exception;
-	 @SuppressWarnings("unchecked")
-	public T GetTaskClass();
 }

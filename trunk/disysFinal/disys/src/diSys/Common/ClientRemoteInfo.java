@@ -10,7 +10,7 @@ public class ClientRemoteInfo extends RemoteInfo implements Serializable {
 		super(ip);
 		this.id = id;
 	}
-	
+
 	public long Id() {
 		return id;
 	}
