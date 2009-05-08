@@ -53,6 +53,12 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 		taskNum++;
 	}
 	
+	public RESULT DoTask(TASK task) throws Exception{
+		RESULT r=clientSystem.DoTask(task);
+		if(r.getLog()!=null) System.out.print(r.getLog());
+		if(r.getException()!=null) throw r.getException();
+		return r;
+	}
 	/**
 	 *  Returns the least recent Result  
 	 * 	Note : Blocking call if there is Tasks in waiting queue
