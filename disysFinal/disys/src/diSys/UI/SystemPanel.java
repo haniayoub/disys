@@ -1,34 +1,18 @@
 package diSys.UI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.rmi.RemoteException;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.BevelBorder;
 
 import diSys.Common.FileManager;
 import diSys.Common.RMIRemoteInfo;
-import diSys.Common.SystemManagerData;
 import diSys.SystemManager.SystemManager;
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 @SuppressWarnings("serial")
 public class SystemPanel extends javax.swing.JPanel {
 
@@ -61,19 +45,6 @@ public class SystemPanel extends javax.swing.JPanel {
 	private JLabel jLabel1;
 	private JLabel Label2;
 
-	/**
-	* Auto-generated main method to display this 
-	* JPanel inside a new JFrame.
-	
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.getContentPane().add(new SystemPanel());
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-	}
-	*/
-	
 	private String infoFile="DisysUiInfo.txt";
 	
 	public SystemPanel() {
@@ -206,7 +177,7 @@ public class SystemPanel extends javax.swing.JPanel {
 			{
 				jButtonCleanKill = new JButton();
 				this.add(jButtonCleanKill);
-				jButtonCleanKill.setText("Clean Kill");
+				jButtonCleanKill.setText("Clean Exit");
 				jButtonCleanKill.setBounds(276, 265, 129, 23);
 				jButtonCleanKill.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent evt) {

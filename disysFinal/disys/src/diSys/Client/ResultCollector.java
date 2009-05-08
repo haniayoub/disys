@@ -74,11 +74,6 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 					}
 					for (RESULT r : resultChunk.getItems())
 						system.AddResult(r);
-					//Common.Logger.TraceInformation("new "
-					//		+ resultChunk.numberOfItems() + " results from:"
-					//		+ ri.GetRmiAddress());
-					//executers.put(ri, executers.get(ri)
-					//		- resultChunk.numberOfItems());
 				}
 				sleep(period);
 			}
@@ -97,7 +92,6 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public ResultCollector(long myId, int period,
 			ClientSystem<TASK, RESULT> system) {
 		super();
@@ -126,7 +120,6 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 		return executersRemoteCollectors.isEmpty();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void WaitForResults(RMIRemoteInfo ri, Chunk<TASK> chunk) {
 		if (!executersRemoteCollectors.contains(ri)) {
 
@@ -143,13 +136,7 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 		if (!executers.containsKey(ri))
 			executers.put(ri, 0);
 		executers.put(ri, chunk.numberOfItems() + executers.get(ri));
-		//Logger.TraceInformation("Waiting For " + chunk.numberOfItems()
-		//		+ " results from " + ri.GetRmiAddress());
-
+	
 		// / Task Recovery support
-		/*
-		 * if(!executersTasks.contains(ri))executersTasks.put(ri,new LinkedList<TASK>());
-		 * for(TASK t:chunk.getItems()) executersTasks.get(ri).add(t);
-		 */
 	}
 }

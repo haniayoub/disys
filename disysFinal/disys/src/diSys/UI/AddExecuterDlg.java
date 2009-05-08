@@ -1,15 +1,8 @@
 package diSys.UI;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.rmi.RemoteException;
 
 import javax.swing.JButton;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,18 +13,7 @@ import diSys.Common.ExecuterRemoteInfo;
 import diSys.Networking.IRemoteItemReceiver;
 
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
+@SuppressWarnings("serial")
 public class AddExecuterDlg extends javax.swing.JDialog {
 	private JLabel jLabel1;
 	private JLabel jLabelRCport;
@@ -141,6 +123,7 @@ public class AddExecuterDlg extends javax.swing.JDialog {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void jButtonAddMousePressed(MouseEvent evt) {
 		try {
 			ExecuterRemoteInfo ri=new ExecuterRemoteInfo(this.jTextFieldAddress.getText(),Integer.parseInt(this.jTextFieldIRPort.getText()),Integer.parseInt(this.jTextFieldRCPort.getText()));

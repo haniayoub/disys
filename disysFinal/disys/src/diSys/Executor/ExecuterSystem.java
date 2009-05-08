@@ -158,7 +158,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	public RemoteItemReceiver GetItemReciver() {
 	return this.chunkReceiver;
 	}
-	@SuppressWarnings( "unchecked" )
+	
 	public void updateExecuters(AutoUpdateTask item) {
 		diSys.Common.Logger.TraceInformation("################### System Update ###############");
 		File dir=new File(getVerDir(item.version));

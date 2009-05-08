@@ -24,17 +24,14 @@ import diSys.WorkersSystem.WorkER.AWorker;
 public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExecutor>
 		extends AWorker<RemoteItem<TASK>, RemoteItem<RESULT>> {
 	private E excutor;
-//	private String myIP;
 	private static PrintStream std=System.out;
 
 	public TaskExecuter(E executor,String Ip, BlockingQueue<RemoteItem<TASK>> tasks,
 			BlockingQueue<RemoteItem<RESULT>> results) {
 		super(tasks, results);
 		this.excutor = executor;
-//		myIP=Ip;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public RemoteItem<RESULT> doItem(RemoteItem<TASK> task) {
 		Item Result;

@@ -153,7 +153,7 @@ public class JarClassLoader extends URLClassLoader {
     }
     @SuppressWarnings("unchecked")
     private static final Class[] parameters = new Class[] {URL.class};
-    @SuppressWarnings({ "unchecked", "static-access" })
+    @SuppressWarnings({ "unchecked" })
     public static void AddUrlToSystem(URL url){
 			sysloader = (URLClassLoader)java.lang.ClassLoader.getSystemClassLoader();
 			//sysloader.newInstance(new URL[]{url},this);
