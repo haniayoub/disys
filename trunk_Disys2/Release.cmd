@@ -12,10 +12,3 @@ jar cvfe %BuildDir%\UI\DisysUI.jar diSys.UI.SystemManagerUI -C src\bin .
 jar cvfe %BuildDir%\FailureDetector\FailureDetector.jar diSys.FailureDetector.FailureDetectorSystem -C src\bin .
 
 copy %BuildDir%\disysSDK\disysSDK.jar  ..\DistributedRegression\jars
-
-set VERSION=%1
-echo Disys version: %VERSION% > Release/Executer/Ex_version.txt
-echo Disys version: %VERSION% > Release/FailureDetector/version.txt
-echo Disys version: %VERSION% > Release/SystemManager/version.txt
-echo Disys version: %VERSION% > Release/UI/version.txt
-echo Disys version: %VERSION% > Release/disysSDK/version.txt
