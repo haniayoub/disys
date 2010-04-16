@@ -95,7 +95,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	public ExecuterSystem(IExecutor executer,int numerOfWorkers,int irport,int rcport,String SysManagerAddress,int sysManagerport, String executerName) throws InterruptedException {
 		super();
 		this.executerName = executerName;
-		benchMark = new BenchMarkTask(10, this);
+		benchMark = new BenchMarkTask(5*60, this);
 		benchMark.start();
 		File f=new File(UpdateDir);
 		f.mkdir();
