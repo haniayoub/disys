@@ -188,6 +188,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			if (maxPPri == null) maxPPri = ri;
 			if (maxPPri.PP<ri.PP) maxPPri=ri;
 		}
+		maxPPri.BS+=numberOfTasks;
 		return maxPPri;
 		
 		/*

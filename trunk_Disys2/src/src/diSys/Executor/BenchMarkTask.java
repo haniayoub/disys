@@ -25,8 +25,34 @@ public class BenchMarkTask extends TimerTask {
 		// 
 		// Create an instance of TimerTask implementor.
 		//
-		BenchMarkTask task = new BenchMarkTask(3,null);
-		task.start();
+		//BenchMarkTask task = new BenchMarkTask(3,null);
+		//task.start();
+		Thread t=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true);
+			}
+		}
+		);
+		Thread t2=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true);
+				
+			}
+		}
+		);
+		t.start();
+		t2.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//while (1);
 		
 	}
 	
