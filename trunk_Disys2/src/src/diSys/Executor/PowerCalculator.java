@@ -11,8 +11,8 @@ public class PowerCalculator {
 	private static final int defaultFreqGHZ = 1000;
 	
 	private static int processorFreqGHZ = getProcessorFreqGHZ();
-	
-	private int getNumOfProcessors()
+	private static int numOfProcessors = getNumOfProcessors();
+	private static int getNumOfProcessors()
 	{
 		return Runtime.getRuntime().availableProcessors();
 	}
@@ -52,7 +52,7 @@ public class PowerCalculator {
 	
 	public double getEP()
 	{
-		return getNumOfProcessors()*processorFreqGHZ*1.0/getBenchmarkTimeSeconds()*Giga;
+		return numOfProcessors*processorFreqGHZ*1.0/getBenchmarkTimeSeconds()*Giga;
 	}
 	
 	public static void main(String[] args)
