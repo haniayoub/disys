@@ -24,6 +24,8 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 		implements IRemoteItemReceiver<ITEM> {
 	public int Version=-1; 
 	public static final String GlobalId = "itemReciever";
+	public final int BufferCapacity = 1000;
+	public double executionPower = -1;
 	private PriorityBlockingQueue<ITEM> tasks;
 	private BlockingQueue<ITEM> recievedItems;
 	@SuppressWarnings("unchecked")
@@ -50,6 +52,9 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 		erd.numOfTasks = recievedItems.size();
 		erd.Version = this.Version; 
 		erd.log=diSys.Common.Logger.logTracer.toString();
+		erd.BC = BufferCapacity;
+		erd.BS = tasks.size();
+		erd.EP = executionPower; 
 		return erd;
 	}
 

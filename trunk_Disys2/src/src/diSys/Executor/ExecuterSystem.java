@@ -351,4 +351,8 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	public void setCurrentTask(Item currentTask) {
 		this.currentTask = currentTask;
 	}
+	
+	private double runBenchMark(){
+		return 10;
+	}
 }

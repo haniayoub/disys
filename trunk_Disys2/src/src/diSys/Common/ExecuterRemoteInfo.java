@@ -11,6 +11,11 @@ public class ExecuterRemoteInfo implements Serializable {
 	private RMIRemoteInfo resultCollectorInfo;
 	private int version;
 	private String name;
+	public double EP = -1;
+	public int BS = 0;
+	public int BC = 100;
+	public double PP;
+	public double EFF_BE;
 
 	public ExecuterRemoteInfo(String ip, int itemRecieverPort,
 			int resultCollectorPort) {
@@ -52,7 +57,7 @@ public class ExecuterRemoteInfo implements Serializable {
 			   "     [ "+"Address:"  + resultCollectorInfo.ip + "   " +
 			   			 "IRPort = " + itemRecieverInfo.Port() + "   " +
 			   			 "RCPort = " + resultCollectorInfo.Port() + "   " +
-			   			 "Ver:" + version + " ]";
+			   			 "Ver:" + version + "EP :"+EP +"BS :"+BS +"BC :"+BC +" ]";
 	}
 
 	@Override

@@ -34,6 +34,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public static final Object UpdateLock =new Object();
 	//Max ID to assign to Clients
 	private static final int MAX_ID = 10000;
+	
+	public static double MAX_EP = 0;
 	//executers In this System Manager
 
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap=
@@ -46,7 +48,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	//the next id to assign to Client
 	private int nextId = 0;
 	//Round Robin counter
-	private int RRcounter = 0;
+	//private int RRcounter = 0;
 	
 	private VersionManager versionManager=new VersionManager(UpdateDir,5);
 	private ExecutersList executersFile=new ExecutersList(ExecutersList);
@@ -98,6 +100,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public void addExecuter(int itemRecieverPort, int resultCollectorPort)
 			throws RemoteException {
 		String address = SystemManager.GetClientHost();
+		
 		if(address==null){
 		diSys.Common.Logger.TraceError("Can't add executer , address couldn't be resolved!",null);
 		return;
@@ -159,19 +162,46 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	
 	private ExecuterRemoteInfo ScheduleExecuter(int numberOfTasks){
 		//ExecuterRemoteInfo remoteInfo = null;
-		
+		Logger.TraceInformation("starting scheduling for num tasks = "+numberOfTasks);
 		if(executersMap.isEmpty()){
 			Logger.TraceInformation("Executers list is empty !");
+			return null;
 		}
+		for (ExecuterRemoteInfo ri : executersMap.keySet())
+		{
+			double myPP = ri.EP/SystemManager.MAX_EP;
+			double EFF_BC = ri.BC * myPP;
+			double EFF_BE = ri.BS/EFF_BC;
+			ri.PP = myPP;
+			ri.EFF_BE = EFF_BE;
+			//RRlist[i++] = ri;
+		}
+		double Min_EFF_BE = Double.MAX_VALUE;
+		for (ExecuterRemoteInfo ri : executersMap.keySet())
+			if (ri.EFF_BE<Min_EFF_BE) Min_EFF_BE = ri.EFF_BE;  
+		ExecuterRemoteInfo res = null;
+		LinkedList<ExecuterRemoteInfo> minEffs= new LinkedList<ExecuterRemoteInfo>();
+		for (ExecuterRemoteInfo ri : executersMap.keySet())
+			if ( ri.EFF_BE == Min_EFF_BE) minEffs.add(ri);
+		ExecuterRemoteInfo maxPPri=null;
+		for (ExecuterRemoteInfo ri : minEffs){
+			if (maxPPri == null) maxPPri = ri;
+			if (maxPPri.PP<ri.PP) maxPPri=ri;
+		}
+		return maxPPri;
+		
+		/*
 		ExecuterRemoteInfo RRlist[] = new ExecuterRemoteInfo[executersMap.size()];
 		int i=0;
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
 		{
 			RRlist[i++] = ri;
 		}
+		
+		
 		RRcounter = RRcounter%i;
 		return RRlist[RRcounter++];
-		
+		*/
 		/*
 		int minNumOfTasks = Integer.MAX_VALUE;
 		for (ExecuterRemoteInfo ri : executersMap.keySet()) 

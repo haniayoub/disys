@@ -56,6 +56,13 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					executersMap.get(ri).setNumOfTasks(erd.numOfTasks);
 					executersMap.get(ri).setLog(erd.log);
 					ri.setVersion(erd.Version);
+					ri.BS = erd.BS;
+					ri.EP = erd.EP;
+					ri.BC = erd.BC;
+					
+					if (ri.EP > SystemManager.MAX_EP) {
+						SystemManager.MAX_EP = ri.EP;
+					}
 					
 					if(erd.Version < sysm.GetLastVersionNumber()) {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" neet to Update to "+sysm.GetLastVersionNumber(),null);
@@ -75,6 +82,13 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 						+ ri.toString());
 				executersMap.remove(ri);
 			}
+			//Calc the Mac EP
+			for (ExecuterRemoteInfo ri : executersMap.keySet())
+				if (ri.EP > SystemManager.MAX_EP) 
+					SystemManager.MAX_EP = ri.EP;
+			
+			diSys.Common.Logger.TraceInformation("MAX Executer Power = "+SystemManager.MAX_EP);
+				
 		}
 		private void HeartBeatClients(){
 			LinkedList<ClientRemoteInfo> toDelete = new LinkedList<ClientRemoteInfo>();
