@@ -83,12 +83,15 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 				executersMap.remove(ri);
 			}
 			//Calc the Mac EP
+			double tmp = 0;
 			for (ExecuterRemoteInfo ri : executersMap.keySet())
-				if (ri.EP > SystemManager.MAX_EP) 
-					SystemManager.MAX_EP = ri.EP;
+				if (ri.EP > tmp)
+					tmp = ri.EP;
 			
-			diSys.Common.Logger.TraceInformation("MAX Executer Power = "+SystemManager.MAX_EP);
-				
+			if(tmp != SystemManager.MAX_EP)
+				diSys.Common.Logger.TraceInformation("MAX Executer Power = "+tmp);
+			
+			SystemManager.MAX_EP = tmp;
 		}
 		private void HeartBeatClients(){
 			LinkedList<ClientRemoteInfo> toDelete = new LinkedList<ClientRemoteInfo>();

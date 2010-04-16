@@ -7,9 +7,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class BenchMarkTask extends TimerTask {
+	private PowerCalculator pc = new PowerCalculator();
 	private DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 	private int interval;
+	@SuppressWarnings("unchecked")
 	private ExecuterSystem es;
+	@SuppressWarnings("unchecked")
 	public BenchMarkTask(int interval,ExecuterSystem es){
 		this.interval = interval;
 		this.es = es;
@@ -35,7 +38,10 @@ public class BenchMarkTask extends TimerTask {
 		//
 		// To make the example simple we just print the current time.
 		//	
-		
 		System.out.println("Running benchmark :" + formatter.format(new Date()));
+		double ep = pc.getEP();
+		es.chunkReceiver.executionPower = ep;
+		System.out.println("Executer Power is: " + ep);
+		System.out.println("Done :" + formatter.format(new Date()));
 	}
  }

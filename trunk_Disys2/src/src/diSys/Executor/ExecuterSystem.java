@@ -72,7 +72,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	//Workers of the executer System
 	//
 	
-	private RemoteItemReceiver<Chunk<TASK>> chunkReceiver;
+	public RemoteItemReceiver<Chunk<TASK>> chunkReceiver;
 	private ChunkBreaker<TASK> chunkBreaker;
 	@SuppressWarnings("unchecked")
 	private TaskExecuter<TASK,RESULT,IExecutor> taskExecuter;
@@ -94,7 +94,9 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	@SuppressWarnings("unchecked")
 	public ExecuterSystem(IExecutor executer,int numerOfWorkers,int irport,int rcport,String SysManagerAddress,int sysManagerport, String executerName) throws InterruptedException {
 		super();
-		this.executerName = executerName; 
+		this.executerName = executerName;
+		benchMark = new BenchMarkTask(10, this);
+		benchMark.start();
 		File f=new File(UpdateDir);
 		f.mkdir();
 		Thread.sleep(1000);
@@ -146,9 +148,6 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		ws.add(ExecutersCollection);
 		ws.add(resultOrganizer,1);
 		fileLogger.TraceInformation("Executer is running ...");
-		benchMark = new BenchMarkTask(60*5, this);
-		benchMark.run();
-		benchMark.start();
 		heartBeat = new HeartBeat(HeartBeatLogFile);
 		heartBeat.start();
 	}
