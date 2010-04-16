@@ -81,6 +81,8 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	//system manager reference
     private ISystemManager<TASK> sysManager;
     private RMIRemoteInfo systemManagerRemoteInfo;
+    
+    private BenchMarkTask benchMark;
     //number of task executers
     private int numerOfExecuters;
 	private WorkerSystem ws=new WorkerSystem();
@@ -144,6 +146,9 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		ws.add(ExecutersCollection);
 		ws.add(resultOrganizer,1);
 		fileLogger.TraceInformation("Executer is running ...");
+		benchMark = new BenchMarkTask(60*5, this);
+		benchMark.run();
+		benchMark.start();
 		heartBeat = new HeartBeat(HeartBeatLogFile);
 		heartBeat.start();
 	}
