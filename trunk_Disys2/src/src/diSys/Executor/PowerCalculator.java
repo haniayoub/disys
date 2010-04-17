@@ -23,6 +23,14 @@ public class PowerCalculator {
 		{
 			String fileName = "systeminfo.txt";
 			Common.runCmd("systeminfo > " + fileName);
+			/*
+			
+			Runtime rt = Runtime.getRuntime();
+			rt.exec("systeminfo")
+			*/
+			
+			
+			
 			try {
 				Thread.sleep(1000*15);
 			} catch (InterruptedException e) {
