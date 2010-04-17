@@ -1,6 +1,7 @@
 package diSys.Common;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 import diSys.Networking.RMIItemCollector;
 import diSys.Networking.RemoteItemReceiver;
@@ -53,11 +54,12 @@ public class ExecuterRemoteInfo implements Serializable {
 	}
 
 	public String toString() {
+		DecimalFormat df = new DecimalFormat(".###");
 		return "Executer: " + name + 
 			   "     [ "+"Address:"  + resultCollectorInfo.ip + "   " +
 			   			 "IRPort = " + itemRecieverInfo.Port() + "   " +
 			   			 "RCPort = " + resultCollectorInfo.Port() + "   " +
-			   			 "Ver:" + version + "EP :"+EP +"BS :"+BS +"BC :"+BC +" ]";
+			   			 "Ver:" + version + "  EP:"+df.format(EP) +"  BS:"+BS +"  BC:"+BC +" ]";
 	}
 
 	@Override

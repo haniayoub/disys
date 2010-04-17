@@ -174,6 +174,9 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			double EFF_BE = ri.BS/EFF_BC;
 			ri.PP = myPP;
 			ri.EFF_BE = EFF_BE;
+			Logger.TraceInformation(ri.toString());
+			Logger.TraceInformation("PP = "+mypp + "EFF_BE = "+EFF_BE);
+			
 			//RRlist[i++] = ri;
 		}
 		double Min_EFF_BE = Double.MAX_VALUE;
