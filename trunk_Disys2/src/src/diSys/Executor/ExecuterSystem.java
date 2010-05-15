@@ -220,7 +220,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		}
 		else
 		{
-			diSys.Common.CommandLineRunner.Run("start javaw -jar Executer.jar "+CommandLineArgs);
+			diSys.Common.CommandLineRunner.Run("start java -jar Executer.jar "+CommandLineArgs);
 		}
 		fileLogger.TerminateSystem("Terminate due to update", null);
 		

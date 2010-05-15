@@ -290,7 +290,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	            	}
 	            	else
 	            	{
-	            		diSys.Common.CommandLineRunner.Run("start javaw -jar SystemManager.jar "+CommandLineArgs);
+	            		diSys.Common.CommandLineRunner.Run("start java -jar SystemManager.jar "+CommandLineArgs);
 	            	}
 	        		diSys.Common.Logger.TerminateSystem("Terminate due to update", null);
 	            }

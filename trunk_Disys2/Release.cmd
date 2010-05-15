@@ -1,6 +1,6 @@
 @echo off
 
-set PATH=%PATH%
+set PATH=%PATH%;"C:\Program Files\Java\jdk1.6.0_20\bin"
 set BuildDir=Release
 set BuildList=src/bin/AutoUpdate src/bin/Client   src/bin/Common  src/bin/Executor  src/bin/Networking   src/bin/SystemManager  src/bin/UI  src/bin/WorkersSystem  src/bin/FailureDetector
 
