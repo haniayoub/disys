@@ -175,7 +175,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			ri.PP = myPP;
 			ri.EFF_BE = EFF_BE;
 			Logger.TraceInformation(ri.toString());
-			Logger.TraceInformation("PP = "+mypp + "EFF_BE = "+EFF_BE);
+			Logger.TraceInformation("PP = "+myPP + "EFF_BE = "+EFF_BE);
 			
 			//RRlist[i++] = ri;
 		}
