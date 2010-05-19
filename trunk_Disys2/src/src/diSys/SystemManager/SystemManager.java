@@ -182,7 +182,6 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		double Min_EFF_BE = Double.MAX_VALUE;
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
 			if (ri.EFF_BE<Min_EFF_BE) Min_EFF_BE = ri.EFF_BE;  
-		ExecuterRemoteInfo res = null;
 		LinkedList<ExecuterRemoteInfo> minEffs= new LinkedList<ExecuterRemoteInfo>();
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
 			if ( ri.EFF_BE == Min_EFF_BE) minEffs.add(ri);
