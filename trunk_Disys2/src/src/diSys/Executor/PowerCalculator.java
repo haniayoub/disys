@@ -1,12 +1,13 @@
 package diSys.Executor;
 
 import diSys.Common.FileManager;
+import java.util.prefs.Preferences;
 import java.io.IOException;
 import diSys.Common.Common;
  
 
 public class PowerCalculator {
-	
+	//TODO: divide by linux\windows, and read processor power from reg or somehow.
 	private final int Giga = 1000;
 	private static final int defaultFreqGHZ = 1000;
 	
@@ -23,13 +24,6 @@ public class PowerCalculator {
 		{
 			String fileName = "systeminfo.txt";
 			Common.runCmd("systeminfo > " + fileName);
-			/*
-			
-			Runtime rt = Runtime.getRuntime();
-			rt.exec("systeminfo")
-			*/
-			
-			
 			
 			try {
 				Thread.sleep(1000*15);
@@ -57,6 +51,13 @@ public class PowerCalculator {
 		return SystemBenchmark.run();
 	}
 	
+	private String readReg(String reg)
+	{
+		Preferences userPref = Preferences.userRoot();
+		System.out.println(userPref.getInt("HKEY_LOCAL_MACHINE\\HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\~MHz", -1));
+		return "";
+	}
+	
 	
 	public double getEP()
 	{
@@ -66,6 +67,6 @@ public class PowerCalculator {
 	public static void main(String[] args)
 	{
 		PowerCalculator pc = new PowerCalculator();
-		System.out.println(pc.getEP());
+		System.out.println(pc.readReg(""));
 	}
 }

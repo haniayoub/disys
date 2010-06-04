@@ -23,16 +23,18 @@ import diSys.WorkersSystem.WorkER.AWorker;
 public class ChunkScheduler<TASK extends Item, RESULT extends Item> extends
 		AWorker<Chunk<TASK>, Chunk<TASK>> {
 	private ISystemManager<TASK> sysManager;
+	private FailureDetector failureDetector;
 	// result collector to update
 	private ResultCollector<TASK, RESULT> resultCollector;
 
 	public ChunkScheduler(ISystemManager<TASK> sysManager,
 			ResultCollector<TASK, RESULT> resultCollector,
 			BlockingQueue<Chunk<TASK>> taskChunks,
-			BlockingQueue<Chunk<TASK>> taskChunks2) {
+			BlockingQueue<Chunk<TASK>> taskChunks2, FailureDetector failureDetector) {
 		super(taskChunks, taskChunks2);
 		this.sysManager = sysManager;
 		this.resultCollector = resultCollector;
+		this.failureDetector = failureDetector;
 	}
 
 	@Override
@@ -65,6 +67,9 @@ public class ChunkScheduler<TASK extends Item, RESULT extends Item> extends
 
 		try {
 			RemoteExecuter.Add(task);
+			TASK[] ts = task.getItems();
+			for(TASK t : ts)
+				failureDetector.add(t, executerAddress);
 
 		} catch (RemoteException e) {
 			diSys.Common.Logger.TraceWarning(

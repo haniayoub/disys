@@ -59,6 +59,8 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 	private SynchronizedCounter sCounter;
 
 	private ISystemManager<TASK> sysManager;
+	
+	private FailureDetector failureDetector = new FailureDetector(10000, this);
 
 	private boolean forceUpdate;
 	
@@ -81,7 +83,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 				1000, this);
 		
 		chunkScheduler = new ChunkScheduler<TASK, RESULT>(sysManager,
-				resultCollector, taskChunks, taskChunks);
+				resultCollector, taskChunks, taskChunks, failureDetector);
 
 		ws.add(chunkCreatorWorker, 1);
 		ws.add(chunkScheduler, 1);
@@ -101,7 +103,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 		resultCollector = new ResultCollector<TASK, RESULT>(myRemoteInfo.Id(),
 				1000, this);
 		chunkScheduler = new ChunkScheduler<TASK, RESULT>(sysManager,
-				resultCollector, taskChunks, taskChunks);
+				resultCollector, taskChunks, taskChunks, failureDetector);
 
 		ws.add(chunkCreatorWorker, 1);
 		ws.add(chunkScheduler, 1);
@@ -162,6 +164,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 
 		ws.startWork();
 		resultCollector.start();
+		failureDetector.start();
 	}
 
 	public void Stop() {
@@ -247,7 +250,9 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 	}
 
 	public RESULT Take() throws InterruptedException {
-		return results.take();
+		RESULT res = results.take(); 
+		failureDetector.remove(res);
+		return res;
 	}
 	
 	public RESULT DoTask(TASK task) {

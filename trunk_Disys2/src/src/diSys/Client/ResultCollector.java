@@ -60,12 +60,11 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 						resultChunk = executersRemoteCollectors.get(ri)
 								.Collect(myID);
 					} catch (RemoteException e) {
-
-						diSys.Common.Logger.TraceError(
-								"error while collecting results chunk from:"
-										+ ri.GetRmiAddress(), e);
+						//diSys.Common.Logger.TraceInformation(
+						//	"Couldn't collect results from executer:" + ri.GetRmiAddress());
 						continue;
 					}
+					
 					if (resultChunk == null) {
 					//	Common.Logger
 					//			.TraceInformation("no results available from:"
