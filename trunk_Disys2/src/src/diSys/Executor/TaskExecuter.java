@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import diSys.Common.ATask;
 import diSys.Common.IExecutor;
 import diSys.Common.Item;
 import diSys.Common.RemoteItem;
@@ -21,16 +22,16 @@ import diSys.WorkersSystem.WorkER.AWorker;
  * @param <E>
  */
 @SuppressWarnings("unchecked")
-public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExecutor>
+public class TaskExecuter<TASK extends ATask, RESULT extends Item, E extends IExecutor>
 		extends AWorker<RemoteItem<TASK>, RemoteItem<RESULT>> {
-	private E excutor;
+	//private E excutor;
 	private static PrintStream std=System.out;
 	private ExecuterSystem es;
 
-	public TaskExecuter(E executor,String Ip, BlockingQueue<RemoteItem<TASK>> tasks,
+	public TaskExecuter(/*E executor,*/String Ip, BlockingQueue<RemoteItem<TASK>> tasks,
 			BlockingQueue<RemoteItem<RESULT>> results, ExecuterSystem es) {
 		super(tasks, results);
-		this.excutor = executor;
+//		this.excutor = executor;
 		this.es = es;
 	}
 	
@@ -42,10 +43,10 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 	    ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try{ 
 			  System.setOut(new PrintStream(out));	
-			  Item item = task.getItem();
+			  ATask item = task.getItem();
 			  
-			 Result = excutor.run(item);
-			 // Result = item.run();
+			 //Result = excutor.run(item);
+			  Result = item.Run();
 			  System.setOut(std);
 			  diSys.Common.Logger.TraceInformation("Finished executing Task id["+task.getId()+"]");
 			if(out.toString().length()!=0){

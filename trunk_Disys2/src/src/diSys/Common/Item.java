@@ -79,4 +79,5 @@ public class Item implements Serializable, Cloneable {
 	public boolean isNull() {
 		return isNull;
 	}
+
 }

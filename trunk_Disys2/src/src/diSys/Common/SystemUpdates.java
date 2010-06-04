@@ -18,6 +18,7 @@ public class SystemUpdates implements Serializable {
 	public SystemUpdates(String updateJarPath, String executerClassName)
 			throws Exception {
 		jarBytes = null;
+		this.executerClassNames = new String[] {"None" };
 		if (executerClassName != null) {
 			this.executerClassNames = new String[] { executerClassName };
 			this.executerClassName = executerClassName;
@@ -29,13 +30,14 @@ public class SystemUpdates implements Serializable {
 			} catch (MalformedURLException e) {
 				diSys.Common.Logger.TraceError(e.getMessage(), e);
 			}
+			/*
 			this.executerClassNames = jcl.getSubClassesof(IExecutor.class,
 					false);
 			if (this.executerClassNames.length == 0) {
 				throw new Exception("No sub class of "
 						+ IExecutor.class.getName() + " found!");
-			}
-			this.executerClassName = this.executerClassNames[0];
+			}*/
+			this.executerClassName = "None";//this.executerClassNames[0];
 		}
 
 		if (updateJarPath != null) {
@@ -83,6 +85,7 @@ public class SystemUpdates implements Serializable {
 					null);
 			throw new Exception(updateJarPath + " Do not exist ");
 		}
+		/*** TODO : Remove this code , Disys 2 don't support executer class impl.
 		// for()
 		JarClassLoader jcl = null;
 		try {
@@ -119,7 +122,7 @@ public class SystemUpdates implements Serializable {
 			throw new Exception(executerClassName
 					+ " was not found in the given Jars");
 		}
-
+		**/
 	}
 
 	public String[] getExecuterClassNames() {

@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import diSys.AutoUpdate.JarClassLoader;
+import diSys.Common.ATask;
 import diSys.Common.Chunk;
 import diSys.Common.FileLogger;
 import diSys.Common.FileManager;
@@ -41,7 +42,7 @@ import diSys.WorkersSystem.WorkER.WorkerSystem;
  * @param <E> Executer Type
  */
 public 
-class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
+class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E extends IExecutor<TASK,RESULT>> {
 	
 	public static final String UpdateDir = "ExecuterUpdateJars";
 	public static final String UpdateExtension = "jar";
@@ -100,9 +101,9 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		File f=new File(UpdateDir);
 		f.mkdir();
 		Thread.sleep(1000);
-		IExecutor newExec=executer;
+		//IExecutor newExec=executer;
 		try {
-			newExec=LoadUpdates();
+			LoadUpdates();
 		} catch (Exception e) {
 			fileLogger.TraceWarning("Executer Is could not load Updates", e);
 		}
@@ -140,7 +141,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		chunkBreaker=new ChunkBreaker<TASK>(recievedChunks,tasks, this);
 	
 		String myID=chunkReceiver.getRmiID();
-		taskExecuter = new TaskExecuter<TASK,RESULT,IExecutor>(newExec,myID,tasks,results, this);
+		taskExecuter = new TaskExecuter<TASK,RESULT,IExecutor>(myID,tasks,results, this);
 		resultOrganizer=new RemoteItemOrganizer<RESULT>(results,clientResults);
 		numerOfExecuters= numerOfWorkers;
 		ExecutersCollection=new WorkerCollection(taskExecuter,numerOfExecuters,null);
@@ -231,7 +232,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 	}
 
 	@SuppressWarnings("unchecked")
-	public IExecutor LoadUpdates(){
+	public void LoadUpdates(){
 	    String versionString;
 	   
 	    fileLogger.TraceInformation("Loading updates!..");
@@ -239,7 +240,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 			versionString = FileManager.ReadLines(VersionFile)[0];
 		} catch (Exception e) {
 			fileLogger.TraceError("Couldn't read Version from version file!\n"+e.getMessage(),null);
-			return null;
+			return ;//null;
 		}
 		fileLogger.TraceInformation("Loading updates Version "+versionString);
 	    int version=Integer.parseInt(versionString);
@@ -255,7 +256,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 			executerClassName = FileManager.ReadLines(classNameFile(version))[0];
 		} catch (Exception e) {
 			fileLogger.TraceError("Couldn't Read IExecuter Class Name!\n"+e.getMessage(),null);
-			return null;
+			return;// null;
 		}
 	   // jcl = new JarClassLoader(f);
 	    
@@ -265,7 +266,7 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 			JarClassLoader.AddUrlToSystem(f.toURI().toURL());
 		} catch (MalformedURLException e) {
 			fileLogger.TraceError("Couldn't Update !\n"+e.getMessage(),null);
-			return null;
+			return;// null;
 		}
 		String IncludeJarsDir=getUpdateJarsDir(version);
 		File jarsf=new File(IncludeJarsDir);
@@ -274,10 +275,10 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 				JarClassLoader.AddUrlToSystem(ff.toURI().toURL());
 			} catch (MalformedURLException e) {
 				fileLogger.TraceError("Couldn't Update !\n"+e.getMessage(), null);
-				return null;
+				return;// null;
 			}
 			fileLogger.TraceInformation("Intializing class " +executerClassName);
-		IExecutor newExecuter;
+		/*IExecutor newExecuter;
 		try {
 			newExecuter = (IExecutor)Class.forName(executerClassName).newInstance();
 		} catch (Exception e) {
@@ -286,12 +287,12 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 		}catch(NoClassDefFoundError e){
 			fileLogger.TraceInformation("Couldn't Update Failed to initialize Executer Class!");
 			return null;
-		}
+		}*/
         	 
 		this.Version=version;
 		
 		// BufferedReader in = new BufferedReader(new FileReader("foo.in"));
-		return newExecuter;
+		//return newExecuter;
 	}
 
 	public int GetVersion() {
@@ -354,9 +355,5 @@ class ExecuterSystem<TASK extends Item,RESULT extends Item,E extends IExecutor<T
 
 	public void setCurrentTask(Item currentTask) {
 		this.currentTask = currentTask;
-	}
-	
-	private double runBenchMark(){
-		return 10;
 	}
 }
