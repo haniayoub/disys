@@ -44,7 +44,8 @@ public class TaskExecuter<TASK extends Item, RESULT extends Item, E extends IExe
 			  System.setOut(new PrintStream(out));	
 			  Item item = task.getItem();
 			  
-			  Result = excutor.run(item);
+			 Result = excutor.run(item);
+			 // Result = item.run();
 			  System.setOut(std);
 			  diSys.Common.Logger.TraceInformation("Finished executing Task id["+task.getId()+"]");
 			if(out.toString().length()!=0){
