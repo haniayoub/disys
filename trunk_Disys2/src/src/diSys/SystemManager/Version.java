@@ -12,6 +12,10 @@ public class Version{
 	}
 	public String toString(){
 		if(updates==null)return "Version:"+version+" Updates:null";
-		return "Version:"+version+" Class:"+updates.ExecuterClassName();
+		String s="Version:"+version+" Task Class Types :-";
+		for (String str:updates.GetTaskTypes()){
+			s+="\n"+"Task Class :- "+str;
+		}
+		return s;
 	}
 }

@@ -190,7 +190,7 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 		try {
 		fileLogger.TraceInformation("Writing file "+fileName+"  "+item.updates.UpdateJar().length);
 		FileManager.WriteFile(fileName, item.updates.UpdateJar());
-		FileManager.WriteFile(classNameFile(item.version),item.updates.ExecuterClassName().getBytes());
+		//FileManager.WriteFile(classNameFile(item.version),item.updates.ExecuterClassName().getBytes());
 		FileManager.WriteFile(VersionFile,item.version.toString().getBytes());
 		
 		for(String fname:item.updates.IncludeJars.keySet()){

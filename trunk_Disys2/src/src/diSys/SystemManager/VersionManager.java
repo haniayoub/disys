@@ -1,11 +1,8 @@
 package diSys.SystemManager;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FilenameFilter;
-import java.io.IOException;
 
 import diSys.Common.FileManager;
 import diSys.Common.SystemUpdates;
@@ -31,13 +28,14 @@ public class VersionManager {
 	public String addVersion(SystemUpdates updates){
 		if(LastVersion==null) LastVersion=new Version(null,0);
 		int newVer=LastVersion.version+1;
-		diSys.Common.Logger.TraceInformation("adding new version "+newVer+" new Executer ["+updates.ExecuterClassName()+"]");
+		diSys.Common.Logger.TraceInformation("adding new version "+newVer+" Task Types :-");
+		for (String str:updates.GetTaskTypes()){
+			diSys.Common.Logger.TraceInformation("Task Class :- "+str);
+		}
 		String newVerFile=getJarFileName(newVer);
-		String classNameFile=getClassNameFileName(newVer);
-		diSys.Common.Logger.TraceInformation("Saving New Update Jar to :"+newVerFile + " and "+classNameFile);
+		diSys.Common.Logger.TraceInformation("Saving New Update Jar to :"+newVerFile);
 		try {
 			FileManager.WriteFile(newVerFile,updates.UpdateJar());
-			FileManager.WriteFile(classNameFile,updates.ExecuterClassName().getBytes());
 		} catch (FileNotFoundException e1) {
 			diSys.Common.Logger.TraceWarning("Failed to Create jar File:"+newVerFile,e1);
 		}
@@ -63,9 +61,8 @@ public class VersionManager {
 		return UpdateDir+"/IncludeJars"+ver+"/";
 	}
 	public Version GetVersion(int version){
-		String lastClassName=GetClassName(version);
 		try {
-			return new Version(new SystemUpdates(getJarFileName(version),lastClassName),version);
+			return new Version(new SystemUpdates(getJarFileName(version)),version);
 		} catch (Exception e) {
 			diSys.Common.Logger.TraceWarning("Failed to read update File:"+getJarFileName(version),e);
 			return null;
@@ -74,7 +71,7 @@ public class VersionManager {
 	private void SetLastVersion(){
 		
 		int lastVerNum=getLastVersionNumber();
-		String lastClassName=GetClassName(lastVerNum);
+		//String lastClassName=GetClassName(lastVerNum);
 		if(lastVerNum==0)
 			{
 			LastVersion=new Version(null,0);
@@ -82,7 +79,7 @@ public class VersionManager {
 			return;
 			}
 		try {
-			LastVersion=new Version(new SystemUpdates(getJarFileName(lastVerNum),lastClassName),lastVerNum);
+			LastVersion=new Version(new SystemUpdates(getJarFileName(lastVerNum)),lastVerNum);
 		    File f=new File(UpdateDir+"/IncludeJars"+lastVerNum+"/");
 		    diSys.Common.Logger.TraceInformation("Loading include Jars from:"+f.getName());
 		    LastVersion.updates.setIncludeJars(f.listFiles());
@@ -96,7 +93,7 @@ public class VersionManager {
 		return UpdateDir+"/"+ver+"."+ClassNameExtension;
 	}
 	
-	private String GetClassName(int version) {
+/*	private String GetClassName(int version) {
 		String FileName=UpdateDir+"/"+version+"."+ClassNameExtension;
 		if(!(new File(FileName).exists())) return null;
 		FileReader fr;
@@ -120,7 +117,7 @@ public class VersionManager {
 		}
 		
 	 return Line;
-	}
+	}*/
 	
 	private int getLastVersionNumber(){
 		File fl=new File(UpdateDir);

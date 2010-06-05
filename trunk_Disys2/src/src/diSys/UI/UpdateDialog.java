@@ -69,7 +69,7 @@ public class UpdateDialog extends javax.swing.JDialog {
 		super(frame);
 		initGUI();
 		ComboBoxModel jComboBoxClassNameModel = 
-			new DefaultComboBoxModel(sysUp.getExecuterClassNames());
+			new DefaultComboBoxModel(sysUp.GetTaskTypes());
 		jComboBoxClassName.setModel(jComboBoxClassNameModel);
 		jLabelFile.setText(FileName);
 		this.sysUp=sysUp;
@@ -124,7 +124,7 @@ public class UpdateDialog extends javax.swing.JDialog {
 				{
 					jLabel1 = new JLabel();
 					jPanel1.add(jLabel1);
-					jLabel1.setText("Executer ClassName :");
+					jLabel1.setText("Task Calss types :");
 					jLabel1.setBounds(16, 42, 105, 14);
 				}
 				{
@@ -165,9 +165,6 @@ public class UpdateDialog extends javax.swing.JDialog {
 	}
 	private File[] files=new File[]{};
 	private void jButtonCommetMouseClicked(MouseEvent evt) {
-		//System.out.println("jButtonCommet.mouseClicked, event="+evt);
-		//TODO add your code for jButtonCommet.mouseClicked
-		this.sysUp.setExecuterClassName(this.jComboBoxClassName.getSelectedItem().toString());
 		this.sysUp.setIncludeJars(files);
 		try {
 			this.sysUp.VerfiyUpdates(jLabelFile.getText(),jComboBoxClassName.getSelectedItem().toString());

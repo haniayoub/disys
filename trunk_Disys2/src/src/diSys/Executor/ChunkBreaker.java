@@ -41,7 +41,7 @@ public class ChunkBreaker<ITEM extends Item> extends AWorker<Chunk<ITEM>,RemoteI
 			}
 			if(item instanceof AutoUpdateTask)
 			{
-			diSys.Common.Logger.TraceInformation("Update Command [Task] recieved , update to :"+((AutoUpdateTask)item).updates.ExecuterClassName());
+			diSys.Common.Logger.TraceInformation("Update Command [Task] recieved , update to :"+((AutoUpdateTask)item).updates.toString());
 				
 					if(es.GetVersion()==((AutoUpdateTask)item).version){
 						diSys.Common.Logger.TraceInformation("System at version "+es.GetVersion()+"is up to date no need to update . ");

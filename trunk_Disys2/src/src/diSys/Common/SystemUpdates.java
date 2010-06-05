@@ -5,54 +5,40 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import diSys.AutoUpdate.JarClassLoader;
 
 @SuppressWarnings("serial")
 public class SystemUpdates implements Serializable {
-	private String executerClassName;
 	private byte[] jarBytes;
-	private String[] executerClassNames;
 	public HashMap<String, byte[]> IncludeJars;
-
-	public SystemUpdates(String updateJarPath, String executerClassName)
+	public String[] taskTypes ;
+	public SystemUpdates(String updateJarPath)
 			throws Exception {
-		jarBytes = null;
-		this.executerClassNames = new String[] {"None" };
-		if (executerClassName != null) {
-			this.executerClassNames = new String[] { executerClassName };
-			this.executerClassName = executerClassName;
-		} else {
-			JarClassLoader jcl = null;
-			try {
-				File jar = new File(updateJarPath);
-				jcl = new JarClassLoader(jar);
-			} catch (MalformedURLException e) {
-				diSys.Common.Logger.TraceError(e.getMessage(), e);
-			}
-			/*
-			this.executerClassNames = jcl.getSubClassesof(IExecutor.class,
-					false);
-			if (this.executerClassNames.length == 0) {
-				throw new Exception("No sub class of "
-						+ IExecutor.class.getName() + " found!");
-			}*/
-			this.executerClassName = "None";//this.executerClassNames[0];
+	jarBytes = null;
+	JarClassLoader jcl=null;
+	try {
+		File jar = new File(updateJarPath);
+		if (!jar.canRead()){
+			throw new Exception("Can't read file :"+updateJarPath);
 		}
-
-		if (updateJarPath != null) {
-			diSys.Common.Logger.TraceInformation("Reading update jar File :"
-					+ updateJarPath);
-			jarBytes = FileManager.ReadFileBytes(updateJarPath);
-		}
+		jcl = new JarClassLoader(jar);
+	} catch (Exception e) {
+		diSys.Common.Logger.TraceError(e.getMessage(), e);
+		throw e;
 	}
-
-	public SystemUpdates(String updateJarPath) throws Exception {
-		this(updateJarPath, null);
+	
+	taskTypes = jcl.getSubClassesof(ATask.class,
+			false);
+	diSys.Common.Logger.TraceInformation("Reading update jar File :"
+				+ updateJarPath);
+	jarBytes = FileManager.ReadFileBytes(updateJarPath);
 	}
+	
 
-	public String ExecuterClassName() {
-		return executerClassName;
+	public String[] GetTaskTypes() {
+		return taskTypes;
 	}
 
 	public byte[] UpdateJar() {
@@ -85,56 +71,12 @@ public class SystemUpdates implements Serializable {
 					null);
 			throw new Exception(updateJarPath + " Do not exist ");
 		}
-		/*** TODO : Remove this code , Disys 2 don't support executer class impl.
-		// for()
-		JarClassLoader jcl = null;
-		try {
-			jcl = new JarClassLoader(jar);
-		} catch (MalformedURLException e) {
-			diSys.Common.Logger.TraceError(e.getMessage(), e);
-			throw new Exception(e.getMessage());
+	}
+	public String toString(){
+		String s = "system updates : ";
+		for (String str:GetTaskTypes()){
+			s+="\nTask Class :- "+str;
 		}
-		// jcl.getSubClassesof(c, includeInterfaces)
-		try {
-			// jcl.GetClass(executerClassName).is
-			Object o = jcl.GetClass(executerClassName).newInstance();
-			if (!(o instanceof IExecutor)) {
-				diSys.Common.Logger.TraceError(executerClassName
-						+ " Do not implement " + IExecutor.class.getName()
-						+ " Interface ...", null);
-				throw new Exception(executerClassName + " Do not implement "
-						+ IExecutor.class.getName() + " Interface ...");
-			}
-		} catch (InstantiationException e) {
-			diSys.Common.Logger.TraceError(executerClassName
-					+ " instantiation Failed please Check your implementation",
-					e);
-			throw new Exception(executerClassName
-					+ " instantiation Failed please Check your implementation");
-		} catch (IllegalAccessException e) {
-			diSys.Common.Logger.TraceError(e.getMessage(), e);
-			throw new Exception(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			diSys.Common.Logger
-					.TraceError(executerClassName
-							+ " was not found in the given Jar: "
-							+ updateJarPath, null);
-			throw new Exception(executerClassName
-					+ " was not found in the given Jars");
-		}
-		**/
+		return s;
 	}
-
-	public String[] getExecuterClassNames() {
-		return executerClassNames;
-	}
-
-	public String getExecuterClassName() {
-		return executerClassName;
-	}
-
-	public void setExecuterClassName(String executerClassName) {
-		this.executerClassName = executerClassName;
-	}
-
 }
