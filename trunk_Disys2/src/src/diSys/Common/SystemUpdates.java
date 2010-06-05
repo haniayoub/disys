@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.LinkedList;
-
 import diSys.AutoUpdate.JarClassLoader;
 
 @SuppressWarnings("serial")
@@ -60,7 +58,6 @@ public class SystemUpdates implements Serializable {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void VerfiyUpdates(String updateJarPath, String executerClassName)
 			throws Exception {
 		diSys.Common.Logger.TraceInformation("Verifying Updates Jar:"

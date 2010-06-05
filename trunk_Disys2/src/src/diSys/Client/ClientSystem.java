@@ -170,6 +170,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 	public void Stop() {
 		ws.stopWork();
 		resultCollector.Stop();
+		failureDetector.Stop();
 		this.Dispose();
 	}
 

@@ -3,8 +3,11 @@ package diSys.Executor;
 import diSys.Common.Common;
 
 public class DummyBenchmarkClass {
+	@SuppressWarnings("unused")
 	private int i;
+	@SuppressWarnings("unused")
 	private String str;
+	@SuppressWarnings("unused")
 	private long l;
 
 	public DummyBenchmarkClass() {

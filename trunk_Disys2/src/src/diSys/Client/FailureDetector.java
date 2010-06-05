@@ -62,6 +62,7 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 				reschedule(eri);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void reschedule(ExecuterRemoteInfo eri) 
 	{
 		diSys.Common.Logger.TraceInformation("Trying to reschedule tasks on Executer: " + eri.getName());
@@ -87,5 +88,10 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 			return false;
 		}
 		return true;
+	}
+
+	public void Stop() {
+		this.cancel();
+		
 	}
 }
