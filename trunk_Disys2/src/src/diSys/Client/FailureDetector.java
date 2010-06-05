@@ -1,38 +1,38 @@
 package diSys.Client;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask; 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import diSys.Common.ExecuterRemoteInfo;
 import diSys.Common.Item;
 import diSys.Networking.NetworkCommon;
 
-public class FailureDetector extends TimerTask {
+public class FailureDetector<TASK extends Item> extends TimerTask {
 
 	private int interval;
-	private ClientSystem client;
-	private HashMap<ExecuterRemoteInfo, LinkedList<Item>> tasksDB = 
-		new HashMap<ExecuterRemoteInfo, LinkedList<Item>>();
+	private PriorityBlockingQueue<TASK> systemTasks;
+	private ConcurrentHashMap<ExecuterRemoteInfo, LinkedList<Item>> tasksDB = 
+		new ConcurrentHashMap<ExecuterRemoteInfo, LinkedList<Item>>();
 	
-	public FailureDetector(int interval, ClientSystem client) 
+	public FailureDetector(int interval, PriorityBlockingQueue<TASK> systemTasks) 
 	{
 		this.interval = interval;
-		this.client = client;
-		diSys.Common.Logger.TraceInformation("FailureDetector has been initialized");
+		this.systemTasks = systemTasks;
 	}
 	
-	public synchronized void start()
+	public void start()
 	{
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(this, new Date(), interval);
 		diSys.Common.Logger.TraceInformation("FailureDetector is now running (interval: " + interval + " seconds)");
 	}
 	
-	public synchronized void add(Item task, ExecuterRemoteInfo itemRecieverInfo)
+	public void add(Item task, ExecuterRemoteInfo itemRecieverInfo)
 	{
 		if(!tasksDB.containsKey(itemRecieverInfo))
 			tasksDB.put(itemRecieverInfo, new LinkedList<Item>());
@@ -41,7 +41,7 @@ public class FailureDetector extends TimerTask {
 		tasks.add(task);
 	}
 	
-	public synchronized void remove(Item res)
+	public void remove(Item res)
 	{	
 		Set<ExecuterRemoteInfo> executers = tasksDB.keySet();
 		for(ExecuterRemoteInfo eri : executers)
@@ -54,27 +54,27 @@ public class FailureDetector extends TimerTask {
 	}
 	
 	@Override
-	public synchronized void run() {
-		diSys.Common.Logger.TraceInformation("FailureDetector::Run()");
+	public void run() {
+		diSys.Common.Logger.TraceInformation("Checking online\\offline executers...");
 		Set<ExecuterRemoteInfo> executers = tasksDB.keySet();
 		for(ExecuterRemoteInfo eri : executers)
 			if(!isOnline(eri))
 				reschedule(eri);
 	}
 
-	private synchronized void reschedule(ExecuterRemoteInfo eri) 
+	private void reschedule(ExecuterRemoteInfo eri) 
 	{
 		diSys.Common.Logger.TraceInformation("Trying to reschedule tasks on Executer: " + eri.getName());
 		LinkedList<Item> tasks = tasksDB.get(eri);
 		for(Item task : tasks)
 		{
 			diSys.Common.Logger.TraceInformation("Rescheduling task: "+ task.getId());
-			client.AddTask(task);
+			systemTasks.add((TASK)task);
 		}
 		tasksDB.remove(eri);
 	}
 
-	private synchronized boolean isOnline(ExecuterRemoteInfo eri) 
+	private boolean isOnline(ExecuterRemoteInfo eri) 
 	{
 		if(	NetworkCommon.loadRMIRemoteObject(eri.getItemRecieverInfo()) == null)
 		{

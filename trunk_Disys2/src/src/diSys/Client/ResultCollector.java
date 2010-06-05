@@ -1,6 +1,7 @@
 package diSys.Client;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,6 +26,7 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 	private ClientSystem<TASK, RESULT> system;
 	private ConcurrentHashMap<RMIRemoteInfo, Integer> executers = new ConcurrentHashMap<RMIRemoteInfo, Integer>();
 	private ConcurrentHashMap<RMIRemoteInfo, IItemCollector<RESULT>> executersRemoteCollectors = new ConcurrentHashMap<RMIRemoteInfo, IItemCollector<RESULT>>();
+	private LinkedList<Long> idsOfReturnedTasks = new LinkedList<Long>(); 
 
 	// private ConcurrentHashMap<RMIRemoteInfo,LinkedList<TASK>>
 	// executersTasks=new ConcurrentHashMap<RMIRemoteInfo,LinkedList<TASK>>();
@@ -72,7 +74,15 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 						continue;
 					}
 					for (RESULT r : resultChunk.getItems())
-						system.AddResult(r);
+					{
+						if(idsOfReturnedTasks.contains(r.getId()))
+							continue;
+						else
+						{
+							idsOfReturnedTasks.add(r.getId());
+							system.AddResult(r);
+						}
+					}
 				}
 				sleep(period);
 			}

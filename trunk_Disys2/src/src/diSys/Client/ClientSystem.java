@@ -60,7 +60,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 
 	private ISystemManager<TASK> sysManager;
 	
-	private FailureDetector failureDetector = new FailureDetector(10000, this);
+	private FailureDetector<TASK> failureDetector = new FailureDetector<TASK>(10000, tasks);
 
 	private boolean forceUpdate;
 	
@@ -250,9 +250,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 	}
 
 	public RESULT Take() throws InterruptedException {
-		RESULT res = results.take(); 
-		failureDetector.remove(res);
-		return res;
+		return results.take(); 
 	}
 	
 	public RESULT DoTask(TASK task) {
