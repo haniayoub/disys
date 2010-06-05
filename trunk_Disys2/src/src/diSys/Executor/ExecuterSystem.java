@@ -93,7 +93,7 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 	private FileLogger fileLogger = new FileLogger(ExecuterLogFile);
 	private String executerName;
 	@SuppressWarnings("unchecked")
-	public ExecuterSystem(IExecutor executer,int numerOfWorkers,int irport,int rcport,String SysManagerAddress,int sysManagerport, String executerName) throws InterruptedException {
+	public ExecuterSystem(int numerOfWorkers,int irport,int rcport,String SysManagerAddress,int sysManagerport, String executerName) throws InterruptedException {
 		super();
 		this.executerName = executerName;
 		benchMark = new BenchMarkTask(5*60, this);
@@ -166,10 +166,6 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 		return getVerDir(UpdateVer)+"/Updates."+UpdateExtension;
 	}
 	
-	private String classNameFile(int UpdateVer){
-		return getVerDir(UpdateVer)+"/ClassName."+ClassNameExtension;
-	}
-	
 	private String getVerDir(int UpdateVer){
 		return "Ver"+UpdateVer;
 	}
@@ -231,7 +227,6 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 	
 	}
 
-	@SuppressWarnings("unchecked")
 	public void LoadUpdates(){
 	    String versionString;
 	   
@@ -251,18 +246,7 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 	    fileLogger.TraceInformation("Deleteing dir "+fdel.getName()+" :"+ fdel.delete());
 	    
 	    File f = new File(getLastVerFile(version));
-	    String executerClassName;
-		try {
-			executerClassName = FileManager.ReadLines(classNameFile(version))[0];
-		} catch (Exception e) {
-			fileLogger.TraceError("Couldn't Read IExecuter Class Name!\n"+e.getMessage(),null);
-			return;// null;
-		}
-	   // jcl = new JarClassLoader(f);
-	    
-		//JarClassLoader.AddUrlToSystem(f.toURI().toURL());
-		fileLogger.TraceInformation("New Class " + executerClassName + " will be dynamically loaded...");
-		try {
+	    try {
 			JarClassLoader.AddUrlToSystem(f.toURI().toURL());
 		} catch (MalformedURLException e) {
 			fileLogger.TraceError("Couldn't Update !\n"+e.getMessage(),null);
@@ -277,22 +261,7 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 				fileLogger.TraceError("Couldn't Update !\n"+e.getMessage(), null);
 				return;// null;
 			}
-			fileLogger.TraceInformation("Intializing class " +executerClassName);
-		/*IExecutor newExecuter;
-		try {
-			newExecuter = (IExecutor)Class.forName(executerClassName).newInstance();
-		} catch (Exception e) {
-			fileLogger.TraceError("Couldn't Update Failed to initialize Executer Class!\n"+e.getMessage(), null);
-			return null;
-		}catch(NoClassDefFoundError e){
-			fileLogger.TraceInformation("Couldn't Update Failed to initialize Executer Class!");
-			return null;
-		}*/
-        	 
 		this.Version=version;
-		
-		// BufferedReader in = new BufferedReader(new FileReader("foo.in"));
-		//return newExecuter;
 	}
 
 	public int GetVersion() {
@@ -326,7 +295,7 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 		CommandLineArgs="";
 		for(String s:args)
 		CommandLineArgs=CommandLineArgs+" "+s;
-		ExecuterSystem es=new ExecuterSystem(null, 1,irport,rcport,sysmAddress,sysmPort, executerName); 
+		ExecuterSystem es=new ExecuterSystem( 1,irport,rcport,sysmAddress,sysmPort, executerName); 
 		System.out.println("Executer Started !");
 		es.Run(args);
 		while(true)

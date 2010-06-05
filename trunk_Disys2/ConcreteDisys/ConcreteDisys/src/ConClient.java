@@ -53,7 +53,7 @@ public class ConClient {
 */
 		RemoteClient<ConTask2, ConResult2> ConClient2 =  new RemoteClient<ConTask2, ConResult2>("MTLLPT288", 5555, 1);
 		ConClient2.Start();
-		int numOfTasks = 2;
+		int numOfTasks = 200;
 		//int i;S
 		for(int i=0; i<numOfTasks; i++)
 		{
@@ -62,7 +62,7 @@ public class ConClient {
 			System.out.println("added " + i);
 		}
 		int counter=0 ;
-		while(!ConClient2.IsIdle())
+		while(counter<numOfTasks)
 			try {
 				ConResult2 r=ConClient2.GetResult();
 				counter++;	

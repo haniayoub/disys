@@ -16,8 +16,8 @@ public class ConTask2 extends ATask<ConResult2> {
 
 	@Override
 	public ConResult2 Run() {
-		System.out.println(toPrint);
-		return new ConResult2(0);
+		System.out.println("new ----------- >"+toPrint);
+		return new ConResult2(this.getId());
 	}
 
 }

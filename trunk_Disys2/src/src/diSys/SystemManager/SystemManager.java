@@ -192,37 +192,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		}
 		maxPPri.BS+=numberOfTasks;
 		return maxPPri;
-		
-		/*
-		ExecuterRemoteInfo RRlist[] = new ExecuterRemoteInfo[executersMap.size()];
-		int i=0;
-		for (ExecuterRemoteInfo ri : executersMap.keySet())
-		{
-			RRlist[i++] = ri;
-		}
-		
-		
-		RRcounter = RRcounter%i;
-		return RRlist[RRcounter++];
-		*/
-		/*
-		int minNumOfTasks = Integer.MAX_VALUE;
-		for (ExecuterRemoteInfo ri : executersMap.keySet()) 
-		{
-			ExecuterBox<TASK, RESULT> eb = executersMap.get(ri);
-			if(eb.Blocked){
-				Logger.TraceInformation(eb.getRemoteInfo()+" is Blocked !");
-				continue;
-			}
-				
-			if(eb.getNumOfTasks() < minNumOfTasks)
-			{
-				remoteInfo = ri;
-				minNumOfTasks = eb.getNumOfTasks(); 
-			}
-		}
-		return remoteInfo;
-		*/
+	
 	}
 	
 	@SuppressWarnings("unchecked")
