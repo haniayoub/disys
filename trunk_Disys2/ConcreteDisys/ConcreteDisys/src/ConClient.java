@@ -6,7 +6,7 @@ import diSys.Client.RemoteClient;
 import diSys.Executor.DummyBenchmarkClass;
 
 public class ConClient {
-	private static int numOfIterations = Integer.MAX_VALUE/400;
+	private static int numOfIterations = Integer.MAX_VALUE/10;
 
 	public static int run()
 	{

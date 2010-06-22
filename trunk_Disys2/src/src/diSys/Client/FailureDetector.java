@@ -1,11 +1,11 @@
 package diSys.Client;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask; 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import diSys.Common.ExecuterRemoteInfo;
@@ -16,8 +16,8 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 
 	private int interval;
 	private PriorityBlockingQueue<TASK> systemTasks;
-	private ConcurrentHashMap<ExecuterRemoteInfo, LinkedList<Item>> tasksDB = 
-		new ConcurrentHashMap<ExecuterRemoteInfo, LinkedList<Item>>();
+	private ConcurrentHashMap<ExecuterRemoteInfo, ConcurrentLinkedQueue<Item>> tasksDB = 
+		new ConcurrentHashMap<ExecuterRemoteInfo, ConcurrentLinkedQueue<Item>>();
 	
 	public FailureDetector(int interval, PriorityBlockingQueue<TASK> systemTasks) 
 	{
@@ -35,9 +35,9 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 	public void add(Item task, ExecuterRemoteInfo itemRecieverInfo)
 	{
 		if(!tasksDB.containsKey(itemRecieverInfo))
-			tasksDB.put(itemRecieverInfo, new LinkedList<Item>());
+			tasksDB.put(itemRecieverInfo, new ConcurrentLinkedQueue<Item>());
 		
-		LinkedList<Item> tasks = tasksDB.get(itemRecieverInfo);
+		ConcurrentLinkedQueue<Item> tasks = tasksDB.get(itemRecieverInfo);
 		tasks.add(task);
 	}
 	
@@ -46,7 +46,7 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 		Set<ExecuterRemoteInfo> executers = tasksDB.keySet();
 		for(ExecuterRemoteInfo eri : executers)
 		{
-			LinkedList<Item> tasks = tasksDB.get(eri);
+			ConcurrentLinkedQueue<Item> tasks = tasksDB.get(eri);
 			for(Item t : tasks)
 				if(t.getId() == res.getId())
 					tasks.remove(t);
@@ -66,7 +66,7 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 	private void reschedule(ExecuterRemoteInfo eri) 
 	{
 		diSys.Common.Logger.TraceInformation("Trying to reschedule tasks on Executer: " + eri.getName());
-		LinkedList<Item> tasks = tasksDB.get(eri);
+		ConcurrentLinkedQueue<Item> tasks = tasksDB.get(eri);
 		for(Item task : tasks)
 		{
 			diSys.Common.Logger.TraceInformation("Rescheduling task: "+ task.getId());
