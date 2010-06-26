@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import diSys.Common.Chunk;
 import diSys.Common.ClientRemoteInfo;
+import diSys.Common.Constants;
 import diSys.Common.ExecuterRemoteInfo;
 import diSys.Common.Item;
 import diSys.Common.ItemInfo;
@@ -370,7 +371,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		
 		}
 		int port=0;
-		int interval=300;
+		int interval=Constants.HeartBeatCheckInterval;
 		PrintUsage();
 		if(args.length>0){
 			port=Integer.parseInt(args[0]);

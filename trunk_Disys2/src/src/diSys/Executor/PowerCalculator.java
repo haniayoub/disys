@@ -4,8 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import java.text.DateFormat;
-
 public class PowerCalculator {
 	//TODO: divide by linux\windows, and read processor power from reg or somehow.
 	private final int Giga = 1000;
@@ -38,10 +36,10 @@ public class PowerCalculator {
 		DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 		PowerCalculator pc= new PowerCalculator();
 		while (true){
-			System.out.println("Running benchmark :" + formatter.format(new Date()));
+			diSys.Common.Logger.TraceInformation("Running benchmark :" + formatter.format(new Date()));
 			double ep =pc.getEP();
-			System.out.println("Executer Power is: " + ep);
-			System.out.println("Done :" + formatter.format(new Date()));
+			diSys.Common.Logger.TraceInformation("Executer Power is: " + ep);
+			diSys.Common.Logger.TraceInformation("Done :" + formatter.format(new Date()));
 		}
 	}
 }
