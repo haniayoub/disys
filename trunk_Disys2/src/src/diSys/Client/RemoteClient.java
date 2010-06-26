@@ -84,10 +84,6 @@ public class RemoteClient<TASK extends Item, RESULT extends Item> {
 	 * @throws Exception the exception thrown at the remote executer while executing the relevant task of the result , if exists 
 	 */
 	public RESULT GetResult() throws Exception{
-		if(taskNum==0) {
-			System.out.println("GetResult:No Tasks in execution / No Results available");
-			return null;
-		}
 		RESULT r=clientSystem.Take();
 		taskNum--;
 		if(r.getLog()!=null) System.out.print(r.getLog());
