@@ -11,4 +11,5 @@ jar cvfe %BuildDir%\Executer\Executer.jar diSys.Executor.ExecuterSystem -C src\b
 jar cvfe %BuildDir%\UI\DisysUI.jar diSys.UI.SystemManagerUI -C src\bin .
 jar cvfe %BuildDir%\FailureDetector\FailureDetector.jar diSys.FailureDetector.FailureDetectorSystem -C src\bin .
 
-copy %BuildDir%\disysSDK\disysSDK.jar  ..\DistributedRegression\jars
+copy %BuildDir%\disysSDK\disysSDK.jar  ..\DisysSort\ConcreteDisys
+copy %BuildDir%\disysSDK\disysSDK.jar  ..\DisysDownload
