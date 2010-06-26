@@ -60,7 +60,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 
 	private ISystemManager<TASK> sysManager;
 	
-	private FailureDetector<TASK> failureDetector = new FailureDetector<TASK>(10000, tasks);
+	public FailureDetector<TASK> failureDetector = new FailureDetector<TASK>(10000, tasks);
 
 	private boolean forceUpdate;
 	

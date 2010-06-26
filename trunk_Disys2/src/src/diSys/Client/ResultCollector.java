@@ -75,11 +75,12 @@ public class ResultCollector<TASK extends Item, RESULT extends Item> {
 					}
 					for (RESULT r : resultChunk.getItems())
 					{
-						if(idsOfReturnedTasks.contains(r.getId()))
+						system.failureDetector.remove(r);
+						if(idsOfReturnedTasks.contains(r.uniqeId))
 							continue;
 						else
 						{
-							idsOfReturnedTasks.add(r.getId());
+							idsOfReturnedTasks.add(r.uniqeId);
 							system.AddResult(r);
 						}
 					}

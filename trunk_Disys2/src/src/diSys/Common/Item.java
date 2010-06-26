@@ -21,6 +21,7 @@ public class Item implements Serializable, Cloneable {
 	private Exception e;
 	private String log;
 	private final long id;
+	public long uniqeId;
 	private String owner;
 	protected boolean isNull = false;
 
@@ -28,10 +29,11 @@ public class Item implements Serializable, Cloneable {
 		super();
 		this.id = id;
 		this.e = null;
+		this.uniqeId = this.hashCode();
 	}
 	 
 	public String toString() {
-		return "Item Id:" + id;
+		return "Item Id: " + id+ " uId: "+uniqeId;
 
 	}
 
@@ -79,5 +81,6 @@ public class Item implements Serializable, Cloneable {
 	public boolean isNull() {
 		return isNull;
 	}
+	
 
 }

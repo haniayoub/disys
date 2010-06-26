@@ -102,7 +102,7 @@ public class UpdateDialog extends javax.swing.JDialog {
 				{
 					jButtonCommet = new JButton();
 					jPanel1.add(jButtonCommet);
-					jButtonCommet.setText("Commet Updates");
+					jButtonCommet.setText("Commit Updates");
 					jButtonCommet.setBounds(21, 259, 115, 23);
 					jButtonCommet.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent evt) {

@@ -47,9 +47,15 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 		for(ExecuterRemoteInfo eri : executers)
 		{
 			ConcurrentLinkedQueue<Item> tasks = tasksDB.get(eri);
-			for(Item t : tasks)
-				if(t.getId() == res.getId())
-					tasks.remove(t);
+			LinkedList<Item> tasksToRemove = new LinkedList<Item>();
+			for(Item t : tasks){
+				if(t.uniqeId == res.uniqeId){
+					System.out.println("result recievd ... removing waiting task :"+t.toString());
+					tasksToRemove.add(t);
+				}
+			}
+			tasks.removeAll(tasksToRemove);
+			
 		}
 	}
 	
@@ -58,8 +64,13 @@ public class FailureDetector<TASK extends Item> extends TimerTask {
 		diSys.Common.Logger.TraceInformation("Checking online\\offline executers...");
 		Set<ExecuterRemoteInfo> executers = tasksDB.keySet();
 		for(ExecuterRemoteInfo eri : executers)
-			if(!isOnline(eri))
+			if(!isEmpty(eri) && !isOnline(eri))
 				reschedule(eri);
+	}
+
+	private boolean isEmpty(ExecuterRemoteInfo eri) 
+	{
+		return tasksDB.get(eri).isEmpty();
 	}
 
 	@SuppressWarnings("unchecked")

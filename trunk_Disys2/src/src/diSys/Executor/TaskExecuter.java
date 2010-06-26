@@ -47,7 +47,7 @@ public class TaskExecuter<TASK extends ATask, RESULT extends Item, E extends IEx
 			  
 			 //Result = excutor.run(item);
 			  Result = item.Run();
-			  
+			  Result.uniqeId = item.uniqeId;
 			  System.setOut(std);
 			  diSys.Common.Logger.TraceInformation("Finished executing Task id["+task.getId()+"]");
 			if(out.toString().length()!=0){
