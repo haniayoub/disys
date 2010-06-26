@@ -1,10 +1,10 @@
 package diSys.Executor;
 
-import diSys.Common.FileManager;
-import java.util.prefs.Preferences;
-import java.io.IOException;
-import diSys.Common.Common;
- 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import java.text.DateFormat;
 
 public class PowerCalculator {
 	//TODO: divide by linux\windows, and read processor power from reg or somehow.
@@ -20,42 +20,11 @@ public class PowerCalculator {
 	private static int getProcessorFreqGHZ()
 	{
 		int $ = defaultFreqGHZ;
-		try 
-		{
-			String fileName = "systeminfo.txt";
-			Common.runCmd("systeminfo > " + fileName);
-			
-			try {
-				Thread.sleep(1000*15);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			String[] lines = FileManager.ReadLines(fileName);
-			for(String line : lines)
-			{
-				String[] words = line.split(" ");
-				for(String word : words)
-					if(word.contains("~"))
-						$ = Integer.parseInt(word.substring(1));
-			}
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
 		return $;
 	}
 	private int getBenchmarkTimeSeconds()
 	{
 		return SystemBenchmark.run();
-	}
-	
-	private String readReg(String reg)
-	{
-		Preferences userPref = Preferences.userRoot();
-		System.out.println(userPref.getInt("HKEY_LOCAL_MACHINE\\HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\~MHz", -1));
-		return "";
 	}
 	
 	
@@ -64,9 +33,15 @@ public class PowerCalculator {
 		return numOfProcessors*processorFreqGHZ*1.0/getBenchmarkTimeSeconds()*Giga;
 	}
 	
-	public static void main(String[] args)
+	public static void main(String[] s)
 	{
-		PowerCalculator pc = new PowerCalculator();
-		System.out.println(pc.readReg(""));
+		DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
+		PowerCalculator pc= new PowerCalculator();
+		while (true){
+			System.out.println("Running benchmark :" + formatter.format(new Date()));
+			double ep =pc.getEP();
+			System.out.println("Executer Power is: " + ep);
+			System.out.println("Done :" + formatter.format(new Date()));
+		}
 	}
 }

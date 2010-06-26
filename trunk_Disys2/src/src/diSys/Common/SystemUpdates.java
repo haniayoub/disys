@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+
 import diSys.AutoUpdate.JarClassLoader;
 
 @SuppressWarnings("serial")

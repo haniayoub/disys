@@ -1,8 +1,9 @@
 package diSys.Executor;
+import diSys.Common.Constants;
 
 public class SystemBenchmark {
 	
-	private static int numOfIterations = Integer.MAX_VALUE/100;
+	private static int numOfIterations = Constants.BenchMarkNumOfIterations;
 
 	public static int run()
 	{

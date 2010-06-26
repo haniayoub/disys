@@ -1,5 +1,5 @@
 package diSys.Executor;
-
+import diSys.Common.Constants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -96,16 +96,14 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 	public ExecuterSystem(int numerOfWorkers,int irport,int rcport,String SysManagerAddress,int sysManagerport, String executerName) throws InterruptedException {
 		super();
 		this.executerName = executerName;
-		benchMark = new BenchMarkTask(5*60, this);
-		benchMark.start();
 		File f=new File(UpdateDir);
 		f.mkdir();
-		Thread.sleep(1000);
+		//Thread.sleep(1000);
 		//IExecutor newExec=executer;
 		try {
 			LoadUpdates();
 		} catch (Exception e) {
-			fileLogger.TraceWarning("Executer Is could not load Updates", e);
+			fileLogger.TraceWarning("Executer could not load Updates", e);
 		}
 		
 		try {
@@ -151,6 +149,10 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 		fileLogger.TraceInformation("Executer is running ...");
 		heartBeat = new HeartBeat(HeartBeatLogFile);
 		heartBeat.start();
+		
+		benchMark = new BenchMarkTask(Constants.BenchMarkInterval, this);
+		benchMark.start();
+		
 	}
 	
 	public void Run(String[] args) {

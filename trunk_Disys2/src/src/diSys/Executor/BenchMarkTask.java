@@ -23,40 +23,6 @@ public class BenchMarkTask extends TimerTask {
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(this, new Date(), 1000*interval);
 	}
-	public static void main(String[] args) {
-		// 
-		// Create an instance of TimerTask implementor.
-		//
-		//BenchMarkTask task = new BenchMarkTask(3,null);
-		//task.start();
-		Thread t=new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(true);
-			}
-		}
-		);
-		Thread t2=new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(true);
-				
-			}
-		}
-		);
-		t.start();
-		t2.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//while (1);
-		
-	}
 	
 	/**
 	 * This method is the implementation of a contract defined in the TimerTask
