@@ -14,7 +14,7 @@ public class Demo {
 	private static RemoteClient<SortTask, SortResult> SortClient =  new RemoteClient<SortTask, SortResult>(SystemManagerAddress, SystemManagerPort, 1);
 	private static RemoteClient<MergeTask, MergeResult> MergeClient =  new RemoteClient<MergeTask, MergeResult>(SystemManagerAddress, SystemManagerPort, 1);
 	
-	private static int[] getRandomArray(int length)
+	public static int[] getRandomArray(int length)
 	{
 		int[] arr = new int[length];
 		java.util.Random rand =  new java.util.Random(System.currentTimeMillis());

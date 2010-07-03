@@ -11,5 +11,5 @@ public abstract class ATask<RESULT extends Item> extends Item {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public abstract RESULT Run();
+	public abstract RESULT Run() throws Exception;
 }

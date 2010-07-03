@@ -31,8 +31,8 @@ public class DownloadClient {
 		
 		//Initialization 
 		String sysManagerAddress = "localhost";//args[0];
-		int port = 5000;//Integer.parseInt(args[1]);
-		int chunkSize = 2; //args[2];
+		int port = 5555;//Integer.parseInt(args[1]);
+		int chunkSize = 5; //args[2];
 		RemoteClient<DownloadTask, DownloadResult> client =
 			new RemoteClient<DownloadTask, DownloadResult>(sysManagerAddress, port, chunkSize);
 
