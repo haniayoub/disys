@@ -47,6 +47,7 @@ public class ExecutersPanel extends javax.swing.JPanel {
 
 	private JList executersList;
 	private JScrollPane jScrollPane2;
+	private JButton jButton1;
 	private JButton jButtonShowQueue;
 	private JScrollPane jScrollPane1;
 	private JLabel jLabel2;
@@ -153,10 +154,21 @@ public class ExecutersPanel extends javax.swing.JPanel {
 				jButtonShowQueue = new JButton();
 				this.add(jButtonShowQueue);
 				jButtonShowQueue.setText("ShowQueue");
-				jButtonShowQueue.setBounds(177, 329, 99, 20);
+				jButtonShowQueue.setBounds(262, 329, 99, 20);
 				jButtonShowQueue.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent evt) {
 						jButtonShowQueueMousePressed(evt);
+					}
+				});
+			}
+			{
+				jButton1 = new JButton();
+				this.add(jButton1);
+				jButton1.setText("Disable");
+				jButton1.setBounds(174, 329, 78, 20);
+				jButton1.addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent evt) {
+						jButton1MousePressed(evt);
 					}
 				});
 			}
@@ -204,7 +216,22 @@ public class ExecutersPanel extends javax.swing.JPanel {
 	}
 	
 	private void executersListValueChanged(ListSelectionEvent evt) {
-		this.jList1.clearSelection();
+		    ExecuterRemoteInfo ri;
+		    if(this.jList1.getSelectedValue()==null){
+		    	if(this.executersList.getSelectedValue()==null)return;
+		    	ri=(ExecuterRemoteInfo)this.executersList.getSelectedValue();
+		    }
+		    else{
+		    	ri=(ExecuterRemoteInfo)this.jList1.getSelectedValue();
+		    }
+		    try {
+		    	
+				boolean blocked = SystemManagerUI.sysManager.GetExecuterStatusExecuter(ri);
+				if (blocked) jButton1.setText("Enable");
+				else jButton1.setText("Disable");
+		    } catch (Exception e) {
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+			}
 	}
 	
 	private void jList1ValueChanged(ListSelectionEvent evt) {
@@ -236,6 +263,28 @@ public class ExecutersPanel extends javax.swing.JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void jButton1MousePressed(MouseEvent evt) {
+		 ExecuterRemoteInfo ri;
+		    if(this.jList1.getSelectedValue()==null){
+		    	if(this.executersList.getSelectedValue()==null)return;
+		    	ri=(ExecuterRemoteInfo)this.executersList.getSelectedValue();
+		    }
+		    else{
+		    	ri=(ExecuterRemoteInfo)this.jList1.getSelectedValue();
+		    }
+		  try {
+		    	
+				boolean blocked = SystemManagerUI.sysManager.GetExecuterStatusExecuter(ri);
+				if (blocked) SystemManagerUI.sysManager.EnableExecuter(ri);
+				else SystemManagerUI.sysManager.DisableExecuter(ri);
+				blocked = SystemManagerUI.sysManager.GetExecuterStatusExecuter(ri);
+				if (blocked) jButton1.setText("Enable");
+				else jButton1.setText("Disable");
+		    } catch (Exception e) {
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+			}
 	}
 
 }

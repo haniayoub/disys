@@ -17,6 +17,7 @@ public class ExecuterRemoteInfo implements Serializable {
 	public int BC = 100;
 	public double PP;
 	public double EFF_BE;
+	public boolean Enabled = true;
 
 	public ExecuterRemoteInfo(String ip, int itemRecieverPort,
 			int resultCollectorPort) {

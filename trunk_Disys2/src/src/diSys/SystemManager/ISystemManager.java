@@ -31,6 +31,10 @@ public interface ISystemManager<ITEM extends Item> extends Remote {
 	public void changePriority(ExecuterRemoteInfo exri ,int itemHashCode, int newPriority)throws RemoteException ;
 	public void removeTask(ExecuterRemoteInfo exri ,int itemHashCode)throws RemoteException ;
 	public ItemInfo getCurrentTask(ExecuterRemoteInfo exri)throws RemoteException ;
+	public void EnableExecuter(ExecuterRemoteInfo exri )throws RemoteException ;
+	public void DisableExecuter(ExecuterRemoteInfo exri )throws RemoteException ;
+	public boolean GetExecuterStatusExecuter(ExecuterRemoteInfo exri ) throws RemoteException ;
+	//public void DisableExecuter(ExecuterRemoteInfo exri )throws RemoteException ;
 	
 	//public void moveUpTask(ExecuterRemoteInfo exri, int itemHashCode)throws RemoteException ;
 	//public void moveDownTask(ExecuterRemoteInfo exri, int itemHashCode)throws RemoteException ;

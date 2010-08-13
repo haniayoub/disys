@@ -297,7 +297,10 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 		CommandLineArgs="";
 		for(String s:args)
 		CommandLineArgs=CommandLineArgs+" "+s;
-		ExecuterSystem es=new ExecuterSystem( 1,irport,rcport,sysmAddress,sysmPort, executerName); 
+		int task_executers = Runtime.getRuntime().availableProcessors()-1;
+		if (task_executers < 1) task_executers = 1;
+		System.out.println("[number of cores will be used ]            = "+task_executers);
+		ExecuterSystem es=new ExecuterSystem( task_executers ,irport,rcport,sysmAddress,sysmPort, executerName); 
 		System.out.println("Executer Started !");
 		es.Run(args);
 		while(true)

@@ -182,7 +182,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		}
 		double Min_EFF_BE = Double.MAX_VALUE;
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
-			if (ri.EFF_BE<Min_EFF_BE) Min_EFF_BE = ri.EFF_BE;  
+			if (ri.EFF_BE<Min_EFF_BE && !executersMap.get(ri).Blocked ) Min_EFF_BE = ri.EFF_BE;  
 		LinkedList<ExecuterRemoteInfo> minEffs= new LinkedList<ExecuterRemoteInfo>();
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
 			if ( ri.EFF_BE == Min_EFF_BE) minEffs.add(ri);
@@ -434,4 +434,21 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		executersMap.get(exri).getItemReciever().moveUpTask(itemHashCode);
 	}
 	*/
+	@Override
+	public void DisableExecuter(ExecuterRemoteInfo exri) throws RemoteException {
+		executersMap.get(exri).Blocked = true;
+		diSys.Common.Logger.TraceWarning("Executer is Enabled "+exri.getItemRecieverInfo().toString(),null );
+
+	}
+	@Override
+	public void EnableExecuter(ExecuterRemoteInfo exri) throws RemoteException {
+		executersMap.get(exri).Blocked = false;
+		diSys.Common.Logger.TraceWarning("Executer is Disabled "+exri.getItemRecieverInfo().toString(),null );
+	}
+	@Override
+	public boolean GetExecuterStatusExecuter(ExecuterRemoteInfo exri)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		return executersMap.get(exri).Blocked;
+	}
 }
