@@ -15,6 +15,15 @@ public class ExecuterStatistics  implements Serializable {
 	public int BufferCapacity = 0;
 	public int ExecutedTasks = 0;
 	public Date ExecutionStartTime = null;
+	@Override
+	public String toString() {
+		return "ExecuterStatistics [BefferSize=" + BefferSize
+				+ ", BufferCapacity=" + BufferCapacity + ", ExecutedTasks="
+				+ ExecutedTasks + ", ExecutionStartTime=" + ExecutionStartTime
+				+ ", LastExecutionTime=" + LastExecutionTime
+				+ ", numOfWorkerThreads=" + numOfWorkerThreads + ", ri=" + ri
+				+ "]";
+	}
 	public Date LastExecutionTime = null;
 	public int numOfWorkerThreads = 0; 
 

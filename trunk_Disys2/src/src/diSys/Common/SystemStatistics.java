@@ -5,6 +5,16 @@ import java.util.LinkedList;
 
 public class SystemStatistics implements Serializable{
 
+	@Override
+	public String toString() {
+		return "SystemStatistics [ExecutersData=" + ExecutersData
+				+ ", numOfDisabledExecuters=" + numOfDisabledExecuters
+				+ ", numOfEnabledExecuters=" + numOfEnabledExecuters
+				+ ", numOfExecuters=" + numOfExecuters
+				+ ", numOfFailedScheduleRequests="
+				+ numOfFailedScheduleRequests + ", numOfScheduleRequests="
+				+ numOfScheduleRequests + "]";
+	}
 	/**
 	 * 
 	 */

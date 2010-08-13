@@ -244,7 +244,6 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	public void ResetStatistics() throws RemoteException {
 		diSys.Common.Logger.TraceInformation("Resetting Executer statistics ...");
 		es.ExecStatistics = new ExecuterStatistics();
-		
 	}	
 	
 	
