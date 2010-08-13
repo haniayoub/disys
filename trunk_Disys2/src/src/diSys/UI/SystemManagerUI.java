@@ -13,6 +13,19 @@ import diSys.Common.RMIRemoteInfo;
 import diSys.Common.SystemManagerData;
 import diSys.SystemManager.ISystemManager;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 @SuppressWarnings("serial")
 public class SystemManagerUI extends javax.swing.JFrame{
 	private JTabbedPane TabbedPanel;
@@ -58,6 +71,7 @@ public class SystemManagerUI extends javax.swing.JFrame{
 	public static ExecutersPanel executersPanel=new ExecutersPanel();
 	public static ClientsPanel clientsPanel=new ClientsPanel();
 	public static UpdatePnael updatePanel=new UpdatePnael();
+	private AnalysisPanel analysisPanel1;
 	public static SystemManagerUI me;
 	public static UpdaterThread updateThread=new UpdaterThread(1000);
 	public static SystemManegerLogTrace sysmLogDlg=new SystemManegerLogTrace();
@@ -76,6 +90,10 @@ public class SystemManagerUI extends javax.swing.JFrame{
 				TabbedPanel.addTab("Executers",executersPanel);
 				TabbedPanel.addTab("Clients",clientsPanel);
 				TabbedPanel.addTab("Update",updatePanel);
+				{
+					analysisPanel1 = new AnalysisPanel();
+					TabbedPanel.addTab("Analysis", null, analysisPanel1, null);
+				}
 			}
 			//sysManager=diSys.Networking.NetworkCommon.loadRMIRemoteObject(ri)
 			this.setSize(687, 449);

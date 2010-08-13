@@ -21,4 +21,5 @@ public interface IRemoteItemReceiver<ITEM extends Item> extends Remote , IRMIObj
 	public int getMaxPriority()throws RemoteException ;
 	public ExecuterStatistics GetStatistics() throws RemoteException;
 	public void ResetStatistics() throws RemoteException;
+	public void SetBufferCapacity(int cap) throws RemoteException;
 }

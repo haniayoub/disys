@@ -38,6 +38,8 @@ public interface ISystemManager<ITEM extends Item> extends Remote {
 	public boolean SetRRscheduler(boolean flag)  throws RemoteException ;
 	public SystemStatistics GetSystemStatistics()  throws RemoteException ;
 	public void ResetSystemStatistics()  throws RemoteException ;
+	public void SetBufferCapacity(int cap)  throws RemoteException ;
+	public int GetBufferCapacity()  throws RemoteException ;
 	
 	//public void DisableExecuter(ExecuterRemoteInfo exri )throws RemoteException ;
 	

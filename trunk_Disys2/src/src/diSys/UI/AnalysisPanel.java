@@ -1,6 +1,10 @@
 package diSys.UI;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
+
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -11,15 +15,20 @@ import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.ListModel;
 
 import com.sun.java.swing.plaf.nimbus.ComboBoxComboBoxArrowButtonPainter;
@@ -42,7 +51,8 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	private JCheckBox CheckDownloadTask;
 	private JCheckBox CheckMultTask;
 	private JLabel jLabel4;
-	private JList jList1;
+	private JScrollPane jScrollPane1;
+	private JTextPane jTextPane1;
 	private JProgressBar jProgressBar1;
 	private ButtonGroup buttonGroup1;
 	private JSlider jSlider1;
@@ -54,6 +64,8 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	private JRadioButton NewRadio;
 	private JRadioButton RRRadio;
 	private JPanel jPanel2;
+	
+	private int bufferSize = 1000;
 
 	{
 		//Set Look & Feel
@@ -113,7 +125,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	
 	private void initGUI() {
 		try {
-			this.setPreferredSize(new java.awt.Dimension(468, 389));
+			this.setPreferredSize(new java.awt.Dimension(682, 389));
 			this.setBackground(new java.awt.Color(255,255,255));
 			this.setLayout(null);
 			{
@@ -203,22 +215,38 @@ public class AnalysisPanel extends javax.swing.JPanel {
 			}
 			{
 				jSlider1 = new JSlider();
+				jSlider1.setMaximum(bufferSize);
+				jSlider1.setValue(bufferSize/2);
 				this.add(jSlider1);
 				this.add(getJProgressBar1());
 				{
 					jLabel2 = new JLabel();
 					this.add(jLabel2);
-					this.add(getJList1());
-					jLabel2.setText("Buffer Capacity: 1000");
-					jLabel2.setBounds(153, 129, 121, 14);
+					this.add(getJScrollPane1());
+					jLabel2.setText("Buffer Capacity:"+jSlider1.getValue());
+					jLabel2.setBounds(463, 34, 121, 14);
 				}
-				jSlider1.setBounds(268, 127, 194, 23);
+				jSlider1.setBounds(461, 54, 194, 23);
 				jSlider1.setBackground(new java.awt.Color(255,255,255));
+				jSlider1.addChangeListener(new ChangeListener() {
+					public void stateChanged(ChangeEvent evt) {
+						jSlider1StateChanged(evt);
+					}
+				});
 				buttonGroup1 = new ButtonGroup();
 				buttonGroup1.add(NewRadio);
+				NewRadio.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
+						NewRadioMouseClicked(evt);
+					}
+				});
 				buttonGroup1.add(RRRadio);
-				
-				
+				RRRadio.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
+						RRRadioMouseClicked(evt);
+					}
+				});
+
 			}
 
 		} catch (Exception e) {
@@ -230,7 +258,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	private JProgressBar getJProgressBar1() {
 		if(jProgressBar1 == null) {
 			jProgressBar1 = new JProgressBar();
-			jProgressBar1.setBounds(108, 355, 350, 22);
+			jProgressBar1.setBounds(108, 355, 564, 22);
 		}
 		return jProgressBar1;
 	}
@@ -241,18 +269,66 @@ public class AnalysisPanel extends javax.swing.JPanel {
 		}
 		return buttonGroup1;
 	}
-	
-	private JList getJList1() {
-		if(jList1 == null) {
-			ListModel jList1Model = 
-				new DefaultComboBoxModel(
-						new String[] { "Item One", "Item Two" });
-			jList1 = new JList();
-			jList1.setModel(jList1Model);
-			jList1.setBounds(265, 154, 193, 190);
-			jList1.setBorder(BorderFactory.createTitledBorder("Executers List"));
+
+	private void jSlider1StateChanged(ChangeEvent evt) {
+		//System.out.println("jSlider1.stateChanged, event="+evt);
+		jLabel2.setText("Buffer Capacity:"+jSlider1.getValue());
+		try {
+			SystemManagerUI.sysManager.SetBufferCapacity(jSlider1.getValue());
+		} catch (RemoteException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
 		}
-		return jList1;
+	}
+	
+	private JTextPane getJTextPane1() {
+		if(jTextPane1 == null) {
+			jTextPane1 = new JTextPane();
+			jTextPane1.setText("jTextPane1");
+			jTextPane1.setBounds(10, 122, 662, 227);
+		}
+		return jTextPane1;
+	}
+	
+	private JScrollPane getJScrollPane1() {
+		if(jScrollPane1 == null) {
+			jScrollPane1 = new JScrollPane();
+			jScrollPane1.setBounds(10, 122, 662, 227);
+			jScrollPane1.setBorder(BorderFactory.createTitledBorder("Log"));
+			jScrollPane1.setBackground(new java.awt.Color(255,255,255));
+			jScrollPane1.setViewportView(getJTextPane1());
+		}
+		return jScrollPane1;
+	}
+	
+
+	private void RRRadioMouseClicked(MouseEvent evt) {
+		try {
+		if (RRRadio.isSelected())
+			
+				SystemManagerUI.sysManager.SetRRscheduler(true);
+			
+		else 
+			SystemManagerUI.sysManager.SetRRscheduler(false);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+		}
+		//System.out.println("RRRadio.mouseClicked, event="+evt);
+		//TODO add your code for RRRadio.mouseClicked
+	}
+	
+	private void NewRadioMouseClicked(MouseEvent evt) {
+		try {
+			if (RRRadio.isSelected())
+				
+					SystemManagerUI.sysManager.SetRRscheduler(true);
+				
+			else 
+				SystemManagerUI.sysManager.SetRRscheduler(false);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+			}
 	}
 
 }

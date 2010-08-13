@@ -25,7 +25,7 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 		implements IRemoteItemReceiver<ITEM> {
 	public int Version=-1; 
 	public static final String GlobalId = "itemReciever";
-	public final int BufferCapacity = 1000;
+	public int BufferCapacity = 500;
 	public double executionPower = -1;
 	private PriorityBlockingQueue<ITEM> tasks;
 	private BlockingQueue<ITEM> recievedItems;
@@ -35,6 +35,7 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	public RemoteItemReceiver(BlockingQueue<ITEM> itemsQueue, PriorityBlockingQueue<ITEM> tasks ,int port, ExecuterSystem es) throws Exception {
 		super(GlobalId,port);
 		this.recievedItems = itemsQueue;
+		//recievedItems.
 		this.tasks = tasks;
 		this.es = es;
 		//Logger.TraceInformation("++++++++++--++++++++++++++++"+this.getClass().getClassLoader().toString());
@@ -43,9 +44,13 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 
 	@Override
 	public void Add(ITEM item) throws RemoteException {
-		item.setOwner(diSys.Networking.NetworkCommon.GetClientHost());
-		recievedItems.add(item);
+		if (recievedItems.size() < BufferCapacity )
+		{
+			item.setOwner(diSys.Networking.NetworkCommon.GetClientHost());
+			recievedItems.add(item);
 		}
+		else throw new RemoteException("Rejecting Task Buffer is Full");
+	}
 
 	@Override
 	public RemoteData getExecuterData() throws RemoteException {
@@ -244,6 +249,12 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	public void ResetStatistics() throws RemoteException {
 		diSys.Common.Logger.TraceInformation("Resetting Executer statistics ...");
 		es.ExecStatistics = new ExecuterStatistics();
+	}
+
+	@Override
+	public void SetBufferCapacity(int cap) throws RemoteException {
+		diSys.Common.Logger.TraceInformation("Setting buffer Capacity to "+cap);
+		BufferCapacity = cap;
 	}	
 	
 	

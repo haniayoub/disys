@@ -37,7 +37,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public static final Object UpdateLock =new Object();
 	//Max ID to assign to Clients
 	private static final int MAX_ID = 10000;
-	
+	private int BufferCapacity = 500;
 	public static double MAX_EP = 0;
 	private boolean RRsched = false;
 	private SystemStatistics statistics=new SystemStatistics();
@@ -473,6 +473,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	}
 	@Override
 	public boolean SetRRscheduler(boolean flag) throws RemoteException {
+		diSys.Common.Logger.TraceInformation("Setting RoundRobin scheduler to "+flag);
 		this.RRsched = flag;
 		return true;
 	}
@@ -496,5 +497,18 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		for (ExecuterRemoteInfo ri:executersMap.keySet())
 			 executersMap.get(ri).getItemReciever().ResetStatistics();
 		statistics = new SystemStatistics();
+	}
+	@Override
+	public int GetBufferCapacity() throws RemoteException {
+		// TODO Auto-generated method stub
+		return BufferCapacity;
+	}
+	@Override
+	public void SetBufferCapacity(int cap) throws RemoteException {
+		diSys.Common.Logger.TraceInformation("Setting Bauffer Capacity to "+cap);
+		BufferCapacity = cap;
+		for (ExecuterRemoteInfo ri:executersMap.keySet())
+			 executersMap.get(ri).getItemReciever().SetBufferCapacity(cap);
+		
 	}
 }
