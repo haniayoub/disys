@@ -13,6 +13,7 @@ import diSys.Common.Chunk;
 import diSys.Common.ClientRemoteInfo;
 import diSys.Common.Constants;
 import diSys.Common.ExecuterRemoteInfo;
+import diSys.Common.ExecuterStatistics;
 import diSys.Common.Item;
 import diSys.Common.ItemInfo;
 import diSys.Common.Logger;
@@ -41,7 +42,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	private boolean RRsched = false;
 	private SystemStatistics statistics=new SystemStatistics();
 	//executers In this System Manager
-
+	
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap=
 		new ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK,RESULT>>();
 	private ConcurrentHashMap<ClientRemoteInfo, ClientBox> clientsMap=
@@ -64,6 +65,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public SystemManager(int port,int checkInterval) throws Exception {
 		super(GlobalID,port);
 		Initialize(port,checkInterval);
+		
 	}
 	public void Initialize(int port,int checkInterval) throws IOException{
 		diSys.Common.Logger.TraceInformation("System Manager is Running on port "+this.getPort() +" Heartbeat Check Interval "+checkInterval);
@@ -94,10 +96,12 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	    if (!RRsched) remoteInfo = ScheduleExecuter(numberOfTask);
 	    else remoteInfo = RRScheduleExecuter(numberOfTask);
 		if(remoteInfo==null){
+			statistics.numOfFailedScheduleRequests++;
 			diSys.Common.Logger.TraceInformation("No executers");
 		}else{
-		diSys.Common.Logger.TraceInformation("Scheduling executer:" + remoteInfo.toString());
+			diSys.Common.Logger.TraceInformation("Scheduling executer:" + remoteInfo.toString());
 		}
+		statistics.numOfScheduleRequests++;
 		return remoteInfo;
 	}
 
@@ -474,12 +478,23 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	}
 	@Override
 	public SystemStatistics GetSystemStatistics() throws RemoteException {
-		// TODO Auto-generated method stub
+		diSys.Common.Logger.TraceInformation("Calculating system statistics ...");
+		statistics.ExecutersData.clear();
+		for (ExecuterRemoteInfo ri:executersMap.keySet()){
+			if (executersMap.get(ri).Blocked) statistics.numOfDisabledExecuters++;
+			else statistics.numOfEnabledExecuters++;
+			ExecuterStatistics es = executersMap.get(ri).getItemReciever().GetStatistics();
+			es.ri=ri;
+			statistics.ExecutersData.add(es);
+		}
+		statistics.numOfExecuters = executersMap.keySet().size();
 		return statistics;
 	}
 	@Override
 	public void ResetSystemStatistics() throws RemoteException {
+		diSys.Common.Logger.TraceInformation("Resetting system statistics ...");
+		for (ExecuterRemoteInfo ri:executersMap.keySet())
+			 executersMap.get(ri).getItemReciever().ResetStatistics();
 		statistics = new SystemStatistics();
-		
 	}
 }

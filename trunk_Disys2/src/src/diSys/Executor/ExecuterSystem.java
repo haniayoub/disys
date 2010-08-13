@@ -15,6 +15,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import diSys.AutoUpdate.JarClassLoader;
 import diSys.Common.ATask;
 import diSys.Common.Chunk;
+import diSys.Common.ExecuterStatistics;
 import diSys.Common.FileLogger;
 import diSys.Common.FileManager;
 import diSys.Common.IExecutor;
@@ -50,6 +51,8 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 	public static final String VersionFile = "Version.txt";
 	public static final String HeartBeatLogFile = "HeartBeat.txt";
 	public static final String ExecuterLogFile = "log.txt";
+	public ExecuterStatistics ExecStatistics =new ExecuterStatistics();
+	public static int numOfThreads = 0;
 	//the chunks received from clients 
 	private BlockingQueue<Chunk<TASK>> recievedChunks = 
 		new LinkedBlockingQueue<Chunk<TASK>>();
@@ -95,6 +98,7 @@ class ExecuterSystem<TASK extends ATask<? extends Item>,RESULT extends Item,E ex
 	@SuppressWarnings("unchecked")
 	public ExecuterSystem(int numerOfWorkers,int irport,int rcport,String SysManagerAddress,int sysManagerport, String executerName) throws InterruptedException {
 		super();
+		numOfThreads = numerOfWorkers;
 		this.executerName = executerName;
 		File f=new File(UpdateDir);
 		f.mkdir();

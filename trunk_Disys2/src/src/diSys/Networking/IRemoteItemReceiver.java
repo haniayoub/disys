@@ -3,6 +3,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 
+import diSys.Common.ExecuterStatistics;
 import diSys.Common.Item;
 import diSys.Common.ItemInfo;
 
@@ -18,4 +19,6 @@ public interface IRemoteItemReceiver<ITEM extends Item> extends Remote , IRMIObj
 	//public void moveDownTask(int itemHashCode)throws RemoteException ;
 	public int getMinPriority()throws RemoteException ;
 	public int getMaxPriority()throws RemoteException ;
+	public ExecuterStatistics GetStatistics() throws RemoteException;
+	public void ResetStatistics() throws RemoteException;
 }

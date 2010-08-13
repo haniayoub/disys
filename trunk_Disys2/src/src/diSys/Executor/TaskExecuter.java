@@ -2,6 +2,7 @@ package diSys.Executor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +47,11 @@ public class TaskExecuter<TASK extends ATask, RESULT extends Item, E extends IEx
 			  ATask item = task.getItem();
 			  
 			 //Result = excutor.run(item);
+			  if (es.ExecStatistics.ExecutionStartTime == null)
+				  es.ExecStatistics.ExecutionStartTime = new Date();
 			  Result = item.Run();
+			  es.ExecStatistics.LastExecutionTime = new Date();
+			  es.ExecStatistics.ExecutedTasks++;
 			  Result.uniqeId = item.uniqeId;
 			  System.setOut(std);
 			  diSys.Common.Logger.TraceInformation("Finished executing Task id["+task.getId()+"]");

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import diSys.Common.ExecuterStatistics;
 import diSys.Common.Item;
 import diSys.Common.ItemInfo;
 import diSys.Executor.ExecuterRemoteData;
@@ -227,5 +228,24 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 			res = (i.getPriority() < res) ? i.getPriority() : res; 
 		}
 		return res;
+	}
+
+	@Override
+	public ExecuterStatistics GetStatistics() throws RemoteException {
+		// TODO Auto-generated method stub
+		es.ExecStatistics.BefferSize = es.chunkReceiver.getQueueInfo().size();
+		es.ExecStatistics.BufferCapacity = es.chunkReceiver.BufferCapacity;
+		es.ExecStatistics.numOfWorkerThreads = ExecuterSystem.numOfThreads;
+		return es.ExecStatistics;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void ResetStatistics() throws RemoteException {
+		diSys.Common.Logger.TraceInformation("Resetting Executer statistics ...");
+		es.ExecStatistics = new ExecuterStatistics();
+		
 	}	
+	
+	
 }

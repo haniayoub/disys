@@ -16,5 +16,6 @@ public class ExecuterStatistics  implements Serializable {
 	public int ExecutedTasks = 0;
 	public Date ExecutionStartTime = null;
 	public Date LastExecutionTime = null;
+	public int numOfWorkerThreads = 0; 
 
 }
