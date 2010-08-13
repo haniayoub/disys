@@ -18,6 +18,7 @@ import diSys.Common.ItemInfo;
 import diSys.Common.Logger;
 import diSys.Common.RMIRemoteInfo;
 import diSys.Common.SystemManagerData;
+import diSys.Common.SystemStatistics;
 import diSys.Common.SystemUpdates;
 import diSys.Networking.IClientRemoteObject;
 import diSys.Networking.NetworkCommon;
@@ -37,6 +38,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	private static final int MAX_ID = 10000;
 	
 	public static double MAX_EP = 0;
+	private boolean RRsched = false;
+	private SystemStatistics statistics=new SystemStatistics();
 	//executers In this System Manager
 
 	private ConcurrentHashMap<ExecuterRemoteInfo, ExecuterBox<TASK, RESULT>> executersMap=
@@ -87,7 +90,9 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		diSys.Common.Logger.TraceInformation(SystemManager.GetClientHost() + " Whant to Execute "
 					+ numberOfTask + " Tasks");
 		
-		ExecuterRemoteInfo remoteInfo=ScheduleExecuter(numberOfTask);
+		ExecuterRemoteInfo remoteInfo= null;
+	    if (!RRsched) remoteInfo = ScheduleExecuter(numberOfTask);
+	    else remoteInfo = RRScheduleExecuter(numberOfTask);
 		if(remoteInfo==null){
 			diSys.Common.Logger.TraceInformation("No executers");
 		}else{
@@ -195,7 +200,18 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		return maxPPri;
 	
 	}
+	private int RRcounter = 0;
 	
+	private ExecuterRemoteInfo RRScheduleExecuter(int numberOfTasks) {
+		ExecuterRemoteInfo RRlist[] = new ExecuterRemoteInfo[executersMap.size()];
+		int i=0;
+		for (ExecuterRemoteInfo ri : executersMap.keySet())
+		{
+			RRlist[i++] = ri;
+		}
+		RRcounter = RRcounter%i;
+		return RRlist[RRcounter++];
+	}
 	@SuppressWarnings("unchecked")
 	public String CleanExit() throws RemoteException{
 		for (ClientRemoteInfo ri  : clientsMap.keySet())
@@ -450,5 +466,20 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		return executersMap.get(exri).Blocked;
+	}
+	@Override
+	public boolean SetRRscheduler(boolean flag) throws RemoteException {
+		this.RRsched = flag;
+		return true;
+	}
+	@Override
+	public SystemStatistics GetSystemStatistics() throws RemoteException {
+		// TODO Auto-generated method stub
+		return statistics;
+	}
+	@Override
+	public void ResetSystemStatistics() throws RemoteException {
+		statistics = new SystemStatistics();
+		
 	}
 }

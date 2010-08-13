@@ -9,6 +9,7 @@ import diSys.Common.ExecuterRemoteInfo;
 import diSys.Common.Item;
 import diSys.Common.ItemInfo;
 import diSys.Common.SystemManagerData;
+import diSys.Common.SystemStatistics;
 import diSys.Common.SystemUpdates;
 
 
@@ -34,6 +35,10 @@ public interface ISystemManager<ITEM extends Item> extends Remote {
 	public void EnableExecuter(ExecuterRemoteInfo exri )throws RemoteException ;
 	public void DisableExecuter(ExecuterRemoteInfo exri )throws RemoteException ;
 	public boolean GetExecuterStatusExecuter(ExecuterRemoteInfo exri ) throws RemoteException ;
+	public boolean SetRRscheduler(boolean flag)  throws RemoteException ;
+	public SystemStatistics GetSystemStatistics()  throws RemoteException ;
+	public void ResetSystemStatistics()  throws RemoteException ;
+	
 	//public void DisableExecuter(ExecuterRemoteInfo exri )throws RemoteException ;
 	
 	//public void moveUpTask(ExecuterRemoteInfo exri, int itemHashCode)throws RemoteException ;

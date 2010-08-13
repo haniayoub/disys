@@ -1,0 +1,20 @@
+package diSys.Common;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class ExecuterStatistics  implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public ExecuterRemoteInfo ri;
+	public int BefferSize=0;
+	public int BufferCapacity = 0;
+	public int ExecutedTasks = 0;
+	public Date ExecutionStartTime = null;
+	public Date LastExecutionTime = null;
+
+}
