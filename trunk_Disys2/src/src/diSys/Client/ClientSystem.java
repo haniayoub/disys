@@ -58,7 +58,7 @@ public class ClientSystem<TASK extends Item, RESULT extends Item> extends
 	private ResultCollector<TASK, RESULT> resultCollector;
 	private SynchronizedCounter sCounter;
 
-	private ISystemManager<TASK> sysManager;
+	public ISystemManager<TASK> sysManager;
 	
 	public FailureDetector<TASK> failureDetector = new FailureDetector<TASK>(10000, tasks);
 

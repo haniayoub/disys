@@ -1,6 +1,7 @@
+package SystemAnalysis;
+
 import org.htmlparser.Parser;
 import org.htmlparser.beans.StringBean;
-
 import diSys.Common.ATask;
 import downloadLibs.HttpDownloader;
 import downloadLibs.HttpResult;
@@ -11,7 +12,7 @@ public class DownloadTask extends ATask<DownloadResult> {
 	
 	public DownloadTask() {
 		super(0);
-		this.url="";
+		this.url=getRandomURL();
 	}
 	
 	public DownloadTask(long id, String url) {
@@ -47,5 +48,11 @@ public class DownloadTask extends ATask<DownloadResult> {
 		
 		System.out.println("url: " + task.url + " downloaded succesfully!!!" );
 		return res;
+	}
+	
+	private static String getRandomURL()
+	{
+		//TODO: implement
+		return "http://www.mozilla.com/en-US/firefox/2.0.0.4/releasenotes/";
 	}
 }

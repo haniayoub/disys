@@ -23,7 +23,7 @@ public class SystemStatistics implements Serializable{
 	public int numOfExecuters = 0;
 	public int numOfEnabledExecuters = 0;
 	public int numOfDisabledExecuters = 0;
-	public LinkedList<ExecuterStatistics> ExecutersData;
+	public LinkedList<ExecuterStatistics> ExecutersData = new LinkedList<ExecuterStatistics>();
 	public int numOfScheduleRequests = 0;
 	public int numOfFailedScheduleRequests = 0;
 	
