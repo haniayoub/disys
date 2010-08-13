@@ -28,7 +28,7 @@ public class MatrixMulTask extends ATask<MatrixMulResult>{
 			for(int j = 0; j < LENGTH-1; j++)
 		        for(int k = 0; k < LENGTH; k++)
 		        {
-		        	System.out.println(i + " " + j + " " + k);
+		        	//System.out.println(i + " " + j + " " + k);
 		        	res[i][j] += arr1[i][k]*arr2[k][j];
 		        }
 		System.out.println("**********finished multiplying Metrices!*********");

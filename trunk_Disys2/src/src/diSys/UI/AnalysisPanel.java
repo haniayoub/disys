@@ -31,6 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
 
+import SystemAnalysis.AnalysisClient;
+
 import com.sun.java.swing.plaf.nimbus.ComboBoxComboBoxArrowButtonPainter;
 
 /**
@@ -133,6 +135,11 @@ public class AnalysisPanel extends javax.swing.JPanel {
 				this.add(RunButton);
 				RunButton.setText("Run");
 				RunButton.setBounds(10, 355, 88, 23);
+				RunButton.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
+						RunButtonMouseClicked(evt);
+					}
+				});
 			}
 			{
 				jPanel1 = new JPanel();
@@ -218,6 +225,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 				jSlider1.setMaximum(bufferSize);
 				jSlider1.setValue(bufferSize/2);
 				this.add(jSlider1);
+				//getJProgressBar1().setValue(20);
 				this.add(getJProgressBar1());
 				{
 					jLabel2 = new JLabel();
@@ -255,7 +263,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	}
 	
 	
-	private JProgressBar getJProgressBar1() {
+	public JProgressBar getJProgressBar1() {
 		if(jProgressBar1 == null) {
 			jProgressBar1 = new JProgressBar();
 			jProgressBar1.setBounds(108, 355, 564, 22);
@@ -280,7 +288,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 		}
 	}
 	
-	private JTextPane getJTextPane1() {
+	public JTextPane getJTextPane1() {
 		if(jTextPane1 == null) {
 			jTextPane1 = new JTextPane();
 			jTextPane1.setText("jTextPane1");
@@ -329,6 +337,23 @@ public class AnalysisPanel extends javax.swing.JPanel {
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
 			}
+	}
+	
+	private void RunButtonMouseClicked(MouseEvent evt) {
+		System.out.println("Starting analysis run");
+		//TODO add your code for RunButton.mouseClicked
+		int num_of_tasks = Integer.parseInt(NumOfTaskField.getText());
+		int chunck_size = Integer.parseInt(chunkSizeField.getText());
+		final AnalysisClient ac=new AnalysisClient(SystemManagerUI.sysmRi.Ip(),SystemManagerUI.sysmRi.Port(),chunck_size,num_of_tasks, new AnalysisClient.TaskType[] {AnalysisClient.TaskType.MatrixMul},this);
+		Thread t=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				ac.run();
+			}
+		});
+		t.start();
+		jTextPane1.setText("Running analysis ...\nnum of tasks :"+num_of_tasks+"\nchunck size :"+chunck_size+"\nBuffer Capacity : "+jSlider1.getValue());
 	}
 
 }
