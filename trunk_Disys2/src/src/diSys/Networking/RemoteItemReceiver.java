@@ -44,7 +44,7 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 
 	@Override
 	public void Add(ITEM item) throws RemoteException {
-		if (recievedItems.size() < BufferCapacity )
+		if ( tasks.size() < BufferCapacity )
 		{
 			item.setOwner(diSys.Networking.NetworkCommon.GetClientHost());
 			recievedItems.add(item);
