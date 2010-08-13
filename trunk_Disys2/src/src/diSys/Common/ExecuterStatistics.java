@@ -1,6 +1,8 @@
 package diSys.Common;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ExecuterStatistics  implements Serializable {
@@ -15,12 +17,13 @@ public class ExecuterStatistics  implements Serializable {
 	public int BufferCapacity = 0;
 	public int ExecutedTasks = 0;
 	public Date ExecutionStartTime = null;
+	private DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 	@Override
 	public String toString() {
 		return "ExecuterStatistics [BefferSize=" + BefferSize
 				+ ", BufferCapacity=" + BufferCapacity + ", ExecutedTasks="
-				+ ExecutedTasks + ", ExecutionStartTime=" + ExecutionStartTime
-				+ ", LastExecutionTime=" + LastExecutionTime
+				+ ExecutedTasks + ", ExecutionStartTime=" + formatter.format(ExecutionStartTime)
+				+ ", LastExecutionTime=" + formatter.format(LastExecutionTime)
 				+ ", numOfWorkerThreads=" + numOfWorkerThreads + ", ri=" + ri
 				+ "]";
 	}
