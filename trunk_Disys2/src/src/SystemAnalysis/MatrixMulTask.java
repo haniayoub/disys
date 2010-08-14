@@ -1,16 +1,19 @@
 package SystemAnalysis;
 
 import diSys.Common.ATask;
+import diSys.Executor.DummyBenchmarkClass;
 
 @SuppressWarnings("serial")
 public class MatrixMulTask extends ATask<MatrixMulResult>{
-	public MatrixMulTask(long id) {
+	int iterations = 1;
+	public MatrixMulTask(long id,int iterations) {
 		super(id);
+		this.iterations = iterations;
 	}
 
-	public MatrixMulTask() {
+	/*public MatrixMulTask() {
 		super(0);
-	}
+	}*/
 
 	public static final int  LENGTH = 100;
 	private int arr1[][] = null; 
@@ -27,14 +30,24 @@ public class MatrixMulTask extends ATask<MatrixMulResult>{
 		}
 		
 		int[][] res = new int[LENGTH][LENGTH];
+		//for (int bb = 0 ; bb < iterations ; bb++)
 		for(int i = 0; i < LENGTH; i++)
 			for(int j = 0; j < LENGTH-1; j++)
 		        for(int k = 0; k < LENGTH; k++)
 		        {
 		        	res[i][j] += arr1[i][k]*arr2[k][j];
 		        }
-		System.out.println("**********finished multiplying Metrices!*********");
-		return new MatrixMulResult(this.getId(), res);
+		double avg = 0;
+		DummyBenchmarkClass dumm = null;
+		for(int c = 0; c < iterations; c++)
+			for(int i = 0; i < LENGTH-1; i++)
+			for(int j = 0; j < LENGTH-1; j++)
+			{
+				dumm = new DummyBenchmarkClass();	
+				avg = avg + (1.0*res[i][j]/res[i+1][j+1])/(LENGTH*LENGTH*LENGTH) ;
+			}
+		System.out.println("**********finished multiplying Metrices avg is :"+avg);
+		return new MatrixMulResult(this.getId(), avg);
 	}
 	
 	public static int[] getRandomArray(int length)

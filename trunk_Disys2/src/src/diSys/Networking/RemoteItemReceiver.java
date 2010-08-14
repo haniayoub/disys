@@ -57,7 +57,7 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 	@Override
 	public RemoteData getExecuterData() throws RemoteException {
 		ExecuterRemoteData erd = new ExecuterRemoteData();
-		erd.numOfTasks = recievedItems.size();
+		erd.numOfTasks = recievedItems.size()+tasks.size();
 		erd.Version = this.Version; 
 		erd.log=diSys.Common.Logger.logTracer.toString();
 		erd.BC = BufferCapacity;

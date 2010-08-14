@@ -20,13 +20,18 @@ public class ExecuterStatistics  implements Serializable {
 	private DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 	@Override
 	public String toString() {
+		String start_time = "None";
+		String end_time = "None";
+		if (ExecutionStartTime != null ) start_time = formatter.format(ExecutionStartTime);
+		if (LastExecutionTime != null ) end_time = formatter.format(LastExecutionTime);
+		
 		return "-- ExecuterStatistics : "
 		        + "\nremote info=" + ri
 		        + "\nBefferSize=" + BefferSize
 				+ "\nBufferCapacity=" + BufferCapacity 
 				+ "\nExecutedTasks="+ ExecutedTasks 
-				+ "\nExecutionStartTime=" + formatter.format(ExecutionStartTime)
-				+ "\nLastExecutionTime=" + formatter.format(LastExecutionTime)
+				+ "\nExecutionStartTime=" + start_time
+				+ "\nLastExecutionTime=" + end_time
 				+ "\nnumOfWorkerThreads=" + numOfWorkerThreads
 				+ "\nRejectedChunks=" + RejectedChunks
 				+ "\n";

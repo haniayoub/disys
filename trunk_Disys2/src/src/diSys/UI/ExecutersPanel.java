@@ -193,8 +193,10 @@ public class ExecutersPanel extends javax.swing.JPanel {
 		ListModel jList1Model = 
 			new DefaultComboBoxModel(items2);
 		jList1.setModel(jList1Model);
+		try{
 		if(ri1!=null)this.jList1.setSelectedValue(ri1, true);
 		if(ri2!=null)this.executersList.setSelectedValue(ri2, true);
+		}	catch(Exception e) {}
 	}
 	
 	private void AddButtonMousePressed(MouseEvent evt) {

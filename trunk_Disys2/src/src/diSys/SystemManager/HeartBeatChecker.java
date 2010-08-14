@@ -66,7 +66,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 					
 					if(erd.Version < sysm.GetLastVersionNumber()) {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" neet to Update to "+sysm.GetLastVersionNumber(),null);
-						executersMap.get(ri).Blocked=true;
+						executersMap.get(ri).Blocked=false;
 						continue;
 					}
 					
@@ -139,7 +139,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" Updating to "+sysm.GetLastVersionNumber(),null);
 						
 						 toDelete.add(ri);
-						 exec.Blocked=true;
+						 exec.Blocked=false;
 						 executersMap.put(ri, exec);
 						continue;
 				
@@ -148,7 +148,7 @@ public class HeartBeatChecker<TASK extends Item, RESULT extends Item> {
 						diSys.Common.Logger.TraceWarning("Executer "+ ri.toString()+"  is not up to Date version:"+erd.Version +" System Manager has no updates: "+sysm.GetLastVersionNumber(),null);
 						 //TODO:Update Executer explicitlly here !!
 						 toDelete.add(ri);
-						 exec.Blocked=true;
+						 exec.Blocked=false;
 						 executersMap.put(ri, exec);
 						continue;
 					}

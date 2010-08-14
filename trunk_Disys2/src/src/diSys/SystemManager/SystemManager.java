@@ -192,15 +192,16 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		double Min_EFF_BE = Double.MAX_VALUE;
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
 			if (ri.EFF_BE<Min_EFF_BE && !executersMap.get(ri).Blocked ) Min_EFF_BE = ri.EFF_BE;  
+		if (Min_EFF_BE == Double.MAX_VALUE) return null;
 		LinkedList<ExecuterRemoteInfo> minEffs= new LinkedList<ExecuterRemoteInfo>();
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
-			if ( ri.EFF_BE == Min_EFF_BE) minEffs.add(ri);
+			if ( ri.EFF_BE == Min_EFF_BE && !executersMap.get(ri).Blocked) minEffs.add(ri);
 		ExecuterRemoteInfo maxPPri=null;
 		for (ExecuterRemoteInfo ri : minEffs){
 			if (maxPPri == null) maxPPri = ri;
 			if (maxPPri.PP<ri.PP) maxPPri=ri;
 		}
-		if (maxPPri==null) return null;
+		
 		maxPPri.BS+=numberOfTasks;
 		return maxPPri;
 	
@@ -208,9 +209,14 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	private int RRcounter = 0;
 	
 	private ExecuterRemoteInfo RRScheduleExecuter(int numberOfTasks) {
-		ExecuterRemoteInfo RRlist[] = new ExecuterRemoteInfo[executersMap.size()];
-		int i=0;
+		LinkedList<ExecuterRemoteInfo> l= new LinkedList<ExecuterRemoteInfo>(); 
 		for (ExecuterRemoteInfo ri : executersMap.keySet())
+		{
+			if (!executersMap.get(ri).Blocked) l.add(ri);
+		}
+		ExecuterRemoteInfo RRlist[] = new ExecuterRemoteInfo[l.size()];
+		int i=0;
+		for (ExecuterRemoteInfo ri : l)
 		{
 			RRlist[i++] = ri;
 		}

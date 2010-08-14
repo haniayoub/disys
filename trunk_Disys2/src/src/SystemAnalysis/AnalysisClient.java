@@ -2,6 +2,8 @@ package SystemAnalysis;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.LinkedList;
+
 import diSys.Client.RemoteClient;
 import diSys.Common.ATask;
 import diSys.Common.SystemStatistics;
@@ -25,7 +27,7 @@ public class AnalysisClient{
 		MatrixMul {	@Override
 					public RemoteClient getClient() { return new RemoteClient<MatrixMulTask, MatrixMulResult>(address, port, chunkSize); }
 					@Override
-					public ATask getRandomTask() { return new MatrixMulTask(); }
+					public ATask getRandomTask() { return new MatrixMulTask(0,100); }
 		};
 		public abstract RemoteClient getClient();
 		public abstract ATask getRandomTask();
@@ -54,6 +56,7 @@ public class AnalysisClient{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+					
 		for(int i=0; i<numOfTasks; i++)
 			for(RemoteClient client : clients.keySet())
 				client.AddTask(clients.get(client).getRandomTask());
