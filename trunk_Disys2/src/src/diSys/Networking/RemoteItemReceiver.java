@@ -44,12 +44,14 @@ public class RemoteItemReceiver<ITEM extends Item> extends RMIObjectBase
 
 	@Override
 	public void Add(ITEM item) throws RemoteException {
-		if ( tasks.size() < BufferCapacity )
+		if ( tasks.size() + recievedItems.size() > BufferCapacity  )
 		{
-			item.setOwner(diSys.Networking.NetworkCommon.GetClientHost());
-			recievedItems.add(item);
+			this.es.ExecStatistics.RejectedChunks++;
+			throw new RemoteException("Rejecting Task , Buffer is Full");
 		}
-		else throw new RemoteException("Rejecting Task Buffer is Full");
+		item.setOwner(diSys.Networking.NetworkCommon.GetClientHost());
+		recievedItems.add(item);
+		
 	}
 
 	@Override

@@ -74,7 +74,7 @@ public class ChunkScheduler<TASK extends Item, RESULT extends Item> extends
 		} catch (RemoteException e) {
 			diSys.Common.Logger.TraceWarning(
 					"Couldn't add Chunk to Remote Receiver:"
-							+ itemRecieverInfo.GetRmiAddress(), e);
+							+ itemRecieverInfo.GetRmiAddress() +"\n 	Message :"+ e.getMessage(),null);
 			return task;
 		}
 		// Common.Logger.TraceInformation("Chunk [size:"+task.numberOfItems()+"] Sent to Remote Receiver:"+itemRecieverInfo.GetRmiAddress());

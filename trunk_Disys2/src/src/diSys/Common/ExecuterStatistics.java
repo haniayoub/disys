@@ -28,6 +28,8 @@ public class ExecuterStatistics  implements Serializable {
 				+ "]";
 	}
 	public Date LastExecutionTime = null;
-	public int numOfWorkerThreads = 0; 
+	public int numOfWorkerThreads = 0;
+
+	public int RejectedChunks = 0; 
 
 }

@@ -1,39 +1,29 @@
 package diSys.UI;
 
-import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 
+import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-
-import javax.swing.AbstractListModel;
-import javax.swing.ComboBoxModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.ListModel;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import SystemAnalysis.AnalysisClient;
-
-import com.sun.java.swing.plaf.nimbus.ComboBoxComboBoxArrowButtonPainter;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -48,26 +38,32 @@ import com.sun.java.swing.plaf.nimbus.ComboBoxComboBoxArrowButtonPainter;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class AnalysisPanel extends javax.swing.JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JButton RunButton;
 	private JPanel jPanel1;
 	private JCheckBox CheckDownloadTask;
 	private JCheckBox CheckMultTask;
 	private JLabel jLabel4;
+	private JSlider jSlider3;
+	private JSlider jSlider2;
 	private JScrollPane jScrollPane1;
 	private JTextPane jTextPane1;
 	private JProgressBar jProgressBar1;
 	private ButtonGroup buttonGroup1;
 	private JSlider jSlider1;
 	private JPanel jPanel4;
-	private JTextField chunkSizeField;
 	private JLabel jLabel2;
 	private JLabel jLabel1;
-	private JTextField NumOfTaskField;
 	private JRadioButton NewRadio;
 	private JRadioButton RRRadio;
 	private JPanel jPanel2;
 	
 	private int bufferSize = 1000;
+	private static final int MaxTasksNum = 10000;
+	private static final int MaxchuckSize = 500;
 
 	{
 		//Set Look & Feel
@@ -80,6 +76,10 @@ public class AnalysisPanel extends javax.swing.JPanel {
 
 	public class ComboBoxDataModel extends AbstractListModel implements ComboBoxModel{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		JCheckBox[] choices;
 		Object selectedItem;
 		
@@ -144,7 +144,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 			{
 				jPanel1 = new JPanel();
 				this.add(jPanel1);
-				jPanel1.setBounds(15, 26, 138, 96);
+				jPanel1.setBounds(15, 8, 138, 114);
 				jPanel1.setBackground(new java.awt.Color(255,255,255));
 				jPanel1.setBorder(BorderFactory.createTitledBorder("Task Types"));
 				{
@@ -167,7 +167,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 				this.add(jPanel2);
 				jPanel2.setBackground(new java.awt.Color(255,255,255));
 				jPanel2.setBorder(BorderFactory.createTitledBorder("Scheduler "));
-				jPanel2.setBounds(156, 26, 108, 96);
+				jPanel2.setBounds(156, 8, 108, 114);
 				jPanel2.setLayout(null);
 				{
 					NewRadio = new JRadioButton();
@@ -193,68 +193,62 @@ public class AnalysisPanel extends javax.swing.JPanel {
 				this.add(jPanel4);
 				jPanel4.setBackground(new java.awt.Color(255,255,255));
 				jPanel4.setBorder(BorderFactory.createTitledBorder("Task Configuration"));
-				jPanel4.setBounds(265, 26, 188, 96);
+				jPanel4.setBounds(265, 8, 407, 114);
 				jPanel4.setLayout(null);
-				{
-					chunkSizeField = new JTextField();
-					jPanel4.add(chunkSizeField);
-					chunkSizeField.setText("1");
-					chunkSizeField.setBounds(100, 56, 78, 20);
-				}
 				{
 					jLabel4 = new JLabel();
 					jPanel4.add(jLabel4);
 					jLabel4.setText("Chunk Size    :");
-					jLabel4.setBounds(11, 59, 85, 14);
+					jLabel4.setBounds(9, 53, 109, 14);
 				}
 				{
 					jLabel1 = new JLabel();
 					jPanel4.add(jLabel1);
 					jLabel1.setText("Num Of Tasks:");
-					jLabel1.setBounds(11, 31, 84, 14);
+					jLabel1.setBounds(7, 23, 117, 14);
 				}
 				{
-					NumOfTaskField = new JTextField();
-					jPanel4.add(NumOfTaskField);
-					NumOfTaskField.setText("1000");
-					NumOfTaskField.setBounds(100, 28, 78, 20);
+					jSlider1 = new JSlider();
+					jPanel4.add(jSlider1);
+					jSlider1.setMaximum(bufferSize);
+					jSlider1.setValue(bufferSize/2);
+					//getJProgressBar1().setValue(20);
+					this.add(getJProgressBar1());
+					jSlider1.setBounds(129, 84, 272, 23);
+					jSlider1.setBackground(new java.awt.Color(255,255,255));
+					jSlider1.addChangeListener(new ChangeListener() {
+						public void stateChanged(ChangeEvent evt) {
+							jSlider1StateChanged(evt);
+						}
+					});
+					buttonGroup1 = new ButtonGroup();
+					buttonGroup1.add(NewRadio);
+					NewRadio.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
+							NewRadioMouseClicked(evt);
+						}
+					});
+					buttonGroup1.add(RRRadio);
+					RRRadio.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
+							RRRadioMouseClicked(evt);
+						}
+					});
+					
 				}
-			}
-			{
-				jSlider1 = new JSlider();
-				jSlider1.setMaximum(bufferSize);
-				jSlider1.setValue(bufferSize/2);
-				this.add(jSlider1);
-				//getJProgressBar1().setValue(20);
-				this.add(getJProgressBar1());
 				{
 					jLabel2 = new JLabel();
-					this.add(jLabel2);
+					jPanel4.add(jLabel2);
+					getJSlider2().setMaximum(MaxTasksNum);
+					getJSlider3().setMaximum(MaxchuckSize);
+					getJSlider2().setValue(1000);
+					getJSlider3().setValue(1);
+					jPanel4.add(getJSlider2());
+					jPanel4.add(getJSlider3());
 					this.add(getJScrollPane1());
 					jLabel2.setText("Buffer Capacity:"+jSlider1.getValue());
-					jLabel2.setBounds(463, 34, 121, 14);
+					jLabel2.setBounds(11, 84, 121, 14);
 				}
-				jSlider1.setBounds(461, 54, 194, 23);
-				jSlider1.setBackground(new java.awt.Color(255,255,255));
-				jSlider1.addChangeListener(new ChangeListener() {
-					public void stateChanged(ChangeEvent evt) {
-						jSlider1StateChanged(evt);
-					}
-				});
-				buttonGroup1 = new ButtonGroup();
-				buttonGroup1.add(NewRadio);
-				NewRadio.addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent evt) {
-						NewRadioMouseClicked(evt);
-					}
-				});
-				buttonGroup1.add(RRRadio);
-				RRRadio.addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent evt) {
-						RRRadioMouseClicked(evt);
-					}
-				});
-
 			}
 
 		} catch (Exception e) {
@@ -271,16 +265,10 @@ public class AnalysisPanel extends javax.swing.JPanel {
 		return jProgressBar1;
 	}
 
-	private ButtonGroup getButtonGroup1() {
-		if(buttonGroup1 == null) {
-			buttonGroup1 = new ButtonGroup();
-		}
-		return buttonGroup1;
-	}
 
 	private void jSlider1StateChanged(ChangeEvent evt) {
 		//System.out.println("jSlider1.stateChanged, event="+evt);
-		jLabel2.setText("Buffer Capacity:"+jSlider1.getValue());
+		jLabel2.setText("Buffer Capacity: "+jSlider1.getValue());
 		try {
 			SystemManagerUI.sysManager.SetBufferCapacity(jSlider1.getValue());
 		} catch (RemoteException e) {
@@ -291,7 +279,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	public JTextPane getJTextPane1() {
 		if(jTextPane1 == null) {
 			jTextPane1 = new JTextPane();
-			jTextPane1.setText("jTextPane1");
+			jTextPane1.setText("Press Run To start system analysis benchmark ...");
 			jTextPane1.setBounds(10, 122, 662, 227);
 		}
 		return jTextPane1;
@@ -342,8 +330,8 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	private void RunButtonMouseClicked(MouseEvent evt) {
 		System.out.println("Starting analysis run");
 		//TODO add your code for RunButton.mouseClicked
-		int num_of_tasks = Integer.parseInt(NumOfTaskField.getText());
-		int chunck_size = Integer.parseInt(chunkSizeField.getText());
+		int num_of_tasks = getJSlider2().getValue();
+		int chunck_size = getJSlider3().getValue();
 		final AnalysisClient ac=new AnalysisClient(SystemManagerUI.sysmRi.Ip(),SystemManagerUI.sysmRi.Port(),chunck_size,num_of_tasks, new AnalysisClient.TaskType[] {AnalysisClient.TaskType.MatrixMul},this);
 		Thread t=new Thread(new Runnable() {
 			
@@ -353,7 +341,50 @@ public class AnalysisPanel extends javax.swing.JPanel {
 			}
 		});
 		t.start();
-		jTextPane1.setText("Running analysis ...\nnum of tasks :"+num_of_tasks+"\nchunck size :"+chunck_size+"\nBuffer Capacity : "+jSlider1.getValue());
+		jTextPane1.setText("Running analysis ...\nnum of tasks :"+num_of_tasks+"\nchunck size :"+chunck_size+"\nBuffer Capacity : "+jSlider1.getValue()+"\n-----------------------------------------------------");
+	}
+	
+	private JSlider getJSlider2() {
+		if(jSlider2 == null) {
+			jSlider2 = new JSlider();
+			jSlider2.setValue(bufferSize / 2);
+			jSlider2.setMaximum(bufferSize);
+			jSlider2.setBackground(new java.awt.Color(255,255,255));
+			jSlider2.setBounds(128, 20, 274, 23);
+			jSlider2.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent evt) {
+					jSlider2StateChanged(evt);
+				}
+			});
+		}
+		return jSlider2;
+	}
+	
+	private void jSlider2StateChanged(ChangeEvent evt) {
+		jLabel1.setText("Num Of Tasks: "+jSlider2.getValue());
+	}
+	
+	private JSlider getJSlider3() {
+		if(jSlider3 == null) {
+			jSlider3 = new JSlider();
+			jSlider3.setValue(bufferSize / 2);
+			jSlider3.setMaximum(bufferSize);
+			jSlider3.setBackground(new java.awt.Color(255,255,255));
+			jSlider3.setBounds(128, 51, 272, 23);
+			jSlider3.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent evt) {
+					jSlider3StateChanged(evt);
+				}
+			});
+		}
+		return jSlider3;
+	}
+	
+	private void jSlider3StateChanged(ChangeEvent evt) {
+		jLabel4.setText("Chunk Size : "+jSlider3.getValue());
+		
+	//	System.out.println("jSlider3.stateChanged, event="+evt);
+		//TODO add your code for jSlider3.stateChanged
 	}
 
 }

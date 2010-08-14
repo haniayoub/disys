@@ -77,7 +77,7 @@ public class AnalysisClient{
 			try { ss = client.clientSystem.sysManager.GetSystemStatistics(); } 
 			catch (RemoteException e) { e.printStackTrace(); }
 			System.out.println(ss.toString());
-			this.panel.getJTextPane1().setText(ss.toString());
+			this.panel.getJTextPane1().setText(this.panel.getJTextPane1().getText()+"\n\n"+ss.toString());
 		}
 	}
 	
