@@ -19,6 +19,7 @@ public class RemoteItem<T extends Item> extends Item {
 		return item;
 	}
 
+	@Override
 	public String toString() {
 		return item.toString();
 	}

@@ -89,7 +89,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 			Logger.TraceInformation("Executers list is empty !!!");
 			return null;
 		}
-		diSys.Common.Logger.TraceInformation(SystemManager.GetClientHost() + " Whant to Execute "
+		diSys.Common.Logger.TraceInformation(RMIObjectBase.GetClientHost() + " Whant to Execute "
 					+ numberOfTask + " Tasks");
 		
 		ExecuterRemoteInfo remoteInfo= null;
@@ -109,7 +109,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	@Override
 	public void addExecuter(int itemRecieverPort, int resultCollectorPort)
 			throws RemoteException {
-		String address = SystemManager.GetClientHost();
+		String address = RMIObjectBase.GetClientHost();
 		
 		if(address==null){
 		diSys.Common.Logger.TraceError("Can't add executer , address couldn't be resolved!",null);
@@ -148,7 +148,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	@Override
 	synchronized public ClientRemoteInfo AssignClientRemoteInfo(int port, String ID) throws RemoteException {
 		
-		String address = SystemManager.GetClientHost();
+		String address = RMIObjectBase.GetClientHost();
 		if(address==null){
 		diSys.Common.Logger.TraceError("Can't Create Client RemoteInfo , address couldn't be resolved!",null);
 		return null;
@@ -156,7 +156,7 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 		ClientRemoteInfo remoteInfo = new ClientRemoteInfo(address, GetNextId());
 		if(!clientsMap.containsKey(remoteInfo))
 		{
-			RMIRemoteInfo riRMI =new RMIRemoteInfo(SystemManager.GetClientHost(), port, ID);
+			RMIRemoteInfo riRMI =new RMIRemoteInfo(RMIObjectBase.GetClientHost(), port, ID);
 			IClientRemoteObject cro = NetworkCommon.loadRMIRemoteObject(riRMI);
 			clientsMap.put(remoteInfo, new ClientBox(cro));
 			diSys.Common.Logger.TraceInformation("Client " + riRMI.toString() + " has been added to the system");
@@ -274,7 +274,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	    Timer timer = new Timer();
 	    this.Dispose();
 	    timer.scheduleAtFixedRate(new TimerTask() {
-	            public void run() {
+	            @Override
+				public void run() {
 	            	if((new File(systemManagerName + ".exe")).exists())
 	            	{
 	            		diSys.Common.CommandLineRunner.Run("start " + systemManagerName + ".exe -jar SystemManager.jar "+CommandLineArgs);
@@ -482,6 +483,8 @@ public class SystemManager<TASK extends Item,RESULT extends Item> extends RMIObj
 	public SystemStatistics GetSystemStatistics() throws RemoteException {
 		diSys.Common.Logger.TraceInformation("Calculating system statistics ...");
 		statistics.ExecutersData.clear();
+		statistics.numOfDisabledExecuters = 0;
+		statistics.numOfEnabledExecuters = 0;
 		for (ExecuterRemoteInfo ri:executersMap.keySet()){
 			if (executersMap.get(ri).Blocked) statistics.numOfDisabledExecuters++;
 			else statistics.numOfEnabledExecuters++;

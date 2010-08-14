@@ -20,12 +20,16 @@ public class ExecuterStatistics  implements Serializable {
 	private DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 	@Override
 	public String toString() {
-		return "ExecuterStatistics [BefferSize=" + BefferSize
-				+ ", BufferCapacity=" + BufferCapacity + ", ExecutedTasks="
-				+ ExecutedTasks + ", ExecutionStartTime=" + formatter.format(ExecutionStartTime)
-				+ ", LastExecutionTime=" + formatter.format(LastExecutionTime)
-				+ ", numOfWorkerThreads=" + numOfWorkerThreads + ", ri=" + ri
-				+ "]";
+		return "-- ExecuterStatistics : "
+		        + "\nremote info=" + ri
+		        + "\nBefferSize=" + BefferSize
+				+ "\nBufferCapacity=" + BufferCapacity 
+				+ "\nExecutedTasks="+ ExecutedTasks 
+				+ "\nExecutionStartTime=" + formatter.format(ExecutionStartTime)
+				+ "\nLastExecutionTime=" + formatter.format(LastExecutionTime)
+				+ "\nnumOfWorkerThreads=" + numOfWorkerThreads
+				+ "\nRejectedChunks=" + RejectedChunks
+				+ "\n";
 	}
 	public Date LastExecutionTime = null;
 	public int numOfWorkerThreads = 0;

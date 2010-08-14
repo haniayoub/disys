@@ -15,6 +15,7 @@ public class ClientRemoteInfo extends RemoteInfo implements Serializable {
 		return id;
 	}
 
+	@Override
 	public String toString() {
 		return "Client://" + ip + "/" + id;
 	}

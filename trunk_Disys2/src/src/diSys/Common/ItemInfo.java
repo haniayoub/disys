@@ -16,6 +16,7 @@ public class ItemInfo implements Serializable{
 	public final int itemHashCode;
 	public final long itemID;
 	public int priority;
+	@Override
 	public String toString()
 	{
 		return itemString; 

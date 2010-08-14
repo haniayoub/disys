@@ -54,6 +54,7 @@ public class ExecuterRemoteInfo implements Serializable {
 		return resultCollectorInfo;
 	}
 
+	@Override
 	public String toString() {
 		DecimalFormat df = new DecimalFormat(".###");
 		return "Executer: " + name + 

@@ -113,6 +113,7 @@ public class SystemPanel extends javax.swing.JPanel {
 				startButton.setBounds(10, 266, 83, 20);
 				startButton.setPreferredSize(new java.awt.Dimension(83, 20));
 				startButton.addMouseListener(new MouseAdapter() {
+					@Override
 					public void mouseClicked(MouseEvent evt) {
 						startButtonMouseClicked(evt);
 					}
@@ -125,6 +126,7 @@ public class SystemPanel extends javax.swing.JPanel {
 				stopButton.setBounds(103, 266, 102, 20);
 				stopButton.setPreferredSize(new java.awt.Dimension(102, 20));
 				stopButton.addMouseListener(new MouseAdapter() {
+					@Override
 					public void mousePressed(MouseEvent evt) {
 						stopButtonMousePressed(evt);
 					}
@@ -180,6 +182,7 @@ public class SystemPanel extends javax.swing.JPanel {
 				jButtonCleanKill.setText("Clean Exit");
 				jButtonCleanKill.setBounds(276, 265, 129, 23);
 				jButtonCleanKill.addMouseListener(new MouseAdapter() {
+					@Override
 					public void mousePressed(MouseEvent evt) {
 						jButtonCleanKillMousePressed(evt);
 					}
@@ -191,6 +194,7 @@ public class SystemPanel extends javax.swing.JPanel {
 				jButtonShowTrace.setText("Show Trace");
 				jButtonShowTrace.setBounds(276, 236, 127, 23);
 				jButtonShowTrace.addMouseListener(new MouseAdapter() {
+					@Override
 					public void mousePressed(MouseEvent evt) {
 						jButtonShowTraceMousePressed(evt);
 					}

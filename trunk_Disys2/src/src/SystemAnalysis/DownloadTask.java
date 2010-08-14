@@ -1,10 +1,11 @@
 package SystemAnalysis;
 
-import org.htmlparser.Parser;
-import org.htmlparser.beans.StringBean;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.net.URL;
+
 import diSys.Common.ATask;
-import downloadLibs.HttpDownloader;
-import downloadLibs.HttpResult;
 @SuppressWarnings("serial")
 public class DownloadTask extends ATask<DownloadResult> {
 	
@@ -20,18 +21,30 @@ public class DownloadTask extends ATask<DownloadResult> {
 		this.url=url;
 	}
 	
+	@Override
 	public String toString(){
 		return "Task ID: " + this.getId();
 	}
 	private String downloadAndParseFile(String url) throws Exception {
-		HttpResult result = HttpDownloader.download(url);
+		/*HttpResult result = HttpDownloader.download(url);
 		if (result.getErrorResponse() != null) {
 			throw new Exception("Error downloading " + url + ": " + result.getErrorResponse());
 		}
 		Parser parser = Parser.createParser(new String(result.getData(), "UTF-8"), "UTF-8");
 		StringBean sb = new StringBean();
-		parser.visitAllNodesWith(sb);
-		String text = sb.getStrings();
+		parser.visitAllNodesWith(sb);*/
+		String text = "";
+		InputStream is = null;
+		DataInputStream dis;
+		String line;
+		URL  link = new URL(url);
+		    is = link.openStream();  // throws an IOException
+		    dis = new DataInputStream(new BufferedInputStream(is));
+
+		    while ((line = dis.readLine()) != null) {
+		        System.out.println(line);
+		        text=text+"\n"+line;
+		    }
 		return text;
 	}
 

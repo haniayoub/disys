@@ -3,6 +3,7 @@ package diSys.UI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -24,6 +25,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import SystemAnalysis.AnalysisClient;
+import SystemAnalysis.AnalysisClient.TaskType;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -98,7 +100,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 
 		@Override
 		public Object getElementAt(int index) {
-			return (JCheckBox)choices[index];
+			return choices[index];
 		}
 
 		@Override
@@ -136,6 +138,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 				RunButton.setText("Run");
 				RunButton.setBounds(10, 355, 88, 23);
 				RunButton.addMouseListener(new MouseAdapter() {
+					@Override
 					public void mouseClicked(MouseEvent evt) {
 						RunButtonMouseClicked(evt);
 					}
@@ -224,12 +227,14 @@ public class AnalysisPanel extends javax.swing.JPanel {
 					buttonGroup1 = new ButtonGroup();
 					buttonGroup1.add(NewRadio);
 					NewRadio.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mouseClicked(MouseEvent evt) {
 							NewRadioMouseClicked(evt);
 						}
 					});
 					buttonGroup1.add(RRRadio);
 					RRRadio.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mouseClicked(MouseEvent evt) {
 							RRRadioMouseClicked(evt);
 						}
@@ -305,7 +310,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 			
 		else 
 			SystemManagerUI.sysManager.SetRRscheduler(false);
-		} catch (RemoteException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
 		}
@@ -321,7 +326,7 @@ public class AnalysisPanel extends javax.swing.JPanel {
 				
 			else 
 				SystemManagerUI.sysManager.SetRRscheduler(false);
-			} catch (RemoteException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(this, e.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
 			}
@@ -330,9 +335,20 @@ public class AnalysisPanel extends javax.swing.JPanel {
 	private void RunButtonMouseClicked(MouseEvent evt) {
 		System.out.println("Starting analysis run");
 		//TODO add your code for RunButton.mouseClicked
-		int num_of_tasks = getJSlider2().getValue();
+		LinkedList<AnalysisClient.TaskType> l = new LinkedList<AnalysisClient.TaskType>() ;
+		if (CheckDownloadTask.isSelected())
+			l.add(TaskType.DOWNLOAD);
+		if (CheckMultTask.isSelected())
+			l.add(TaskType.MatrixMul);
+		if (l.isEmpty())
+		{
+			JOptionPane.showMessageDialog(this,"Please Choose at least one task type", "Error!", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		int num_of_tasks = getJSlider2().getValue()*l.size();
 		int chunck_size = getJSlider3().getValue();
-		final AnalysisClient ac=new AnalysisClient(SystemManagerUI.sysmRi.Ip(),SystemManagerUI.sysmRi.Port(),chunck_size,num_of_tasks, new AnalysisClient.TaskType[] {AnalysisClient.TaskType.MatrixMul},this);
+		AnalysisClient.TaskType[] taskTypeArray= new AnalysisClient.TaskType[] {};
+		final AnalysisClient ac=new AnalysisClient(SystemManagerUI.sysmRi.Ip(),SystemManagerUI.sysmRi.Port(),chunck_size,num_of_tasks,l.toArray(taskTypeArray),this);
 		Thread t=new Thread(new Runnable() {
 			
 			@Override

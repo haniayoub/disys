@@ -66,6 +66,7 @@ public abstract class AWorker<T extends Item, R extends Item> implements
 	}
 
 	//clone more workers to do the same work on workItems Queue
+	@Override
 	@SuppressWarnings("unchecked")
 	public AWorker<T, R> clone() throws CloneNotSupportedException {
 		return (AWorker<T, R>) super.clone();

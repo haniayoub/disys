@@ -28,6 +28,7 @@ public class BenchMarkTask extends TimerTask {
 	 * This method is the implementation of a contract defined in the TimerTask
 	 * class. This in the entry point of the task execution.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public void run() {
 		//

@@ -32,6 +32,7 @@ public class Item implements Serializable, Cloneable {
 		this.uniqeId = this.hashCode();
 	}
 	 
+	@Override
 	public String toString() {
 		return "Item Id: " + id+ " uId: "+uniqeId;
 

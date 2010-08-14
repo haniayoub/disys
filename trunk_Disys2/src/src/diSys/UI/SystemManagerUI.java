@@ -57,7 +57,8 @@ public class SystemManagerUI extends javax.swing.JFrame{
 		father=frame;
 		initGUI();
 		 addWindowListener(new WindowAdapter() {
-		      public void windowClosing(WindowEvent e) {
+		      @Override
+			public void windowClosing(WindowEvent e) {
 		        System.exit(0);
 		      }
 		    });
@@ -102,6 +103,7 @@ public class SystemManagerUI extends javax.swing.JFrame{
 		}
 		me=this;
 		this.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosed(WindowEvent evt) {
 				thisWindowClosed(evt);
 			}

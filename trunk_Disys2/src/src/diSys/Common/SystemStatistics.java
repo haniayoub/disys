@@ -7,13 +7,13 @@ public class SystemStatistics implements Serializable{
 
 	@Override
 	public String toString() {
-		return "SystemStatistics [ExecutersData=" + ExecutersData
-				+ ", numOfDisabledExecuters=" + numOfDisabledExecuters
-				+ ", numOfEnabledExecuters=" + numOfEnabledExecuters
-				+ ", numOfExecuters=" + numOfExecuters
-				+ ", numOfFailedScheduleRequests="
-				+ numOfFailedScheduleRequests + ", numOfScheduleRequests="
-				+ numOfScheduleRequests + "]";
+		return "SystemStatistics :" 
+				+ "\nnumOfDisabledExecuters=" + numOfDisabledExecuters
+				+ "\nnumOfEnabledExecuters=" + numOfEnabledExecuters
+				+ "\nnumOfExecuters=" + numOfExecuters
+				+ "\nnumOfFailedScheduleRequests="+ numOfFailedScheduleRequests  
+				+ "\nnumOfScheduleRequests="+ numOfScheduleRequests  
+				+" \n[ ExecutersData=" + ExecutersData +"]";
 	}
 	/**
 	 * 

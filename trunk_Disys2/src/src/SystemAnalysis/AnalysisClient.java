@@ -78,6 +78,7 @@ public class AnalysisClient{
 			catch (RemoteException e) { e.printStackTrace(); }
 			System.out.println(ss.toString());
 			this.panel.getJTextPane1().setText(this.panel.getJTextPane1().getText()+"\n\n"+ss.toString());
+			break;
 		}
 	}
 	

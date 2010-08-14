@@ -40,6 +40,7 @@ public class Chunk<T extends Item> extends Item {
 		return items.length;
 	}
 
+	@Override
 	public String toString() {
 		String $ = "chunk:" + getId() + "ItemsSize=" + items.length;
 		for (Item i : items)

@@ -95,6 +95,7 @@ public class JFrameQueueInfo extends javax.swing.JFrame {
 					jButtonRefresh.setText("Refresh");
 					jButtonRefresh.setBounds(21, 155, 90, 23);
 					jButtonRefresh.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mouseClicked(MouseEvent evt) {
 							jButtonRefreshMouseClicked(evt);
 						}
@@ -106,6 +107,7 @@ public class JFrameQueueInfo extends javax.swing.JFrame {
 					jButtonUp.setText("Move Up");
 					jButtonUp.setBounds(21, 53, 90, 23);
 					jButtonUp.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mousePressed(MouseEvent evt) {
 							jButtonUpMousePressed(evt);
 						}
@@ -117,6 +119,7 @@ public class JFrameQueueInfo extends javax.swing.JFrame {
 					jButtonDown.setText("Move Down");
 					jButtonDown.setBounds(21, 87, 90, 23);
 					jButtonDown.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mousePressed(MouseEvent evt) {
 							jButtonDownMousePressed(evt);
 						}
@@ -128,6 +131,7 @@ public class JFrameQueueInfo extends javax.swing.JFrame {
 					jButtonRemoveTask.setText("Remove");
 					jButtonRemoveTask.setBounds(21, 121, 90, 23);
 					jButtonRemoveTask.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mouseClicked(MouseEvent evt) {
 							jButtonRemoveTaskMouseClicked(evt);
 						}

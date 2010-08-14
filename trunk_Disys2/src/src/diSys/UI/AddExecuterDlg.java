@@ -114,6 +114,7 @@ public class AddExecuterDlg extends javax.swing.JDialog {
 					jButtonAdd.setText("Add");
 					jButtonAdd.setBounds(10, 158, 60, 23);
 					jButtonAdd.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mousePressed(MouseEvent evt) {
 							jButtonAddMousePressed(evt);
 						}
@@ -126,6 +127,7 @@ public class AddExecuterDlg extends javax.swing.JDialog {
 					jButtonCancel.setBounds(76, 158, 69, 23);
 					jButtonCancel.setPreferredSize(new java.awt.Dimension(69, 23));
 					jButtonCancel.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mousePressed(MouseEvent evt) {
 							jButtonCancelMousePressed(evt);
 						}

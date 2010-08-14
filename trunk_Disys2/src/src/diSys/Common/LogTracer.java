@@ -17,6 +17,7 @@ public class LogTracer {
 			Lines.poll();
 	}
 
+	@Override
 	public String toString() {
 		String $ = "";
 		for (String line : Lines)

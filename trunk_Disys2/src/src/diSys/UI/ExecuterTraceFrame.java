@@ -52,7 +52,8 @@ public class ExecuterTraceFrame extends javax.swing.JFrame {
 		updater.start();
 		
 		 addWindowListener(new WindowAdapter() {
-		      @SuppressWarnings("deprecation")
+		      @Override
+			@SuppressWarnings("deprecation")
 			public void windowClosing(WindowEvent e) {
 		        dispose();
 		        updater.stop();
