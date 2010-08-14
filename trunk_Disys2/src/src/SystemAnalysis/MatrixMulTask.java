@@ -13,12 +13,13 @@ public class MatrixMulTask extends ATask<MatrixMulResult>{
 	}
 
 	public static final int  LENGTH = 100;
-	private int arr1[][] = new int[LENGTH][LENGTH];
-	private int arr2[][] = new int[LENGTH][LENGTH];
+	private int arr1[][] = null; 
+	private int arr2[][] = null;
 	
 	@Override
 	public MatrixMulResult Run() throws Exception {
-		
+		arr1 = new int[LENGTH][LENGTH];
+		arr2 = new int[LENGTH][LENGTH];
 		for(int i=0; i<LENGTH; i++)
 		{
 			arr1[i] = getRandomArray(LENGTH);
