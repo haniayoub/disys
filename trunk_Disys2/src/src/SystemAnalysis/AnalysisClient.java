@@ -25,9 +25,7 @@ public class AnalysisClient{
 		MatrixMul {	@Override
 					public RemoteClient getClient() { return new RemoteClient<MatrixMulTask, MatrixMulResult>(address, port, chunkSize); }
 					@Override
-					public ATask getRandomTask() {
-						return new MatrixMulTask();
-					}
+					public ATask getRandomTask() { return new MatrixMulTask(); }
 		};
 		public abstract RemoteClient getClient();
 		public abstract ATask getRandomTask();

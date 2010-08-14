@@ -6,11 +6,6 @@ import diSys.Common.ATask;
 public class MatrixMulTask extends ATask<MatrixMulResult>{
 	public MatrixMulTask(long id) {
 		super(id);
-		for(int i=0; i<LENGTH; i++)
-		{
-			arr1[i] = getRandomArray(LENGTH);
-			arr2[i] = getRandomArray(LENGTH);
-		}
 	}
 
 	public MatrixMulTask() {
@@ -23,12 +18,18 @@ public class MatrixMulTask extends ATask<MatrixMulResult>{
 	
 	@Override
 	public MatrixMulResult Run() throws Exception {
+		
+		for(int i=0; i<LENGTH; i++)
+		{
+			arr1[i] = getRandomArray(LENGTH);
+			arr2[i] = getRandomArray(LENGTH);
+		}
+		
 		int[][] res = new int[LENGTH][LENGTH];
 		for(int i = 0; i < LENGTH; i++)
 			for(int j = 0; j < LENGTH-1; j++)
 		        for(int k = 0; k < LENGTH; k++)
 		        {
-		        	//System.out.println(i + " " + j + " " + k);
 		        	res[i][j] += arr1[i][k]*arr2[k][j];
 		        }
 		System.out.println("**********finished multiplying Metrices!*********");

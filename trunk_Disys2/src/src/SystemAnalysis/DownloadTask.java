@@ -25,6 +25,7 @@ public class DownloadTask extends ATask<DownloadResult> {
 	public String toString(){
 		return "Task ID: " + this.getId();
 	}
+	@SuppressWarnings("deprecation")
 	private String downloadAndParseFile(String url) throws Exception {
 		/*HttpResult result = HttpDownloader.download(url);
 		if (result.getErrorResponse() != null) {
