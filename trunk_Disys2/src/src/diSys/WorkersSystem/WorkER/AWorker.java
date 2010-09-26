@@ -29,6 +29,7 @@ public abstract class AWorker<T extends Item, R extends Item> implements
 
 	//poll items from WorkItemsQueue and put result in results Queue if any
 	public void RunWorker() {
+		System.out.println("Starting new Worker Thread ...");
 		while (!stop) {
 			R res;
 			T task;
